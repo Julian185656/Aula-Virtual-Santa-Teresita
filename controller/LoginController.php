@@ -21,7 +21,7 @@ if (isset($_POST["btn-registrarse"])) {
         $_SESSION['error_message'] = $e->getMessage();
     }
 
-    header("Location: /SantaTeresita/view/Home/Home.php");
+   header("Location: /Aula-Virtual-Santa-Teresita/view/Home/Home.php");
     exit();
 }
 ?>

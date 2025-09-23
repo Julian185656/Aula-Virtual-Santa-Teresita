@@ -35,6 +35,7 @@
                   <div class="center-wrap">
                     <div class="section text-center">
                       <h4 class="mb-4 pb-3">Log In</h4>
+                      
                       <form method="POST" action="../../controller/LoginController.php">
                         <div class="form-group">
                           <input type="email" name="correo" class="form-style" placeholder="Your Email" autocomplete="off" required>
