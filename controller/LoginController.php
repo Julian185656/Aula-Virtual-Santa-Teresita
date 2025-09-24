@@ -10,9 +10,14 @@ if (isset($_POST["btn-registrarse"])) {
     $rol = $_POST["rol"];
 
     try {
+        /** @var bool $resultado */
         $resultado = UserModel::registrarUsuario($nombre, $correo, $telefono, $contrasenna, $rol);
 
-        if ($resultado) {
+        if ($resultado) {          
+            $_SESSION['nombre'] = $nombre;
+            $_SESSION['correo'] = $correo;
+            $_SESSION['rol'] = $rol;
+
             $_SESSION['success_message'] = "¡Cuenta registrada correctamente!";
         } else {
             $_SESSION['error_message'] = "¡Error al registrar la cuenta!";
@@ -21,7 +26,7 @@ if (isset($_POST["btn-registrarse"])) {
         $_SESSION['error_message'] = $e->getMessage();
     }
 
-   header("Location: /Aula-Virtual-Santa-Teresita/view/Home/Home.php");
+    header("Location: /Aula-Virtual-Santa-Teresita/view/Home/Home.php");
     exit();
 }
 ?>
