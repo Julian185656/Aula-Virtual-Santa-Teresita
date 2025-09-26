@@ -3,7 +3,7 @@
     function AbrirBaseDatos()
     {
         
-        return mysqli_connect("127.0.0.1:3307", "root", "", "AulaVirtual");
+        return mysqli_connect("127.0.0.1:3307", "root", "", "aulavirtual");
     }
 
     function CerrarBaseDatos($context)
