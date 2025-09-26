@@ -32,53 +32,21 @@ if (isset($_POST["btn-registrarse"])) {
     }
 
     try {
+        /** @var bool $resultado */
         $resultado = UserModel::registrarUsuario($nombre, $correo, $telefono, $contrasenna, $rol);
-        if ($resultado === true) {
-            $_SESSION['success_message'] = "✅ ¡Cuenta registrada correctamente!";
-            header("Location: /Aula-Virtual-Santa-Teresita/view/Home/Home.php");
-            exit();
+
+        if ($resultado) {
+            $_SESSION['success_message'] = "¡Cuenta registrada correctamente!";
         } else {
             $_SESSION['error_message'] = "⚠️ $resultado";
             header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php");
             exit();
         }
     } catch (Exception $e) {
-        $_SESSION['error_message'] = "❌ Error: " . $e->getMessage();
-        header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php");
-        exit();
+        $_SESSION['error_message'] = $e->getMessage();
     }
+
+   header("Location: /Aula-Virtual-Santa-Teresita/view/Home/Home.php");
+    exit();
 }
-
-/* =========================
-   LOGIN
-   ========================= */
-if (isset($_POST["btn-login"])) {
-    $correo      = trim($_POST["correo"] ?? '');
-    $contrasenna = $_POST["contra"] ?? '';
-
-    // Bloquear dominios no permitidos en LOGIN también
-    if (!esCorreoSantateresita($correo)) {
-        $_SESSION['error_message'] = "❌ Solo se permite iniciar sesión con correos @santateresita.ac.cr";
-        header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php");
-        exit();
-    }
-
-    try {
-        $usuario = UserModel::iniciarSesion($correo, $contrasenna);
-
-        if ($usuario) {
-            $_SESSION['usuario'] = $usuario;
-            $_SESSION['success_message'] = "¡Bienvenido!";
-            header("Location: /Aula-Virtual-Santa-Teresita/view/Home/Home.php");
-            exit();
-        } else {
-            $_SESSION['error_message'] = "❌ Correo o contraseña incorrectos";
-            header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php");
-            exit();
-        }
-    } catch (Exception $e) {
-        $_SESSION['error_message'] = "❌ Error: " . $e->getMessage();
-        header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php");
-        exit();
-    }
-}
+?>
