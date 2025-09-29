@@ -38,9 +38,7 @@ class UserModel {
             throw new Exception("Error al conectar con la base de datos.");
         }
 
-      $query = "SELECT Id_Usuario, Nombre, Email, Contrasena, Rol, Estado 
-                  FROM USUARIO 
-                  WHERE Email = ?";
+        $query = "SELECT id, nombre, correo, contrasenna, rol FROM usuarios WHERE correo = ?";
         $stmt = mysqli_prepare($conexion, $query);
 
         if (!$stmt) {
@@ -56,10 +54,10 @@ class UserModel {
         mysqli_stmt_close($stmt);
         CerrarBaseDatos($conexion);
 
-        if ($usuario && password_verify($contrasenna, $usuario['Contrasena'])) {
+        if ($usuario && password_verify($contrasenna, $usuario['contrasenna'])) {
             return $usuario; // Devuelve el usuario autenticado
         }
         return false;
     }
 }
-?>
+

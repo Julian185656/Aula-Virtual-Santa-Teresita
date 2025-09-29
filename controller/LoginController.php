@@ -49,28 +49,4 @@ if (isset($_POST["btn-registrarse"])) {
    header("Location: /Aula-Virtual-Santa-Teresita/view/Home/Home.php");
     exit();
 }
-// =========================
-// LOGIN
-// =========================
-if (isset($_POST["btn-login"])) {
-    $correo     = trim($_POST["correo"] ?? '');
-    $contrasenna = $_POST["contra"] ?? '';
-
-    try {
-        $usuario = UserModel::iniciarSesion($correo, $contrasenna);
-
-        if ($usuario) {
-            $_SESSION["usuario"] = $usuario;
-            header("Location: /Aula-Virtual-Santa-Teresita/view/Home/Home.php");
-        } else {
-            $_SESSION['error_message'] = "Correo o contraseña incorrectos.";
-            header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php");
-        }
-        exit();
-    } catch (Exception $e) {
-        $_SESSION['error_message'] = $e->getMessage();
-        header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php");
-        exit();
-    }
-}
 ?>
