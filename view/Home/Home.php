@@ -48,13 +48,27 @@ session_start();
 
                 <!-- Sesión usuario -->
                 <?php if (isset($_SESSION['nombre'])): ?>
+                    <?php
+                      // Obtiene el rol desde la estructura de sesión nueva o, si no existe, desde la clave 'rol'
+                      $rolActual = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null);
+                    ?>
+
+                    <?php if ($rolActual === 'Administrador'): ?>
+                        <li>
+                            <a href="/Aula-Virtual-Santa-Teresita/view/Admin/admin_usuarios_list.php">
+                                🛠️ Editar perfiles
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
                     <li>
                         <a href="#" style="color: #ffffffff;">
                             👤 <?php echo htmlspecialchars($_SESSION['nombre']); ?>
                         </a>
                     </li>
                     <li>
-                        <a href="/Aula-Virtual-Santa-Teresita/view/Login/logout.php" style="color: red;">
+                
+                        <a href="/Aula-Virtual-Santa-Teresita/view/Login/Logout.php" style="color: red;">
                             <i class="fas fa-sign-out-alt"></i> Cerrar sesión
                         </a>
                     </li>
