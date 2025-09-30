@@ -1,0 +1,66 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f0f2f5;
+    padding: 20px;
+}
+.card-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.alert-custom {
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+th {
+    background: #f4f4f4;
+}
+.actions a, .actions form {
+    display: inline-block;
+    margin-right: 6px;
+}
+.form-inline {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.form-inline input[type="text"] {
+    flex: 1;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+.form-inline button {
+    padding: 6px 15px;
+    border-radius: 6px;
+    border: none;
+    background: #4f83dd;
+    color: #fff;
+}
+.form-inline a {
+    padding: 6px 15px;
+    border-radius: 6px;
+    background: #28a745;
+    color: #fff;
+    text-decoration: none;
+}

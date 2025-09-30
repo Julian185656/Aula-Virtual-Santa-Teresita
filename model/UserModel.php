@@ -1,6 +1,16 @@
 <?php
-// model/UserModel.php
+
 require_once __DIR__ . '/CN_BD.php';
+
+
+if (!class_exists('CN_BD')) {
+
+    class CN_BD {
+        public function conectar() {
+            return new mysqli('127.0.0.1', 'root', '', 'aulavirtual', 3307);
+        }
+    }
+}
 
 class UserModel
 {
@@ -20,13 +30,12 @@ class UserModel
         return $cx;
     }
 
-    /** Normaliza email a minúsculas y sin espacios */
     private static function cleanEmail(string $email): string
     {
         return strtolower(trim($email));
     }
 
-    /** LOGIN: devuelve array con datos del usuario o null si falla */
+
     public static function iniciarSesion(string $correo, string $contrasenna): ?array
     {
         $correo = self::cleanEmail($correo);
@@ -51,24 +60,21 @@ class UserModel
         $cx->close();
 
         if (!$row) {
-            return null; // no existe
+            return null;
         }
         if (!password_verify($contrasenna, $row['Contrasena'])) {
-            return null; // clave incorrecta
+            return null;
         }
         if (isset($row['Estado']) && $row['Estado'] === 'Inactivo') {
             throw new Exception('La cuenta está inactiva.');
         }
 
-        // No regresamos el hash
+
         unset($row['Contrasena']);
         return $row;
     }
 
-    /**
-     * REGISTRO: usa el procedimiento almacenado `registroUsuario`
-     * Retorna true si se insertó; lanza Exception si falla
-     */
+
     public static function registrarUsuario(
         string $nombre,
         string $correo,
@@ -84,7 +90,7 @@ class UserModel
             throw new Exception('Error de conexión a BD: ' . $cx->connect_error);
         }
 
-        // Llama tu SP que valida @santateresita.ac.cr y estado = 'Activo'
+
         $stmt = $cx->prepare("CALL registroUsuario(?, ?, ?, ?, ?)");
         if (!$stmt) {
             throw new Exception('Error preparando SP: ' . $cx->error);
@@ -100,7 +106,7 @@ class UserModel
         }
 
         
-        while ($stmt->more_results() && $stmt->next_result()) { /* nada */ }
+        while ($stmt->more_results() && $stmt->next_result()) {  }
 
         $stmt->close();
         $cx->close();

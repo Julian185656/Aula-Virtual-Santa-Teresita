@@ -1,0 +1,55 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f0f2f5;
+    padding: 20px;
+}
+.card-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-style {
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+.btn-custom {
+    background: #4f83dd;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.btn-custom:hover {
+    background: #3f6fc0;
+}
+a.btn-back {
+    display: inline-block;
+    margin-left: 10px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    background: #28a745;
+    color: #fff;
+    text-decoration: none;
+}
+#camposDocente, #camposEstudiante {
+    margin-top: 10px;
+}
+.alert-custom {
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+}

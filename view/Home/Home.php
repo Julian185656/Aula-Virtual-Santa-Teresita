@@ -9,17 +9,14 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Grad School HTML5 Template</title>
 
-    <!-- Google Fonts -->
+
     <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900" rel="stylesheet">
 
-    <!-- Bootstrap core CSS -->
     <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/fontawesome.css">
 
-    <!-- Additional CSS Files -->
     <link rel="stylesheet" href="../assets/css/templatemo-grad-school.css">
     <link rel="stylesheet" href="../assets/css/owl.css">
     <link rel="stylesheet" href="../assets/css/lightbox.css">
@@ -27,10 +24,10 @@ session_start();
 
 <body>
 
-    <!-- Header -->
+
     <header class="main-header clearfix" role="header">
         <div class="logo">
-            <a href="#"><em>Grad</em> School</a>
+            <a href="#"><em>Santa</em> Teresita</a>
         </div>
         <a href="#menu" class="menu-link"><i class="fa fa-bars"></i></a>
         <nav id="menu" class="main-nav" role="navigation">
@@ -46,10 +43,10 @@ session_start();
                 <li><a href="#section4">Courses</a></li>
                 <li><a href="#section6">Contact</a></li>
 
-                <!-- Sesión usuario -->
+    
                 <?php if (isset($_SESSION['nombre'])): ?>
                     <?php
-                      // Obtiene el rol desde la estructura de sesión nueva o, si no existe, desde la clave 'rol'
+         
                       $rolActual = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null);
                     ?>
 
@@ -61,13 +58,20 @@ session_start();
                         </li>
                     <?php endif; ?>
 
+                    <?php if ($rolActual === 'Docente'): ?>
+                        <li>
+                            <a href="/Aula-Virtual-Santa-Teresita/view/Docente/ListaDocente.php">
+                                👨‍🏫 Ver Perfiles Alumnos
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
                     <li>
                         <a href="#" style="color: #ffffffff;">
                             👤 <?php echo htmlspecialchars($_SESSION['nombre']); ?>
                         </a>
                     </li>
                     <li>
-                
                         <a href="/Aula-Virtual-Santa-Teresita/view/Login/Logout.php" style="color: red;">
                             <i class="fas fa-sign-out-alt"></i> Cerrar sesión
                         </a>
@@ -83,7 +87,7 @@ session_start();
         </nav>
     </header>
 
-    <!-- Main Banner -->
+
     <section class="section main-banner" id="top" data-section="section1">
         <video autoplay muted loop id="bg-video">
             <source src="assets/images/choose-us-image-01.png" type="video/mp4" />
@@ -99,7 +103,7 @@ session_start();
         </div>
     </section>
 
-    <!-- Features -->
+  
     <section class="features">
         <div class="container">
             <div class="row">
@@ -146,7 +150,6 @@ session_start();
         </div>
     </section>
 
-    <!-- Coming Soon -->
     <section class="section coming-soon" data-section="section3">
         <div class="container">
             <div class="row">
@@ -164,7 +167,6 @@ session_start();
         </div>
     </section>
 
-    <!-- Contact -->
     <section class="section contact" data-section="section6">
         <div class="container">
             <div class="row">
@@ -183,7 +185,7 @@ session_start();
         </div>
     </section>
 
-    <!-- Footer -->
+ 
     <footer>
         <div class="container">
             <div class="row">
@@ -196,7 +198,7 @@ session_start();
         </div>
     </footer>
 
-    <!-- Scripts -->
+
     <script src="../assets/js/isotope.min.js"></script>
     <script src="../assets/js/owl-carousel.js"></script>
     <script src="../assets/js/lightbox.js"></script>
@@ -206,5 +208,4 @@ session_start();
     <script src="../assets/js/custom.js"></script>
 
 </body>
-
 </html>

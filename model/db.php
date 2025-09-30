@@ -1,6 +1,6 @@
 <?php
-// PDO para admin (puedes usar mismos credenciales que CN_BD.php)
-$host = '127.0.0.1:3307'; // igual que model/CN_BD.php
+
+$host = '127.0.0.1:3307'; 
 $db   = 'aulavirtual';
 $user = 'root';
 $pass = '';

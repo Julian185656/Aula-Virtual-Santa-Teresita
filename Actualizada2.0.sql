@@ -141,7 +141,7 @@ CREATE TABLE `curso` (
   PRIMARY KEY (`Id_Curso`),
   KEY `Id_Docente` (`Id_Docente`),
   CONSTRAINT `curso_ibfk_1` FOREIGN KEY (`Id_Docente`) REFERENCES `docente` (`Id_Docente`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,6 +150,7 @@ CREATE TABLE `curso` (
 
 LOCK TABLES `curso` WRITE;
 /*!40000 ALTER TABLE `curso` DISABLE KEYS */;
+INSERT INTO `curso` VALUES (1,'Mate','Aprende ',91),(2,'Hola','a',91);
 /*!40000 ALTER TABLE `curso` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -174,6 +175,7 @@ CREATE TABLE `docente` (
 
 LOCK TABLES `docente` WRITE;
 /*!40000 ALTER TABLE `docente` DISABLE KEYS */;
+INSERT INTO `docente` VALUES (91,'1'),(102,'1');
 /*!40000 ALTER TABLE `docente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -257,6 +259,7 @@ CREATE TABLE `estudiante` (
 
 LOCK TABLES `estudiante` WRITE;
 /*!40000 ALTER TABLE `estudiante` DISABLE KEYS */;
+INSERT INTO `estudiante` VALUES (92,'1','1'),(101,'1','1');
 /*!40000 ALTER TABLE `estudiante` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -329,7 +332,7 @@ CREATE TABLE `matricula` (
   KEY `Id_Curso` (`Id_Curso`),
   CONSTRAINT `matricula_ibfk_1` FOREIGN KEY (`Id_Estudiante`) REFERENCES `estudiante` (`Id_Estudiante`),
   CONSTRAINT `matricula_ibfk_2` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -338,6 +341,7 @@ CREATE TABLE `matricula` (
 
 LOCK TABLES `matricula` WRITE;
 /*!40000 ALTER TABLE `matricula` DISABLE KEYS */;
+INSERT INTO `matricula` VALUES (1,92,1,'0000-00-00'),(2,101,1,'0000-00-00');
 /*!40000 ALTER TABLE `matricula` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -467,7 +471,7 @@ CREATE TABLE `usuario` (
   `Telefono` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`Id_Usuario`),
   UNIQUE KEY `Email` (`Email`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -476,7 +480,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'fdgdfg','fdggfdgfd@gmail.com','$2y$10$V0Klm2OcgMntnfZaMpAuJOQMKhFuS3CSdHgJi6fdLbRRdhy6eqKDC','Estudiante','Activo','fdgfdgfdg'),(4,'fdgdfg','dsadasd@gmail.com','$2y$10$X0s2LOsUme8vrx3FoQRtvebDZ7hFg9X.PifLLxHPCGeMhM14HGJrm','Estudiante','Activo','asdsadasd'),(5,'j','j@gmail.com','$2y$10$j7yrzWCyMkOpq0ob9RX6zeDesJdI8bUbNiulnQtWAvVydNemIRWYu','Estudiante','Activo','j'),(8,'yyyyyyyyyyyyyy','yyyyyyyy@gmail.com','$2y$10$Pdg3povCERY.11AKwpJMhOYGXyxpJkLeQgeTRfDbLGYrP8n5NMwSW','Estudiante','Activo','yyyyyyyyyyy'),(10,'fsdfsdf','fghfgh@gmail.com','$2y$10$K9FGnb790VxE9lD/21oWe.CeSaqGr.BL4tQfHeZ4B2/8HW8Z7luPK','Docente','Activo','324234'),(11,'sadasd','se@gmail.com','$2y$10$kOtPm7MMNeyvdSJZoAnZSe/0tQjROm.ZuNZcS8yLOniwWuMFFL72e','Estudiante','Activo','324234'),(12,'ujuju','jujuujuj@gmail.com','$2y$10$WcXsEAbLLu4U0CVrXLbL9.zrGW3UcwuksNXTEFAJRGThF802J1eOC','Estudiante','Activo','34234432'),(13,'dsffsdfsd','jujuuasdjuj@gmail.com','$2y$10$XBBYjfWOhxVfeptkzqCIGOzWVv1PbN458IDFr7blLAcdRUh4RnRcW','Estudiante','Activo','32423'),(14,'julian','julian@gmail.com','$2y$10$gkxRBhTfTgcoc0gFFw8/UuHbyHr8XqaZm0/fHz6Zt11JwJ1P6ZPsu','Estudiante','Activo','324234'),(15,'fghghgjh','ghjgjhg@gmail.com','$2y$10$SVTI6TtjW7M29bylf8drB.O0Z3jaFC3KyCRBFCmdIp0pNmNDEGfNC','Docente','Activo','67575567567'),(16,'hthhfhft','fthfhtf@gmail.com','$2y$10$8cz5.Wvdri6RiXcqPKhLQOv/zIKHSphOwShirUIixJ0lHXganauL6','Padre','Activo','awdada'),(17,'Juan','Juan@gmail.com','$2y$10$CwS8O3Kuom4nvWe4ZLU2YOwUwDxb1gBdRFjhj9E.Bhcjc/1a.vm9K','Docente','Activo','adadwawd'),(18,'dfsfsd','sdfsdfsd@gmail.com','$2y$10$x9Tv3ePAMv9daZcVZDaBB.ZGNE4Q5rLMK7Pn3g.OgLVkmcFKC6o7u','Estudiante','Activo','asdasd'),(19,'sdfsdf','sdfsdf@gmail.com','$2y$10$IbWUDsmAD1bg.dB.TQbiZ.nBtk7Xobke/zdaahkoAl5bFCcPNGTgq','Estudiante','Activo','adsd'),(21,'Julian','asdasd@gmail.com','$2y$10$F/z5nqawGLkwc4JBijaJ1ORlzOjpuovmryruUlKX1o6BqlBqvSHwS','Estudiante','Activo','asdasd'),(24,'Julian','jaja@gmail.com','$2y$10$VlNcdi5TFyMGUc5Fx7//UucjHkDREJGwvSk2keo6QLZQofdsfJ7YW','Estudiante','Activo','asdas'),(25,'dfsdf','dsfsdf@gmail.com','$2y$10$0w3qDAJ.ztMgHYyRLKO0B.1Vi072HFGQ/Qfd7KX75s8Xso8lLM17K','Estudiante','Activo','rwewe'),(26,'Jose','asd@gmail.com','$2y$10$RI7rIszhvCr/MGNNwTuCQOBvYCI2v80jfcNmPn1CLNa5cpkdvInXG','Estudiante','Activo','sad'),(27,'Jose','asdas@gmail.com','$2y$10$4KLlQ4dCfCY8Snvd3DhpK.gcwCsfL78d9f0zI2y9O3cJJjHUJfefe','Estudiante','Activo','asdas'),(28,'www','asdsa@gmail.com','$2y$10$Jy7fgWbIv0TRDHNV75U1Hu01pFqys0f9qxiRPrgj3ubrIMc8LK7bi','Estudiante','Activo','asd'),(30,'ggg','f@gmail.com','$2y$10$B3bWfbS5kVH2sfPxbd/c7.1l3Qe5t4X/wmyhgLX2dLblM6wyq6VKi','Estudiante','Activo','asd'),(35,'jjj','fa@gmail.com','$2y$10$bDqNae0WLFlLsqv0zAFEgukavBFEqxZ8VFu8dAOJz7LCmk2HoZnwm','Estudiante','Activo','asdasd'),(36,'ttt','faa@gmail.com','$2y$10$cozXEZAzMiNZiTTDVzH7keM7AyiuDzEx.x6lR6gwAtsZ75Xq4OHnq','Estudiante','Activo','asd'),(37,'kkk','fe@gmail.com','$2y$10$EPNTBbk3QgkKR8fZBQnd3OJfHM2oldAiTQm6uhLRsy..mR0EYnk1G','Estudiante','Activo','dsad'),(38,'sadasd','fq@gmail.com','$2y$10$aeb.YwEEZN1TRLvxxbJKkuSXnuGCIFyvw5I7IhqelWtc/nFRoJtj6','Estudiante','Activo','asdas'),(40,'fff','fnnn@gmail.com','$2y$10$pq0w1h4ulKGCaqenfXO4X.IxYzDooxbHtmSXwx/aDEMA/9.16fSLC','Estudiante','Activo','sdf'),(41,'Julian Olivares','segurajulian71@santateresita.ac.cr','$2y$10$6h.dXMR3b7qXWyk68DqEeOd12zpQnH/88wNfqC9grdVfgJb7vL.Yi','Docente','Activo','34234324'),(42,'Julian Olivares','segurajulian@santateresita.ac.cr','$2y$10$lOZ.yP4izpGyyDHgXjZlNO5MlR4EkR.iSl1p0Coh1V8RNTbi2hRvi','Administrador','Activo','23432424'),(43,'Julian Olivares','ssegurajulian@santateresita.ac.cr','$2y$10$SgmkD1TlGykkBPxloBdIHemroHuQLNAbGOgX8KuEHulEfUmjQ5NDC','Administrador','Activo','12312');
+INSERT INTO `usuario` VALUES (84,'Julian','segurajulian711@santateresita.ac.cr','$2y$10$nblUF0kqX5c7xfOnFaKISuPTZSMKC4ChU.qZjVtnzLvzDSFUTNLiS','Administrador','Activo','222'),(91,'Pana','segurajulian71@santateresita.ac.cr','$2y$10$h/fGvuRhddEAScirooRjMuE1RgkMpRZtQ9vb8QwHxZMCSZ0fFQckq','Docente','Activo','123'),(92,'Juan','segurajulian712@santateresita.ac.cr','$2y$10$GbhwkBwNVRh0.lbhJc3vWuepXDfKEk75yCJ99cXC.ZBd/nmfJjwcS','Estudiante','Activo','123'),(100,'Yo','segurajulian71@gmail.com','$2y$10$h17YqqPXWWt5Y3J82shqnuL93gPAJIEM9JE77Vaw2gfTooOGc/URy','Administrador','Activo','123'),(101,'Luis','aa@santateresita.ac.cr','$2y$10$oCuzSA2.zXzm3KKNit5I6eW73OgEqqZ/XjZrV70QvbojH3MEaHABO','Docente','Inactivo','123'),(102,'PANA12','a@santateresita.ac.cr','$2y$10$8ENtPy4Ybs9mwCaCLCiKfuEnO4jrYTY2nBaVUC8xKPnVtF6YaKm.6','Docente','Activo','123');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -502,6 +506,373 @@ SET @saved_cs_client     = @@character_set_client;
  1 AS `EsDocente`,
  1 AS `EsEstudiante`*/;
 SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping routines for database 'aulavirtual'
+--
+/*!50003 DROP PROCEDURE IF EXISTS `actualizarcontrasennaUsuario` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `actualizarcontrasennaUsuario`(
+    IN p_correo  VARCHAR(255),
+    IN p_codigo  VARCHAR(255)
+)
+BEGIN
+    UPDATE usuarios 
+    SET contrasenna = p_codigo
+    WHERE correo = p_correo;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `actualizarUsuarioAdmin` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `actualizarUsuarioAdmin`(
+    IN p_Id_Usuario INT,
+    IN p_Nombre VARCHAR(100),
+    IN p_Email VARCHAR(100),
+    IN p_Telefono VARCHAR(20),
+    IN p_Contrasena VARCHAR(255),
+    IN p_Rol VARCHAR(50),
+    IN p_Estado VARCHAR(50)
+)
+BEGIN
+
+    IF p_Contrasena IS NOT NULL AND p_Contrasena != '' THEN
+        UPDATE usuario
+        SET Nombre = p_Nombre,
+            Email = p_Email,
+            Telefono = p_Telefono,
+            Contrasena = p_Contrasena,
+            Rol = p_Rol,
+            Estado = p_Estado
+        WHERE Id_Usuario = p_Id_Usuario;
+    ELSE
+        UPDATE usuario
+        SET Nombre = p_Nombre,
+            Email = p_Email,
+            Telefono = p_Telefono,
+            Rol = p_Rol,
+            Estado = p_Estado
+        WHERE Id_Usuario = p_Id_Usuario;
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `crearUsuarioAdmin` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `crearUsuarioAdmin`(
+  IN p_nombre       VARCHAR(100),
+  IN p_email        VARCHAR(100),
+  IN p_telefono     VARCHAR(20),
+  IN p_contrasena   VARCHAR(255),
+  IN p_rol          VARCHAR(20),  -- 'Administrador'|'Docente'|'Estudiante'|'Padre'
+  IN p_estado       VARCHAR(10),  -- 'Activo'|'Inactivo'
+  IN p_grado        VARCHAR(10),  -- solo si Estudiante
+  IN p_seccion      VARCHAR(10),  -- solo si Estudiante
+  IN p_especialidad VARCHAR(100)  -- solo si Docente
+)
+BEGIN
+  DECLARE v_dominio VARCHAR(50) DEFAULT '@santateresita.ac.cr';
+  DECLARE v_email_limpio VARCHAR(100);
+  DECLARE v_id INT;
+  DECLARE v_dup INT DEFAULT 0;
+
+  SET v_email_limpio = TRIM(LOWER(p_email));
+
+  IF RIGHT(v_email_limpio, LENGTH(v_dominio)) <> v_dominio THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'El correo debe ser institucional (@santateresita.ac.cr)';
+  END IF;
+
+  SELECT COUNT(*) INTO v_dup FROM usuario WHERE Email = v_email_limpio;
+  IF v_dup > 0 THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'El correo ya está registrado';
+  END IF;
+
+  START TRANSACTION;
+
+  INSERT INTO usuario (Nombre, Email, Telefono, Contrasena, Rol, Estado)
+  VALUES (p_nombre, v_email_limpio, p_telefono, p_contrasena, p_rol, p_estado);
+
+  SET v_id = LAST_INSERT_ID();
+
+  IF p_rol = 'Padre' THEN
+      INSERT INTO padre (Id_Padre, Telefono) VALUES (v_id, p_telefono);
+  ELSEIF p_rol = 'Docente' THEN
+      INSERT INTO docente (Id_Docente, Especialidad) VALUES (v_id, p_especialidad);
+  ELSEIF p_rol = 'Estudiante' THEN
+      INSERT INTO estudiante (Id_Estudiante, Grado, Seccion) VALUES (v_id, p_grado, p_seccion);
+  END IF;
+
+  COMMIT;
+
+  CALL obtenerUsuarioDetalle(v_id);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `desactivarUsuario` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `desactivarUsuario`(
+  IN p_id_usuario INT,
+  IN p_nuevo_estado VARCHAR(10) -- 'Activo' | 'Inactivo'
+)
+BEGIN
+  UPDATE usuario SET Estado = p_nuevo_estado WHERE Id_Usuario = p_id_usuario;
+  CALL obtenerUsuarioDetalle(p_id_usuario);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `eliminarUsuarioFuerte` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `eliminarUsuarioFuerte`(IN p_id_usuario INT)
+BEGIN
+  DECLARE v_doc_cursos INT DEFAULT 0;
+  DECLARE v_est_refs   INT DEFAULT 0;
+  DECLARE v_otras_refs INT DEFAULT 0;
+
+
+  SELECT COUNT(*) INTO v_doc_cursos FROM curso WHERE Id_Docente = p_id_usuario;
+
+
+  SELECT (SELECT COUNT(*) FROM matricula      WHERE Id_Estudiante = p_id_usuario)
+       + (SELECT COUNT(*) FROM entrega_tarea  WHERE Id_Estudiante = p_id_usuario)
+       + (SELECT COUNT(*) FROM calificacion   WHERE Id_Estudiante = p_id_usuario)
+       + (SELECT COUNT(*) FROM asistencia     WHERE Id_Estudiante = p_id_usuario)
+    INTO v_est_refs;
+
+
+  SELECT (SELECT COUNT(*) FROM soporte      WHERE Id_Usuario = p_id_usuario)
+       + (SELECT COUNT(*) FROM notificacion WHERE Id_Usuario = p_id_usuario)
+    INTO v_otras_refs;
+
+  IF v_doc_cursos > 0 THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'No se puede eliminar: el usuario es Docente con cursos asignados.';
+  END IF;
+
+  IF v_est_refs > 0 THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'No se puede eliminar: el usuario es Estudiante con registros académicos.';
+  END IF;
+
+  IF v_otras_refs > 0 THEN
+    SIGNAL SQLSTATE '45000'
+      SET MESSAGE_TEXT = 'No se puede eliminar: el usuario tiene registros de soporte/notificaciones.';
+  END IF;
+
+  START TRANSACTION;
+    DELETE FROM padre      WHERE Id_Padre      = p_id_usuario;
+    DELETE FROM docente    WHERE Id_Docente    = p_id_usuario;
+    DELETE FROM estudiante WHERE Id_Estudiante = p_id_usuario;
+    DELETE FROM usuario    WHERE Id_Usuario    = p_id_usuario;
+  COMMIT;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `obtenerUsuarioDetalle` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `obtenerUsuarioDetalle`(IN p_id INT)
+BEGIN
+  SELECT * FROM vw_usuarios_detalle WHERE Id_Usuario = p_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `obtenerUsuarioRecuperarContrasena` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `obtenerUsuarioRecuperarContrasena`(
+    IN p_correo VARCHAR(255)
+)
+BEGIN
+    SELECT Id_Usuario
+    FROM usuario
+    WHERE Email = p_correo;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `obtenerUsuarioRecuperarContrasenna` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `obtenerUsuarioRecuperarContrasenna`(IN p_correo VARCHAR(255))
+BEGIN
+    SELECT id_usuario 
+    FROM usuarios 
+    WHERE correo = p_correo;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `registroUsuario` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `registroUsuario`(
+    IN p_nombre VARCHAR(100),
+    IN p_email VARCHAR(100),
+    IN p_telefono VARCHAR(20),
+    IN p_contrasena VARCHAR(255),
+    IN p_rol VARCHAR(50)
+)
+BEGIN
+    DECLARE dominio VARCHAR(50) DEFAULT '@santateresita.ac.cr';
+
+    IF RIGHT(LOWER(TRIM(p_email)), LENGTH(dominio)) = dominio THEN
+        INSERT INTO USUARIO (Nombre, Email, Telefono, Contrasena, Rol, Estado)
+        VALUES (p_nombre, TRIM(p_email), p_telefono, p_contrasena, p_rol, 'Activo');
+    ELSE
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El correo debe ser institucional (@santateresita.ac.cr)';
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_obtener_alumnos_docente` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_alumnos_docente`(IN docenteId INT)
+BEGIN
+    SELECT u.Id_Usuario AS id, u.Nombre AS nombre, u.Email AS correo,
+           c.Id_Curso AS id_curso, e.Id_Estudiante AS id_estudiante
+    FROM usuario u
+    INNER JOIN estudiante e ON u.Id_Usuario = e.Id_Estudiante
+    INNER JOIN matricula m ON e.Id_Estudiante = m.Id_Estudiante
+    INNER JOIN curso c ON m.Id_Curso = c.Id_Curso
+    WHERE c.Id_Docente = docenteId;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_obtener_perfil_alumno` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_perfil_alumno`(
+    IN p_docente_id INT,
+    IN p_alumno_id INT
+)
+BEGIN
+    SELECT u.Id_Usuario, u.Nombre, u.Email, e.Grado, e.Seccion
+    FROM usuario u
+    INNER JOIN estudiante e ON u.Id_Usuario = e.Id_Estudiante
+    INNER JOIN matricula m ON e.Id_Estudiante = m.Id_Estudiante
+    INNER JOIN curso c ON m.Id_Curso = c.Id_Curso
+    WHERE c.Id_Docente = p_docente_id
+      AND u.Id_Usuario = p_alumno_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Final view structure for view `vw_usuarios_detalle`
@@ -530,4 +901,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-09-29  3:54:58
+-- Dump completed on 2025-09-30  8:18:35
