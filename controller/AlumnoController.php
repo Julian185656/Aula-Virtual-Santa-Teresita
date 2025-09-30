@@ -1,8 +1,6 @@
 <?php
 session_start();
-
 require_once __DIR__ . "/../model/UserModel.php";
-
 
 function esCorreoSantateresita(string $correo): bool {
     $correo = trim($correo);
@@ -19,7 +17,6 @@ if (isset($_POST["btn-registrarse"])) {
     $contrasenna = $_POST["contra"] ?? '';
     $rol         = trim($_POST["rol"] ?? '');
 
-
     if (!esCorreoSantateresita($correo)) {
         $_SESSION['error_message'] = "❌ Solo se permiten correos del dominio @santateresita.ac.cr";
         header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php");
@@ -28,22 +25,15 @@ if (isset($_POST["btn-registrarse"])) {
 
     try {
         $ok = UserModel::registrarUsuario($nombre, $correo, $telefono, $contrasenna, $rol);
-        if ($ok) {
-            $_SESSION['success_message'] = "¡Cuenta registrada correctamente!";
-        } else {
-            $_SESSION['error_message'] = "No se pudo registrar la cuenta.";
-            header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php");
-            exit();
-        }
+        $_SESSION['success_message'] = $ok ? "¡Cuenta registrada correctamente!" : "No se pudo registrar la cuenta.";
     } catch (Exception $e) {
         $_SESSION['error_message'] = $e->getMessage();
-        header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php");
-        exit();
     }
 
-    header("Location: /Aula-Virtual-Santa-Teresita/view/Home/Home.php");
+    header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php");
     exit();
 }
+
 
 if (isset($_POST["btn-login"]) || isset($_POST["btn-ingresar"])) {
     $correo      = trim($_POST["correo"] ?? '');
@@ -56,24 +46,19 @@ if (isset($_POST["btn-login"]) || isset($_POST["btn-ingresar"])) {
     }
 
     try {
-   
         $usuario = UserModel::iniciarSesion($correo, $contrasenna);
-
         if ($usuario && isset($usuario['Id_Usuario'])) {
-    
             $_SESSION['usuario'] = [
                 'id_usuario' => (int)$usuario['Id_Usuario'],
                 'nombre'     => $usuario['Nombre'],
                 'correo'     => $usuario['Email'],
                 'rol'        => $usuario['Rol'],
             ];
-
-    
             $_SESSION['id_usuario'] = (int)$usuario['Id_Usuario'];
             $_SESSION['nombre']     = $usuario['Nombre'];
             $_SESSION['rol']        = $usuario['Rol'];
 
-        
+
             if ($usuario['Rol'] === 'Docente') {
                 header("Location: /Aula-Virtual-Santa-Teresita/view/Home/Home.php");
             } else if ($usuario['Rol'] === 'Estudiante') {
@@ -94,5 +79,7 @@ if (isset($_POST["btn-login"]) || isset($_POST["btn-ingresar"])) {
     }
 }
 
+
 header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php");
 exit();
+?>

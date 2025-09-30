@@ -6,15 +6,12 @@ session_start();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro de Usuario</title>
+  <title>Login</title>
 
-  <!-- Bootstrap -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
-  <!-- Unicons -->
   <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
 
-  <!-- Tu CSS -->
   <link rel="stylesheet" href="../Styles/Logins.css">
   <style>
     .alert-custom {
@@ -36,7 +33,7 @@ session_start();
         <div class="col-12 text-center align-self-center py-5">
           <div class="section pb-5 pt-5 pt-sm-2 text-center">
             
-            <!-- ====== MENSAJES ====== -->
+
             <?php if (isset($_SESSION['error_message'])): ?>
               <div class="alert alert-danger alert-custom">
                 <?= $_SESSION['error_message']; ?>
@@ -50,71 +47,45 @@ session_start();
               </div>
               <?php unset($_SESSION['success_message']); ?>
             <?php endif; ?>
-            <!-- ===================== -->
+  
 
-            <h6 class="mb-0 pb-3"><span>Log In </span><span>Sign Up</span></h6>
+            <h6 class="mb-0 pb-3"><span>Inicia sesión </span><span>Quienes somos?</span></h6>
             <input class="checkbox" type="checkbox" id="reg-log" name="reg-log"/>
             <label for="reg-log"></label>
             <div class="card-3d-wrap mx-auto">
               <div class="card-3d-wrapper">
 
-                <!-- LOGIN -->
+  
                 <div class="card-front">
                   <div class="center-wrap">
                     <div class="section text-center">
-                      <h4 class="mb-4 pb-3">Log In</h4>
+                      <h4 class="mb-4 pb-3">Inicia sesión</h4>
                       <form method="POST" action="../../controller/LoginController.php">
                         <div class="form-group">
-                          <input type="email" name="correo" class="form-style" placeholder="Your Email" autocomplete="off" required>
+                          <input type="email" name="correo" class="form-style" placeholder="Email" autocomplete="off" required>
                           <i class="input-icon uil uil-at"></i>
                         </div>  
                         <div class="form-group mt-2">
-                          <input type="password" name="contra" class="form-style" placeholder="Your Password" autocomplete="off" required>
+                          <input type="password" name="contra" class="form-style" placeholder="Contraseña" autocomplete="off" required>
                           <i class="input-icon uil uil-lock-alt"></i>
                         </div>
                         <button type="submit" name="btn-login" class="btn mt-4">Ingresar</button>
                       </form>
-                      <p class="mb-0 mt-4 text-center"><a href="#0" class="link">¿Olvidaste tu contraseña?</a></p>
+                      <p class="mb-0 mt-4 text-center"><a href="Recuperar_contrasena.php" class="link">¿Olvidaste tu contraseña?</a></p>
                     </div>
                   </div>
                 </div>
 
-                <!-- SIGN UP -->
                 <div class="card-back">
-                  <div class="center-wrap">
-                    <div class="section text-center">
-                      <h4 class="mb-4 pb-3">Sign Up</h4>
-                      <form method="POST" action="../../controller/LoginController.php">
-                        <div class="form-group">
-                          <input type="text" name="nombre" class="form-style" placeholder="Your Full Name" autocomplete="off" required>
-                          <i class="input-icon uil uil-user"></i>
-                        </div>  
-                        <div class="form-group mt-2">
-                          <input type="email" name="correo" class="form-style" placeholder="Your Email" autocomplete="off" required>
-                          <i class="input-icon uil uil-at"></i>
-                        </div>  
-                        <div class="form-group mt-2">
-                          <input type="text" name="telefono" class="form-style" placeholder="Your Phone" autocomplete="off">
-                          <i class="input-icon uil uil-phone"></i>
-                        </div>  
-                        <div class="form-group mt-2">
-                          <input type="password" name="contra" class="form-style" placeholder="Your Password" autocomplete="off" required>
-                          <i class="input-icon uil uil-lock-alt"></i>
-                        </div>
-                        <div class="form-group mt-2">
-                          <select name="rol" class="form-style" required>
-                            <option value="" disabled selected>Seleccione un rol</option>
-                            <option value="Estudiante">Estudiante</option>
-                            <option value="Docente">Docente</option>
-                            <option value="Padre">Padre</option>
-                            <option value="Administrador">Administrador</option>
-                          </select>
-                        </div>
-                        <button type="submit" name="btn-registrarse" class="btn mt-4">Registrarse</button>
-                      </form>
-                    </div>
-                  </div>
-                </div>
+  <div class="center-wrap">
+    <div class="section text-center">
+      <h4 class="mb-4 pb-3">¿Quiénes somos?</h4>
+      <p>
+        Escuela Santa Teresita, fundada en 1963, es una institución educativa comprometida con la excelencia académica y el desarrollo integral de sus estudiantes. Ofrecemos programas desde preescolar hasta educación secundaria, fomentando valores como el respeto, la responsabilidad y la solidaridad. Nuestro equipo docente altamente calificado utiliza metodologías innovadoras para preparar a los alumnos para los desafíos del futuro, promoviendo un ambiente inclusivo y colaborativo.
+      </p>
+    </div>
+  </div>
+</div>
 
               </div>
             </div>
@@ -124,7 +95,6 @@ session_start();
     </div>
   </div>
 
-  <!-- JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 </body>
