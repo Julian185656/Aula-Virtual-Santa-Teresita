@@ -6,14 +6,14 @@ session_start();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login</title>
+  <title>Inicio de Sesión - Santa Teresita</title>
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-
   <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
-
   <link rel="stylesheet" href="../Styles/Logins.css">
+
   <style>
+    body { background: #f8f9fa; }
     .alert-custom {
       font-weight: bold;
       border-radius: 8px;
@@ -22,47 +22,41 @@ session_start();
     }
   </style>
 </head>
-<body>
-  <a href="https://front.codes/" class="logo" target="_blank">
-    <img src="" alt="Logo"> 
-  </a>
 
+<body>
   <div class="section">
     <div class="container">
       <div class="row full-height justify-content-center">
         <div class="col-12 text-center align-self-center py-5">
-          <div class="section pb-5 pt-5 pt-sm-2 text-center">
-            
+          <div class="section pb-5 pt-5 text-center">
 
             <?php if (isset($_SESSION['error_message'])): ?>
               <div class="alert alert-danger alert-custom">
-                <?= $_SESSION['error_message']; ?>
+                <?= htmlspecialchars($_SESSION['error_message']); unset($_SESSION['error_message']); ?>
               </div>
-              <?php unset($_SESSION['error_message']); ?>
             <?php endif; ?>
 
             <?php if (isset($_SESSION['success_message'])): ?>
               <div class="alert alert-success alert-custom">
-                <?= $_SESSION['success_message']; ?>
+                <?= htmlspecialchars($_SESSION['success_message']); unset($_SESSION['success_message']); ?>
               </div>
-              <?php unset($_SESSION['success_message']); ?>
             <?php endif; ?>
-  
 
-            <h6 class="mb-0 pb-3"><span>Inicia sesión </span><span>Quienes somos?</span></h6>
+            <h6 class="mb-0 pb-3"><span>Inicia sesión </span><span>¿Quiénes somos?</span></h6>
             <input class="checkbox" type="checkbox" id="reg-log" name="reg-log"/>
             <label for="reg-log"></label>
+
             <div class="card-3d-wrap mx-auto">
               <div class="card-3d-wrapper">
 
-  
+               
                 <div class="card-front">
                   <div class="center-wrap">
                     <div class="section text-center">
                       <h4 class="mb-4 pb-3">Inicia sesión</h4>
                       <form method="POST" action="../../controller/LoginController.php">
                         <div class="form-group">
-                          <input type="email" name="correo" class="form-style" placeholder="Email" autocomplete="off" required>
+                          <input type="email" name="correo" class="form-style" placeholder="Correo institucional" autocomplete="off" required>
                           <i class="input-icon uil uil-at"></i>
                         </div>  
                         <div class="form-group mt-2">
@@ -76,26 +70,26 @@ session_start();
                   </div>
                 </div>
 
+             
                 <div class="card-back">
-  <div class="center-wrap">
-    <div class="section text-center">
-      <h4 class="mb-4 pb-3">¿Quiénes somos?</h4>
-      <p>
-        Escuela Santa Teresita, fundada en 1963, es una institución educativa comprometida con la excelencia académica y el desarrollo integral de sus estudiantes. Ofrecemos programas desde preescolar hasta educación secundaria, fomentando valores como el respeto, la responsabilidad y la solidaridad. Nuestro equipo docente altamente calificado utiliza metodologías innovadoras para preparar a los alumnos para los desafíos del futuro, promoviendo un ambiente inclusivo y colaborativo.
-      </p>
-    </div>
-  </div>
-</div>
+                  <div class="center-wrap">
+                    <div class="section text-center">
+                      <h4 class="mb-4 pb-3">¿Quiénes somos?</h4>
+                      <p>
+                        La Escuela Santa Teresita, fundada en 1963, es una institución educativa que promueve la excelencia académica y el desarrollo integral de sus estudiantes. 
+                        Fomentamos valores como el respeto, la responsabilidad y la solidaridad a través de una enseñanza inclusiva e innovadora.
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
               </div>
             </div>
+
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
