@@ -2,25 +2,25 @@
 
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/db.php"; 
 
-// ✅ Verifica si un usuario existe por correo
-function recuperarContrasenna($email) {
+
+function recuperarContrasenna($correo) {
     global $pdo; 
-    $stmt = $pdo->prepare("SELECT Id_Usuario FROM usuario WHERE Email = :email");
-    $stmt->execute([':email' => $email]);
+    $stmt = $pdo->prepare("SELECT Id_Usuario FROM usuario WHERE Email = :correo");
+    $stmt->execute([':correo' => $correo]);
     return $stmt->rowCount() > 0;
 }
 
-// ✅ Actualiza la contraseña de un usuario
-function cambiarContrasenna($email, $codigoHash) {
+
+function cambiarContrasenna($correo, $codigoHash) {
     global $pdo;
     $stmt = $pdo->prepare("UPDATE usuario SET Contrasena = :contrasena WHERE Email = :email");
     return $stmt->execute([
         ':contrasena' => $codigoHash,
-        ':email' => $email
+        ':email' => $correo
     ]);
 }
 
-// ✅ Genera un código aleatorio (para recuperación)
+
 function GenerarCodigo($longitud = 6) {
     $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     $codigo = '';

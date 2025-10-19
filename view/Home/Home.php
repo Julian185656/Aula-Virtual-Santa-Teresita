@@ -9,11 +9,14 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Grad School HTML5 Template</title>
 
+
     <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+
     <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/fontawesome.css">
+
     <link rel="stylesheet" href="../assets/css/templatemo-grad-school.css">
     <link rel="stylesheet" href="../assets/css/owl.css">
     <link rel="stylesheet" href="../assets/css/lightbox.css">
@@ -21,7 +24,7 @@ session_start();
 
 <body>
 
-    
+
     <header class="main-header clearfix" role="header">
         <div class="logo">
             <a href="#"><em>Santa</em> Teresita</a>
@@ -40,16 +43,29 @@ session_start();
                 <li><a href="#section4">Courses</a></li>
                 <li><a href="#section6">Contact</a></li>
 
+    
                 <?php if (isset($_SESSION['nombre'])): ?>
                     <?php
-                   
-                    $rolActual = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null);
+         
+                      $rolActual = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null);
                     ?>
 
                     <?php if ($rolActual === 'Administrador'): ?>
                         <li>
                             <a href="/Aula-Virtual-Santa-Teresita/view/Admin/admin_usuarios_list.php">
                                 🛠️ Editar perfiles
+                            </a>
+                        </li>
+
+
+                        
+                    <?php endif; ?>
+
+
+                    <?php if ($rolActual === 'Administrador'): ?>
+                        <li>
+                            <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/CrearCurso.php">
+                               🛠️ Gestionar Cursos
                             </a>
                         </li>
                     <?php endif; ?>
@@ -62,13 +78,26 @@ session_start();
                         </li>
                     <?php endif; ?>
 
-                    <?php if ($rolActual === 'Estudiante'): ?>
-                        <li>
-                            <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/dashboardCursos.php">
-                                📚 Mis Cursos
-                            </a>
-                        </li>
-                    <?php endif; ?>
+
+
+                    <?php if ($rolActual === 'Docente'): ?>
+    <li>
+        <a href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php">
+           📚 Mis Cursos
+        </a>
+    </li>
+<?php endif; ?>
+
+
+<?php if ($rolActual === 'Estudiante'): ?>
+    <li>
+        <a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php">
+           📚 Mis Cursos
+        </a>
+    </li>
+<?php endif; ?>
+
+
 
                     <li>
                         <a href="#" style="color: #ffffffff;">
@@ -107,7 +136,7 @@ session_start();
         </div>
     </section>
 
-
+  
     <section class="features">
         <div class="container">
             <div class="row">
@@ -154,7 +183,6 @@ session_start();
         </div>
     </section>
 
-
     <section class="section coming-soon" data-section="section3">
         <div class="container">
             <div class="row">
@@ -171,7 +199,6 @@ session_start();
             </div>
         </div>
     </section>
-
 
     <section class="section contact" data-section="section6">
         <div class="container">
@@ -191,7 +218,7 @@ session_start();
         </div>
     </section>
 
-
+ 
     <footer>
         <div class="container">
             <div class="row">
@@ -203,6 +230,7 @@ session_start();
             </div>
         </div>
     </footer>
+
 
     <script src="../assets/js/isotope.min.js"></script>
     <script src="../assets/js/owl-carousel.js"></script>

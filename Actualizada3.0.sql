@@ -1,8 +1,8 @@
-
+-- MySQL dump 10.13  Distrib 8.0.43, for Win64 (x86_64)
+--
 -- Host: 127.0.0.1    Database: aulavirtual
 -- ------------------------------------------------------
-CREATE DATABASE AulaVirtual;
-USE AulaVirtual;
+-- Server version	5.5.5-10.4.32-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -141,7 +141,7 @@ CREATE TABLE `curso` (
   PRIMARY KEY (`Id_Curso`),
   KEY `Id_Docente` (`Id_Docente`),
   CONSTRAINT `curso_ibfk_1` FOREIGN KEY (`Id_Docente`) REFERENCES `docente` (`Id_Docente`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,8 +150,37 @@ CREATE TABLE `curso` (
 
 LOCK TABLES `curso` WRITE;
 /*!40000 ALTER TABLE `curso` DISABLE KEYS */;
-INSERT INTO `curso` VALUES (1,'Mate','Aprende ',91),(2,'Hola','a',91);
+INSERT INTO `curso` VALUES (1,'Mate','Aprende ',91),(2,'Hola','a',91),(9,'Taky','Taky',NULL),(10,'yyyyyyyyyyyyyy','aaa',NULL);
 /*!40000 ALTER TABLE `curso` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `curso_docente`
+--
+
+DROP TABLE IF EXISTS `curso_docente`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `curso_docente` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `Id_Curso` int(11) NOT NULL,
+  `Id_Docente` int(11) NOT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `Id_Curso` (`Id_Curso`),
+  KEY `Id_Docente` (`Id_Docente`),
+  CONSTRAINT `curso_docente_ibfk_1` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `curso_docente_ibfk_2` FOREIGN KEY (`Id_Docente`) REFERENCES `docente` (`Id_Docente`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `curso_docente`
+--
+
+LOCK TABLES `curso_docente` WRITE;
+/*!40000 ALTER TABLE `curso_docente` DISABLE KEYS */;
+INSERT INTO `curso_docente` VALUES (6,2,91),(8,9,91),(9,10,102);
+/*!40000 ALTER TABLE `curso_docente` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -332,7 +361,7 @@ CREATE TABLE `matricula` (
   KEY `Id_Curso` (`Id_Curso`),
   CONSTRAINT `matricula_ibfk_1` FOREIGN KEY (`Id_Estudiante`) REFERENCES `estudiante` (`Id_Estudiante`),
   CONSTRAINT `matricula_ibfk_2` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -341,7 +370,7 @@ CREATE TABLE `matricula` (
 
 LOCK TABLES `matricula` WRITE;
 /*!40000 ALTER TABLE `matricula` DISABLE KEYS */;
-INSERT INTO `matricula` VALUES (1,92,1,'0000-00-00'),(2,101,1,'0000-00-00');
+INSERT INTO `matricula` VALUES (1,92,1,'0000-00-00'),(2,101,1,'0000-00-00'),(4,92,1,NULL),(5,92,2,NULL);
 /*!40000 ALTER TABLE `matricula` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -442,7 +471,7 @@ CREATE TABLE `tarea` (
   PRIMARY KEY (`Id_Tarea`),
   KEY `Id_Curso` (`Id_Curso`),
   CONSTRAINT `tarea_ibfk_1` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -451,6 +480,7 @@ CREATE TABLE `tarea` (
 
 LOCK TABLES `tarea` WRITE;
 /*!40000 ALTER TABLE `tarea` DISABLE KEYS */;
+INSERT INTO `tarea` VALUES (1,'Entrega2','Es obligatoria la entrega','2025-10-18',1),(2,'Julian','Debe de hacer los ejercicios de la pagina 18','2025-10-09',2),(3,'Entrega2','Esa ','2025-10-16',2);
 /*!40000 ALTER TABLE `tarea` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -480,7 +510,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (84,'Julian','segurajulian711@santateresita.ac.cr','$2y$10$nblUF0kqX5c7xfOnFaKISuPTZSMKC4ChU.qZjVtnzLvzDSFUTNLiS','Administrador','Activo','222'),(91,'Pana','segurajulian71@santateresita.ac.cr','$2y$10$h/fGvuRhddEAScirooRjMuE1RgkMpRZtQ9vb8QwHxZMCSZ0fFQckq','Docente','Activo','123'),(92,'Juan','segurajulian712@santateresita.ac.cr','$2y$10$GbhwkBwNVRh0.lbhJc3vWuepXDfKEk75yCJ99cXC.ZBd/nmfJjwcS','Estudiante','Activo','123'),(100,'Yo','segurajulian71@gmail.com','$2y$10$h17YqqPXWWt5Y3J82shqnuL93gPAJIEM9JE77Vaw2gfTooOGc/URy','Administrador','Activo','123'),(101,'Luis','aa@santateresita.ac.cr','$2y$10$oCuzSA2.zXzm3KKNit5I6eW73OgEqqZ/XjZrV70QvbojH3MEaHABO','Docente','Inactivo','123'),(102,'PANA12','a@santateresita.ac.cr','$2y$10$8ENtPy4Ybs9mwCaCLCiKfuEnO4jrYTY2nBaVUC8xKPnVtF6YaKm.6','Docente','Activo','123');
+INSERT INTO `usuario` VALUES (84,'Julian','segurajulian711@santateresita.ac.cr','$2y$10$nblUF0kqX5c7xfOnFaKISuPTZSMKC4ChU.qZjVtnzLvzDSFUTNLiS','Administrador','Activo','222'),(91,'Pana','segurajulian71@santateresita.ac.cr','$2y$10$h/fGvuRhddEAScirooRjMuE1RgkMpRZtQ9vb8QwHxZMCSZ0fFQckq','Docente','Activo','123'),(92,'Juan','segurajulian712@santateresita.ac.cr','$2y$10$GbhwkBwNVRh0.lbhJc3vWuepXDfKEk75yCJ99cXC.ZBd/nmfJjwcS','Estudiante','Activo','123'),(100,'Yo','segurajulian71@gmail.com','$2y$10$B3HZhHNeXYhOGrDswj4H7uuN3GE2mqsOPoSa/GWoyNT32OBBjTmIy','Administrador','Activo','123'),(101,'Luis','aa@santateresita.ac.cr','$2y$10$M2EytltoW0sl2QqCnoSH8uB3hx9TI1gp4JjpZnjX6K4mZCIJxu/Li','Docente','Activo','123'),(102,'PANA12','a@santateresita.ac.cr','$2y$10$8ENtPy4Ybs9mwCaCLCiKfuEnO4jrYTY2nBaVUC8xKPnVtF6YaKm.6','Docente','Activo','123');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -820,6 +850,367 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_asignarDocentes` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_asignarDocentes`(
+    IN p_idCurso INT,
+    IN p_idDocente INT
+)
+BEGIN
+    INSERT INTO curso_docente (Id_Curso, Id_Docente)
+    VALUES (p_idCurso, p_idDocente);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_crearCurso` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_crearCurso`(
+    IN p_nombre VARCHAR(255),
+    IN p_descripcion TEXT
+)
+BEGIN
+    INSERT INTO curso (Nombre, Descripcion)
+    VALUES (p_nombre, p_descripcion);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_crearTarea` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_crearTarea`(
+    IN p_idCurso INT,
+    IN p_titulo VARCHAR(100),
+    IN p_descripcion TEXT,
+    IN p_fechaEntrega DATE
+)
+BEGIN
+    INSERT INTO tarea (Id_Curso, Titulo, Descripcion, Fecha_Entrega)
+    VALUES (p_idCurso, p_titulo, p_descripcion, p_fechaEntrega);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_editarTarea` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_editarTarea`(
+    IN p_idTarea INT,
+    IN p_titulo VARCHAR(100),
+    IN p_descripcion TEXT,
+    IN p_fechaEntrega DATE
+)
+BEGIN
+    UPDATE tarea
+    SET Titulo = p_titulo,
+        Descripcion = p_descripcion,
+        Fecha_Entrega = p_fechaEntrega
+    WHERE Id_Tarea = p_idTarea;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_eliminarCurso` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_eliminarCurso`(
+    IN pIdCurso INT
+)
+BEGIN
+    -- Primero eliminar relaciones con docentes
+    DELETE FROM curso_docente WHERE Id_Curso = pIdCurso;
+
+    -- Luego eliminar el curso
+    DELETE FROM curso WHERE Id_Curso = pIdCurso;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_eliminarTarea` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_eliminarTarea`(IN p_idTarea INT)
+BEGIN
+    DELETE FROM tarea WHERE Id_Tarea = p_idTarea;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_matricularEstudiantes` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_matricularEstudiantes`(IN p_idCurso INT, IN p_idEstudiante INT)
+BEGIN
+    INSERT INTO matricula (Id_Curso, Id_Estudiante)
+    VALUES (p_idCurso, p_idEstudiante)
+    ON DUPLICATE KEY UPDATE Id_Curso = p_idCurso;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_obtenerCursos` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtenerCursos`()
+BEGIN
+    SELECT Id_Curso AS id, Nombre AS nombre
+    FROM curso;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_obtenerCursosDocente` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtenerCursosDocente`(IN p_idDocente INT)
+BEGIN
+    SELECT c.Id_Curso AS id, c.Nombre AS nombre, c.Descripcion AS descripcion
+    FROM curso c
+    INNER JOIN curso_docente cd ON c.Id_Curso = cd.Id_Curso
+    WHERE cd.Id_Docente = p_idDocente;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_obtenerCursosEstudiante` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtenerCursosEstudiante`(IN p_IdEstudiante INT)
+BEGIN
+    SELECT c.Id_Curso, c.Nombre, c.Descripcion
+    FROM curso c
+    INNER JOIN matricula m ON c.Id_Curso = m.Id_Curso
+    WHERE m.Id_Estudiante = p_IdEstudiante;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_obtenerDocentes` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtenerDocentes`()
+BEGIN
+    SELECT d.Id_Docente AS id, u.Nombre AS nombre
+    FROM docente d
+    JOIN usuario u ON d.Id_Docente = u.Id_Usuario;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_obtenerEstudiantes` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtenerEstudiantes`()
+BEGIN
+    SELECT e.Id_Estudiante AS id, u.Nombre AS nombre, e.Grado, e.Seccion
+    FROM estudiante e
+    INNER JOIN usuario u ON e.Id_Estudiante = u.Id_Usuario
+    ORDER BY u.Nombre;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_obtenerTareaPorId` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtenerTareaPorId`(IN p_idTarea INT)
+BEGIN
+    SELECT * FROM tarea WHERE Id_Tarea = p_idTarea LIMIT 1;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_obtenerTareasEstudiante` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtenerTareasEstudiante`(IN p_IdEstudiante INT)
+BEGIN
+    SELECT t.Id_Tarea, t.Titulo, t.Descripcion, t.Fecha_Entrega, c.Nombre AS Curso
+    FROM tarea t
+    INNER JOIN curso c ON t.Id_Curso = c.Id_Curso
+    INNER JOIN matricula m ON t.Id_Curso = m.Id_Curso
+    WHERE m.Id_Estudiante = p_IdEstudiante
+    ORDER BY t.Fecha_Entrega ASC;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_obtenerTareasEstudiantePorCurso` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtenerTareasEstudiantePorCurso`(
+    IN p_idEstudiante INT,
+    IN p_idCurso INT
+)
+BEGIN
+    SELECT t.Id_Tarea, t.Titulo, t.Descripcion, t.Fecha_Entrega, c.Nombre AS Curso
+    FROM tarea t
+    INNER JOIN curso c ON t.Id_Curso = c.Id_Curso
+    INNER JOIN matricula m ON m.Id_Curso = t.Id_Curso
+    WHERE m.Id_Estudiante = p_idEstudiante
+      AND (p_idCurso IS NULL OR t.Id_Curso = p_idCurso)
+    ORDER BY t.Fecha_Entrega ASC;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_obtenerTareasPorCurso` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtenerTareasPorCurso`(IN p_idCurso INT)
+BEGIN
+    SELECT * FROM tarea WHERE Id_Curso = p_idCurso ORDER BY Fecha_Entrega ASC;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_obtener_alumnos_docente` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -901,4 +1292,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-09-30  8:18:35
+-- Dump completed on 2025-10-19  8:57:00
