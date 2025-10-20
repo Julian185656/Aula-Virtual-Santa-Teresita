@@ -121,7 +121,7 @@ session_start();
                             <p class="card-text flex-grow-1 text-muted">
                                 Analiza la participación de los estudiantes en foros, tareas y actividades.
                             </p>
-                            <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/Participacion/ReporteParticipacion.php"
+                            <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/Participacion/ParticipacionController.php"
                                 class="btn btn-danger mt-auto">Ver reporte</a>
                         </div>
                     </div>

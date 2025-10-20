@@ -8,10 +8,9 @@ session_start();
     <meta charset="UTF-8">
     <title>Reporte de Asistencia</title>
 
-
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600,700" rel="stylesheet">
     <link href="../../../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2DhZHh5s6NQ4J8R5V9VQ9b6kT81e9PYnD8R9BtQxKxT4UPOyVnB5gE1Z9I5x0GNg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../../../assets/css/fontawesome.css">
     <link rel="stylesheet" href="../../../assets/css/templatemo-grad-school.css">
     <link rel="stylesheet" href="../../../assets/css/owl.css">
@@ -46,7 +45,7 @@ session_start();
             </h2>
             <div id="toast-container"></div>
             <form method="GET" action="AsistenciaController.php"
-                class="d-flex justify-content-center align-items-center flex-wrap gap-3 mb-4 p-3 rounded bg-light shadow-sm">
+                class="d-flex justify-content-center align-items-center flex-wrap mb-4 p-3 rounded bg-light shadow-sm gap-fix">
 
                 <select name="fecha" class="form-select w-auto">
                     <option value="">Todas las fechas</option>
@@ -57,15 +56,16 @@ session_start();
                     <?php endforeach; ?>
                 </select>
 
-                <button type="submit" class="btn btn-primary" id="btn-filtrar">
+                <button type="submit" class="btn btn-primary d-inline-flex align-items-center" id="btn-filtrar">
                     <i class="fa-solid fa-filter me-1"></i> Filtrar
                 </button>
 
                 <a href="AsistenciaController.php?exportar=1<?= isset($_GET['fecha']) ? '&fecha=' . $_GET['fecha'] : '' ?>"
-                    class="btn btn-success" id="btn-descargar">
+                    class="btn btn-success d-inline-flex align-items-center" id="btn-descargar">
                     <i class="fa-solid fa-file-csv me-1"></i> Descargar CSV
                 </a>
             </form>
+
 
             <div class="table-responsive">
                 <table class="table table-bordered table-striped shadow-sm">

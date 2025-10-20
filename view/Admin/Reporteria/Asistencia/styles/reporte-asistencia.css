@@ -1,6 +1,4 @@
-/* ================================
-   TABLA DE ASISTENCIA
-================================== */
+
 table {
     font-size: 15px;
 }
@@ -10,9 +8,7 @@ thead {
     color: white;
 }
 
-/* ================================
-   FORMULARIO DE FILTROS
-================================== */
+
 form {
     background-color: #ffffff !important;
     border: 1px solid #dee2e6;
@@ -43,32 +39,10 @@ form:hover {
     transform: translateY(-1px);
 }
 
-/* ================================
-   BOTONES Y ESTADOS
-================================== */
-.btn-loading {
-    opacity: 0.7;
-    pointer-events: none;
-}
 
-/* ================================
-   TOASTS
-================================== */
-.toast {
-    position: relative;
-    z-index: 9999;
-}
 
-#toast-container {
-    position: fixed;
-    top: 80px;
-    right: 20px;
-    z-index: 1050;
-}
 
-/* ================================
-   PAGINACIÓN
-================================== */
+
 .pagination .page-item.active .page-link {
     background-color: #004aad;
     border-color: #004aad;
@@ -83,9 +57,7 @@ form:hover {
     color: white;
 }
 
-/* ================================
-   ANIMACIÓN DE ENTRADA (opcional)
-================================== */
+
 form, table {
     animation: fadeIn 0.5s ease-in-out;
 }
@@ -93,4 +65,12 @@ form, table {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+.gap-fix > * {
+  margin-right: 14px !important;
+  margin-bottom: 8px;
+}
+.gap-fix > *:last-child {
+  margin-right: 0 !important;
 }

@@ -1,0 +1,92 @@
+
+table {
+    font-size: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+thead {
+    background-color: #004aad;
+    color: #ffffff;
+}
+tbody tr:hover {
+    background-color: #f3f6ff;
+    transition: background-color 0.2s ease-in-out;
+}
+
+form {
+    background-color: #ffffff !important;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 15px 20px;
+    transition: all 0.3s ease;
+}
+form:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+form select {
+    min-width: 180px;
+}
+
+#btn-filtrar, #btn-pdf {
+    font-weight: 500;
+    padding: 8px 20px;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#btn-filtrar i, #btn-pdf i {
+    margin-right: 6px;
+}
+#btn-filtrar:hover {
+    background-color: #0b5ed7;
+    transform: translateY(-1px);
+}
+#btn-pdf:hover {
+    background-color: #f13c4e;
+    transform: translateY(-1px);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #004aad;
+    border-color: #004aad;
+}
+.pagination .page-link {
+    color: #004aad;
+}
+.pagination .page-link:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+form, table {
+    animation: fadeIn 0.4s ease-in-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.badge {
+    font-size: 0.9rem;
+    padding: 0.45em 0.7em;
+    border-radius: 0.4rem;
+}
+
+/* Espaciado confiable entre los controles del filtro */
+.gap-fix > * {
+  margin-right: 14px !important;
+  margin-bottom: 8px;            /* mejora el wrap en pantallas chicas */
+}
+.gap-fix > *:last-child {
+  margin-right: 0 !important;
+}
+
+/* (opcional) Igualar alturas visuales */
+.gap-fix .btn, 
+.gap-fix .form-select {
+  height: 40px;
+  line-height: 40px;
+}
+

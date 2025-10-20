@@ -87,3 +87,94 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+-- REPORTE DE PARTICIPACION --
+
+-- TABLA DE PARTICIPACION PARA EL REPORTE --
+CREATE TABLE participacion (
+    Id_Participacion INT AUTO_INCREMENT PRIMARY KEY,
+    Id_Estudiante INT NOT NULL,
+    Id_Curso INT NOT NULL,
+    Id_Docente INT NOT NULL,
+    Fecha DATE NOT NULL,
+    Periodo VARCHAR(20) NOT NULL, -- Ej: '2025-I', '2025-II'
+    NivelParticipacion INT NOT NULL, -- Escala de 1 a 5 o 1 a 10
+    Observacion VARCHAR(255) NULL,
+    FOREIGN KEY (Id_Estudiante) REFERENCES estudiante(Id_Estudiante),
+    FOREIGN KEY (Id_Curso) REFERENCES curso(Id_Curso),
+    FOREIGN KEY (Id_Docente) REFERENCES docente(Id_Docente)
+);
+-- DATOS PRUEBA --
+INSERT INTO participacion (Id_Estudiante, Id_Curso, Id_Docente, Fecha, Periodo, NivelParticipacion, Observacion)
+VALUES
+(1198, 11, 1196, '2025-10-10', '2025-I', 5, 'Excelente participación en clase'),
+(1199, 12, 1197, '2025-10-10', '2025-I', 3, 'Participa ocasionalmente'),
+(1200, 12, 1197, '2025-10-10', '2025-I', 4, 'Buena interacción'),
+(1198, 11, 1196, '2025-10-16', '2025-II', 4, 'Participa con interés'),
+(1200, 12, 1197, '2025-10-16', '2025-II', 2, 'Poca participación en debates');
+
+-- // SP PARA FILTRACION DE DATOS // --
+
+-- REPORTE DE PARTICIPACION --
+DELIMITER $$
+
+CREATE PROCEDURE sp_ReporteParticipacion(
+    IN p_periodo VARCHAR(20),
+    IN p_offset INT,
+    IN p_limit INT
+)
+BEGIN
+    SELECT 
+        u_e.Nombre AS Estudiante,
+        c.Nombre AS Curso,
+        u_d.Nombre AS Docente,
+        p.Periodo,
+        ROUND(AVG(p.NivelParticipacion), 2) AS PromedioParticipacion,
+        CASE
+            WHEN AVG(p.NivelParticipacion) >= 4 THEN 'Alta participación'
+            WHEN AVG(p.NivelParticipacion) >= 2.5 THEN 'Media participación'
+            ELSE 'Baja participación'
+        END AS ValoracionCualitativa
+    FROM participacion p
+    INNER JOIN estudiante e ON p.Id_Estudiante = e.Id_Estudiante
+    INNER JOIN usuario u_e ON e.Id_Estudiante = u_e.Id_Usuario
+    INNER JOIN docente d ON p.Id_Docente = d.Id_Docente
+    INNER JOIN usuario u_d ON d.Id_Docente = u_d.Id_Usuario
+    INNER JOIN curso c ON p.Id_Curso = c.Id_Curso
+    WHERE p_periodo IS NULL OR p.Periodo = p_periodo
+    GROUP BY e.Id_Estudiante, c.Id_Curso, p.Periodo
+    ORDER BY u_e.Nombre ASC
+    LIMIT p_limit OFFSET p_offset;
+END $$
+
+DELIMITER ;
+
+-- UTILIZA SELECT PARA DEVOLVER LOS PERIODOS DISPONIBLES --
+DELIMITER $$
+
+CREATE PROCEDURE sp_PeriodosParticipacion()
+BEGIN
+    SELECT DISTINCT Periodo
+    FROM participacion
+    ORDER BY Periodo DESC;
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+
+-- PAGINACION --
+CREATE PROCEDURE sp_ReporteParticipacion_Total(IN p_periodo VARCHAR(20))
+BEGIN
+    SELECT COUNT(*) AS total
+    FROM (
+        SELECT 1
+        FROM participacion p
+        INNER JOIN estudiante e ON p.Id_Estudiante = e.Id_Estudiante
+        INNER JOIN curso c ON p.Id_Curso = c.Id_Curso
+        WHERE p_periodo IS NULL OR p.Periodo = p_periodo
+        GROUP BY e.Id_Estudiante, c.Id_Curso, p.Periodo
+    ) x;
+END $$
+
+DELIMITER ;
