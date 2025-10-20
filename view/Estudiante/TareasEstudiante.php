@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . "/../../model/TareaModel.php";
-require_once __DIR__ . "/../../model/db.php"; // para usar $pdo en el Paso 5
+require_once __DIR__ . "/../../model/db.php";
 
 // Validar sesión y rol estudiante
 if (!isset($_SESSION['id_usuario']) || strtolower($_SESSION['rol'] ?? '') !== 'estudiante') {
