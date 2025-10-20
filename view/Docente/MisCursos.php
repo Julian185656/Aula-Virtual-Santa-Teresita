@@ -31,7 +31,7 @@ $misCursos = CursoModel::obtenerCursosDocente($docenteId);
         .card-body h5 { font-weight: 600; }
         .card-body p { margin-bottom: 10px; }
 
-        /* Botones circulares simétricos */
+        /* Botones circulares */
         .icon-btn {
             display: inline-flex;
             align-items: center;
@@ -68,9 +68,15 @@ $misCursos = CursoModel::obtenerCursosDocente($docenteId);
                             <h5 class="card-title"><?= htmlspecialchars($curso['nombre'] ?? 'Sin nombre') ?></h5>
                             <p class="card-text"><?= htmlspecialchars($curso['descripcion'] ?? 'Sin descripción') ?></p>
                             <div class="btn-container">
-                                <a class="icon-btn btn-ver" href="/Aula-Virtual-Santa-Teresita/view/Docente/VerCurso.php?id=<?= htmlspecialchars($curso['id']) ?>" title="Ver Curso"><i class="fa-solid fa-book"></i></a>
-                                <a class="icon-btn btn-tarea" href="/Aula-Virtual-Santa-Teresita/view/Docente/AsignarTarea.php?id=<?= htmlspecialchars($curso['id']) ?>" title="Añadir Tarea"><i class="fa-solid fa-plus"></i></a>
-                                <a class="icon-btn btn-tareas-asignadas" href="/Aula-Virtual-Santa-Teresita/view/Docente/VerTareas.php?id=<?= htmlspecialchars($curso['id']) ?>" title="Ver Tareas"><i class="fa-solid fa-list"></i></a>
+                                <a class="icon-btn btn-ver" href="/Aula-Virtual-Santa-Teresita/view/Docente/VerCurso.php?id=<?= htmlspecialchars($curso['id']) ?>" title="Ver Curso">
+                                    <i class="fa-solid fa-book"></i>
+                                </a>
+                                <a class="icon-btn btn-tarea" href="/Aula-Virtual-Santa-Teresita/view/Docente/AsignarTarea.php?id=<?= htmlspecialchars($curso['id']) ?>" title="Añadir Tarea">
+                                    <i class="fa-solid fa-plus"></i>
+                                </a>
+                                <a class="icon-btn btn-tareas-asignadas" href="/Aula-Virtual-Santa-Teresita/view/Docente/VerTareas.php?id=<?= htmlspecialchars($curso['id']) ?>" title="Ver Tareas">
+                                    <i class="fa-solid fa-list"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -82,8 +88,10 @@ $misCursos = CursoModel::obtenerCursosDocente($docenteId);
             </div>
         <?php endif; ?>
     </div>
+
     <div class="text-center mt-4">
-        <a href="/Aula-Virtual-Santa-Teresita/view/Docente/dashboard.php" class="btn btn-secondary">Volver al Panel</a>
+        <!-- Cambiado para llevar al Home -->
+        <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn btn-secondary">Volver al Panel</a>
     </div>
 </div>
 

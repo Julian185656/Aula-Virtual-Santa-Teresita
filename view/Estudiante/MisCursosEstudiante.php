@@ -9,12 +9,11 @@ if (!isset($_SESSION['id_usuario']) || strtolower($_SESSION['rol'] ?? '') !== 'e
 }
 
 // Obtener ID del estudiante
-$estudianteId = $_SESSION['id_usuario'];
+$estudianteId = (int)$_SESSION['id_usuario'];
 
 // Obtener cursos del estudiante
 $cursos = CursoModel::obtenerCursosEstudiante($estudianteId);
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -24,20 +23,19 @@ $cursos = CursoModel::obtenerCursosEstudiante($estudianteId);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         body { background: #f4f4f4; font-family: 'Montserrat', sans-serif; padding: 20px; }
+        h2 { text-align: center; margin-bottom: 25px; }
         .card { border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 20px; }
         .card-body h5 { font-weight: 600; }
         .btn-tareas {
-            background-color: #007BFF; color: white; border-radius: 6px; padding: 6px 12px;
-            text-decoration: none; display: inline-flex; align-items: center;
+            background-color: #0d6efd; color: #fff; border-radius: 6px; padding: 6px 12px;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
         }
-        .btn-tareas:hover { background-color: #0069d9; color: white; }
-        .btn-tareas i { margin-right: 6px; }
-        .btn-container { text-align: center; margin-top: 10px; }
+        .btn-tareas:hover { background-color: #0b5ed7; color: #fff; }
     </style>
 </head>
 <body>
 
-<h2 class="text-center mb-4">Mis Cursos</h2>
+<h2>Mis Cursos</h2>
 
 <div class="container">
     <div class="row">
@@ -48,11 +46,9 @@ $cursos = CursoModel::obtenerCursosEstudiante($estudianteId);
                         <div class="card-body">
                             <h5 class="card-title"><?= htmlspecialchars($curso['Nombre'] ?? 'Sin nombre') ?></h5>
                             <p class="card-text"><?= htmlspecialchars($curso['Descripcion'] ?? 'Sin descripción') ?></p>
-                            <div class="btn-container">
-                                <a class="btn-tareas" href="/Aula-Virtual-Santa-Teresita/view/Estudiante/TareasEstudiante.php?idCurso=<?= htmlspecialchars($curso['Id_Curso']) ?>">
-                                    <i class="fas fa-tasks"></i> Ver Tareas
-                                </a>
-                            </div>
+                            <a class="btn-tareas" href="/Aula-Virtual-Santa-Teresita/view/Estudiante/TareasEstudiante.php?idCurso=<?= htmlspecialchars($curso['Id_Curso']) ?>">
+                                <i class="fa-solid fa-list"></i> Ver Tareas
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -62,6 +58,13 @@ $cursos = CursoModel::obtenerCursosEstudiante($estudianteId);
                 <p>No estás matriculado en ningún curso.</p>
             </div>
         <?php endif; ?>
+    </div>
+
+    <!-- ÚNICO botón inferior -->
+    <div class="text-center mt-4">
+        <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn btn-secondary">
+            <i class="fa-solid fa-house"></i> Volver al Home
+        </a>
     </div>
 </div>
 
