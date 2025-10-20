@@ -40,6 +40,7 @@ VALUES
 (1199, 11, '2025-10-16', 1),
 (1200, 12, '2025-10-16', 1);
 
+ALTER TABLE usuario AUTO_INCREMENT = 1201;
 --// SP PARA FILTRACION DE DATOS //
 
 -- SP devuelve las fechas distinas registradas en la tabla asistencia
