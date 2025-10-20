@@ -1,0 +1,96 @@
+/* ================================
+   TABLA DE ASISTENCIA
+================================== */
+table {
+    font-size: 15px;
+}
+
+thead {
+    background-color: #004aad;
+    color: white;
+}
+
+/* ================================
+   FORMULARIO DE FILTROS
+================================== */
+form {
+    background-color: #ffffff !important;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    padding: 15px 20px;
+    transition: all 0.3s ease;
+}
+
+form:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+#btn-filtrar,
+#btn-descargar {
+    font-weight: 500;
+    padding: 8px 20px;
+    border-radius: 6px;
+    transition: all 0.2s ease-in-out;
+}
+
+#btn-filtrar:hover {
+    background-color: #0b5ed7;
+    transform: translateY(-1px);
+}
+
+#btn-descargar:hover {
+    background-color: #198754;
+    transform: translateY(-1px);
+}
+
+/* ================================
+   BOTONES Y ESTADOS
+================================== */
+.btn-loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* ================================
+   TOASTS
+================================== */
+.toast {
+    position: relative;
+    z-index: 9999;
+}
+
+#toast-container {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 1050;
+}
+
+/* ================================
+   PAGINACIÓN
+================================== */
+.pagination .page-item.active .page-link {
+    background-color: #004aad;
+    border-color: #004aad;
+}
+
+.pagination .page-link {
+    color: #004aad;
+}
+
+.pagination .page-link:hover {
+    background-color: #0056b3;
+    color: white;
+}
+
+/* ================================
+   ANIMACIÓN DE ENTRADA (opcional)
+================================== */
+form, table {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

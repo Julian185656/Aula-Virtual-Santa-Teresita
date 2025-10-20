@@ -33,21 +33,14 @@ session_start();
         <nav id="menu" class="main-nav" role="navigation">
             <ul class="main-menu">
                 <li><a href="#section1">Home</a></li>
-                <li class="has-submenu"><a href="#section2">About Us</a>
-                    <ul class="sub-menu">
-                        <li><a href="#section2">Who we are?</a></li>
-                        <li><a href="#section3">What we do?</a></li>
-                        <li><a href="#section3">How it works?</a></li>
-                    </ul>
-                </li>
                 <li><a href="#section4">Courses</a></li>
                 <li><a href="#section6">Contact</a></li>
 
-    
+
                 <?php if (isset($_SESSION['nombre'])): ?>
                     <?php
-         
-                      $rolActual = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null);
+
+                    $rolActual = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null);
                     ?>
 
                     <?php if ($rolActual === 'Administrador'): ?>
@@ -56,16 +49,22 @@ session_start();
                                 🛠️ Editar perfiles
                             </a>
                         </li>
+                        <?php if ($rolActual === 'Administrador'): ?>
+                            <li>
+                                <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/HomeReportes.php">
+                                    <i class="fa-solid fa-clipboard-list"></i> Reportes
+                                </a>
+                            </li>
+                        <?php endif; ?>
 
 
-                        
                     <?php endif; ?>
 
 
                     <?php if ($rolActual === 'Administrador'): ?>
                         <li>
                             <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/CrearCurso.php">
-                               🛠️ Gestionar Cursos
+                                🛠️ Gestionar Cursos
                             </a>
                         </li>
                     <?php endif; ?>
@@ -81,21 +80,21 @@ session_start();
 
 
                     <?php if ($rolActual === 'Docente'): ?>
-    <li>
-        <a href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php">
-           📚 Mis Cursos
-        </a>
-    </li>
-<?php endif; ?>
+                        <li>
+                            <a href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php">
+                                📚 Mis Cursos
+                            </a>
+                        </li>
+                    <?php endif; ?>
 
 
-<?php if ($rolActual === 'Estudiante'): ?>
-    <li>
-        <a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php">
-           📚 Mis Cursos
-        </a>
-    </li>
-<?php endif; ?>
+                    <?php if ($rolActual === 'Estudiante'): ?>
+                        <li>
+                            <a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php">
+                                📚 Mis Cursos
+                            </a>
+                        </li>
+                    <?php endif; ?>
 
 
 
@@ -136,7 +135,7 @@ session_start();
         </div>
     </section>
 
-  
+
     <section class="features">
         <div class="container">
             <div class="row">
@@ -218,7 +217,7 @@ session_start();
         </div>
     </section>
 
- 
+
     <footer>
         <div class="container">
             <div class="row">
@@ -241,4 +240,5 @@ session_start();
     <script src="../assets/js/custom.js"></script>
 
 </body>
+
 </html>
