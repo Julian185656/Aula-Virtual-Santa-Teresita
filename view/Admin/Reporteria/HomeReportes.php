@@ -46,7 +46,7 @@ session_start();
 
     <section class="section main-banner" id="top" data-section="section1">
         <video autoplay muted loop id="bg-video">
-            <source src="../../assets/images/course-video.mp4" type="video/mp4" />
+            <source src="../../assets/images/course-video" type="video/mp4" />
         </video>
         <div class="video-overlay header-text">
             <div class="caption text-center">
@@ -93,7 +93,7 @@ session_start();
                             <p class="card-text flex-grow-1 text-muted">
                                 Consulta las notas registradas de los estudiantes en los distintos cursos.
                             </p>
-                            <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/Rendimiento/ReporteCalificaciones.php"
+                            <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/Rendimiento/RendimientoController.php"
                                 class="btn btn-success mt-auto">Ver reporte</a>
                         </div>
                     </div>
@@ -134,8 +134,7 @@ session_start();
     <footer class="bg-dark text-white text-center py-3">
         <div class="container">
             <p class="mb-0">
-                &copy; 2025 Santa Teresita | Diseño basado en
-                <a href="https://templatemo.com" target="_blank" class="text-info text-decoration-none">TemplateMo</a>
+                &copy; 2025 Santa Teresita
             </p>
         </div>
     </footer>
