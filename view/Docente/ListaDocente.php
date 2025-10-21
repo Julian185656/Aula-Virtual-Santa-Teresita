@@ -18,12 +18,31 @@ $alumnos = $model->obtenerAlumnosDeDocente($docenteId);
     <meta charset="UTF-8">
     <title>Lista de Alumnos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #f8f9fa; }
-        .table-hover tbody tr:hover { background-color: #e9ecef; }
-        .btn-perfil { background-color: #4f83dd; color: white; }
-        .btn-perfil:hover { background-color: #3662b5; }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body { background-color: #f8f9fa; }
+    .table-hover tbody tr:hover { background-color: #e9ecef; }
+
+    .btn-perfil {
+        background-color: #4f83dd;
+        color: white;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+        transition: 0.2s;
+    }
+
+    .btn-perfil:hover {
+        background-color: #3662b5;
+        transform: scale(1.1);
+    }
+
+    td.text-center { vertical-align: middle; }
+</style>
 </head>
 <body>
 <div class="container mt-5">
@@ -32,7 +51,7 @@ $alumnos = $model->obtenerAlumnosDeDocente($docenteId);
     <?php if (empty($alumnos)): ?>
         <div class="alert alert-warning text-center">No tiene alumnos asignados.</div>
     <?php else: ?>
-        <table class="table table-bordered table-hover align-middle">
+        <table class="table table-bordered table-hover align-middle text-center">
             <thead class="table-dark">
                 <tr>
                     <th>ID</th>
@@ -49,14 +68,15 @@ $alumnos = $model->obtenerAlumnosDeDocente($docenteId);
                         <td><?= htmlspecialchars($alumno['nombre']) ?></td>
                         <td><?= htmlspecialchars($alumno['correo']) ?></td>
                         <td><?= htmlspecialchars($alumno['id_curso']) ?></td>
-                        <td>
+                        <td class="text-center">
                             <button class="btn btn-sm btn-perfil" data-bs-toggle="modal" data-bs-target="#perfilModal"
-                                data-nombre="<?= htmlspecialchars($alumno['nombre']) ?>"
-                                data-correo="<?= htmlspecialchars($alumno['correo']) ?>"
-                                data-curso="<?= htmlspecialchars($alumno['id_curso']) ?>"
-                                data-id="<?= htmlspecialchars($alumno['id']) ?>">
-                                Ver Perfil
-                            </button>
+        data-nombre="<?= htmlspecialchars($alumno['nombre']) ?>"
+        data-correo="<?= htmlspecialchars($alumno['correo']) ?>"
+        data-curso="<?= htmlspecialchars($alumno['id_curso']) ?>"
+        data-id="<?= htmlspecialchars($alumno['id']) ?>"
+        title="Ver perfil del alumno">
+        <i class="fas fa-user-circle"></i>
+    </button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -64,7 +84,9 @@ $alumnos = $model->obtenerAlumnosDeDocente($docenteId);
         </table>
     <?php endif; ?>
 
-    <a href="/Aula-Virtual-Santa-Teresita/view/Docente/dashboard.php" class="btn btn-secondary mt-3">Volver al Panel</a>
+    <div class="text-center">
+        <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn btn-secondary mt-3">Volver al Panel</a>
+    </div>
 </div>
 
 

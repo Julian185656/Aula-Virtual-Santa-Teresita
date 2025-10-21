@@ -32,9 +32,8 @@ session_start();
         <a href="#menu" class="menu-link"><i class="fa fa-bars"></i></a>
         <nav id="menu" class="main-nav" role="navigation">
             <ul class="main-menu">
-                <li><a href="#section1">Home</a></li>
-                <li><a href="#section4">Courses</a></li>
-                <li><a href="#section6">Contact</a></li>
+
+            
 
 
                 <?php if (isset($_SESSION['nombre'])): ?>
@@ -46,13 +45,13 @@ session_start();
                     <?php if ($rolActual === 'Administrador'): ?>
                         <li>
                             <a href="/Aula-Virtual-Santa-Teresita/view/Admin/admin_usuarios_list.php">
-                                🛠️ Editar perfiles
+                                Editar perfiles
                             </a>
                         </li>
                         <?php if ($rolActual === 'Administrador'): ?>
                             <li>
                                 <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/HomeReportes.php">
-                                    <i class="fa-solid fa-clipboard-list"></i> Reportes
+                                    <i class=""></i> Reportes
                                 </a>
                             </li>
                         <?php endif; ?>
@@ -64,7 +63,7 @@ session_start();
                     <?php if ($rolActual === 'Administrador'): ?>
                         <li>
                             <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/CrearCurso.php">
-                                🛠️ Gestionar Cursos
+                                Gestionar Cursos
                             </a>
                         </li>
                     <?php endif; ?>
@@ -72,7 +71,7 @@ session_start();
                     <?php if ($rolActual === 'Docente'): ?>
                         <li>
                             <a href="/Aula-Virtual-Santa-Teresita/view/Docente/ListaDocente.php">
-                                👨‍🏫 Ver Perfiles Alumnos
+                                Ver Perfiles Alumnos
                             </a>
                         </li>
                     <?php endif; ?>
@@ -82,7 +81,7 @@ session_start();
                     <?php if ($rolActual === 'Docente'): ?>
                         <li>
                             <a href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php">
-                                📚 Mis Cursos
+                                Mis Cursos
                             </a>
                         </li>
                     <?php endif; ?>
@@ -91,7 +90,7 @@ session_start();
                     <?php if ($rolActual === 'Estudiante'): ?>
                         <li>
                             <a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php">
-                                📚 Mis Cursos
+                                Mis Cursos
                             </a>
                         </li>
                     <?php endif; ?>
@@ -100,7 +99,7 @@ session_start();
 
                     <li>
                         <a href="#" style="color: #ffffffff;">
-                            👤 <?php echo htmlspecialchars($_SESSION['nombre']); ?>
+                            <?php echo htmlspecialchars($_SESSION['nombre']); ?>
                         </a>
                     </li>
                     <li>

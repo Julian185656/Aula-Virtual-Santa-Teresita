@@ -33,7 +33,7 @@ CREATE TABLE `asistencia` (
   KEY `Id_Curso` (`Id_Curso`),
   CONSTRAINT `asistencia_ibfk_1` FOREIGN KEY (`Id_Estudiante`) REFERENCES `estudiante` (`Id_Estudiante`),
   CONSTRAINT `asistencia_ibfk_2` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,6 +42,7 @@ CREATE TABLE `asistencia` (
 
 LOCK TABLES `asistencia` WRITE;
 /*!40000 ALTER TABLE `asistencia` DISABLE KEYS */;
+INSERT INTO `asistencia` VALUES (1,1198,11,'2025-10-15',1),(2,1199,12,'2025-10-15',1),(3,1200,12,'2025-10-15',0),(4,1198,11,'2025-10-16',0),(5,1199,11,'2025-10-16',1),(6,1200,12,'2025-10-16',1);
 /*!40000 ALTER TABLE `asistencia` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -141,7 +142,7 @@ CREATE TABLE `curso` (
   PRIMARY KEY (`Id_Curso`),
   KEY `Id_Docente` (`Id_Docente`),
   CONSTRAINT `curso_ibfk_1` FOREIGN KEY (`Id_Docente`) REFERENCES `docente` (`Id_Docente`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -150,7 +151,7 @@ CREATE TABLE `curso` (
 
 LOCK TABLES `curso` WRITE;
 /*!40000 ALTER TABLE `curso` DISABLE KEYS */;
-INSERT INTO `curso` VALUES (1,'Mate','Aprende ',91),(2,'Hola','a',91),(9,'Taky','Taky',NULL),(10,'yyyyyyyyyyyyyy','aaa',NULL);
+INSERT INTO `curso` VALUES (1,'Mate','Aprende ',91),(2,'Hola','a',91),(9,'Taky','Taky',NULL),(10,'yyyyyyyyyyyyyy','aaa',NULL),(11,'Matemáticas','Curso de operaciones fundamentales',1196),(12,'Artes Plasticas','Teoria del color',1197);
 /*!40000 ALTER TABLE `curso` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -204,7 +205,7 @@ CREATE TABLE `docente` (
 
 LOCK TABLES `docente` WRITE;
 /*!40000 ALTER TABLE `docente` DISABLE KEYS */;
-INSERT INTO `docente` VALUES (91,'1'),(102,'1');
+INSERT INTO `docente` VALUES (91,'1'),(102,'1'),(1196,'Matemáticas'),(1197,'Artes Plasticas');
 /*!40000 ALTER TABLE `docente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -249,12 +250,13 @@ CREATE TABLE `entrega_tarea` (
   `Archivo_URL` varchar(255) DEFAULT NULL,
   `Fecha_Entrega` date DEFAULT NULL,
   `Calificacion` decimal(5,2) DEFAULT NULL,
+  `Comentario` text DEFAULT NULL,
   PRIMARY KEY (`Id_Entrega`),
   KEY `Id_Tarea` (`Id_Tarea`),
   KEY `Id_Estudiante` (`Id_Estudiante`),
   CONSTRAINT `entrega_tarea_ibfk_1` FOREIGN KEY (`Id_Tarea`) REFERENCES `tarea` (`Id_Tarea`),
   CONSTRAINT `entrega_tarea_ibfk_2` FOREIGN KEY (`Id_Estudiante`) REFERENCES `estudiante` (`Id_Estudiante`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -263,6 +265,7 @@ CREATE TABLE `entrega_tarea` (
 
 LOCK TABLES `entrega_tarea` WRITE;
 /*!40000 ALTER TABLE `entrega_tarea` DISABLE KEYS */;
+INSERT INTO `entrega_tarea` VALUES (1,1,92,'/Aula-Virtual-Santa-Teresita/uploads/1761010847_imagen_2025-10-21_034045973.png','2025-10-21',NULL,NULL),(2,2,92,'/Aula-Virtual-Santa-Teresita/uploads/1761010919_Captura de pantalla 2025-10-21 034037.png','2025-10-21',80.00,'Esta bien');
 /*!40000 ALTER TABLE `entrega_tarea` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -288,7 +291,7 @@ CREATE TABLE `estudiante` (
 
 LOCK TABLES `estudiante` WRITE;
 /*!40000 ALTER TABLE `estudiante` DISABLE KEYS */;
-INSERT INTO `estudiante` VALUES (92,'1','1'),(101,'1','1');
+INSERT INTO `estudiante` VALUES (92,'1','1'),(101,'1','1'),(1198,'4to','A'),(1199,'4to','A'),(1200,'5to','B');
 /*!40000 ALTER TABLE `estudiante` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -361,7 +364,7 @@ CREATE TABLE `matricula` (
   KEY `Id_Curso` (`Id_Curso`),
   CONSTRAINT `matricula_ibfk_1` FOREIGN KEY (`Id_Estudiante`) REFERENCES `estudiante` (`Id_Estudiante`),
   CONSTRAINT `matricula_ibfk_2` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -370,7 +373,7 @@ CREATE TABLE `matricula` (
 
 LOCK TABLES `matricula` WRITE;
 /*!40000 ALTER TABLE `matricula` DISABLE KEYS */;
-INSERT INTO `matricula` VALUES (1,92,1,'0000-00-00'),(2,101,1,'0000-00-00'),(4,92,1,NULL),(5,92,2,NULL);
+INSERT INTO `matricula` VALUES (1,92,1,'0000-00-00'),(2,101,1,'0000-00-00'),(4,92,1,NULL),(5,92,2,NULL),(6,1198,1,'2025-10-20'),(7,1199,1,'2025-10-20'),(8,1200,2,'2025-10-20');
 /*!40000 ALTER TABLE `matricula` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -424,6 +427,42 @@ CREATE TABLE `padre` (
 LOCK TABLES `padre` WRITE;
 /*!40000 ALTER TABLE `padre` DISABLE KEYS */;
 /*!40000 ALTER TABLE `padre` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `participacion`
+--
+
+DROP TABLE IF EXISTS `participacion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `participacion` (
+  `Id_Participacion` int(11) NOT NULL AUTO_INCREMENT,
+  `Id_Estudiante` int(11) NOT NULL,
+  `Id_Curso` int(11) NOT NULL,
+  `Id_Docente` int(11) NOT NULL,
+  `Fecha` date NOT NULL,
+  `Periodo` varchar(20) NOT NULL,
+  `NivelParticipacion` int(11) NOT NULL,
+  `Observacion` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`Id_Participacion`),
+  KEY `Id_Estudiante` (`Id_Estudiante`),
+  KEY `Id_Curso` (`Id_Curso`),
+  KEY `Id_Docente` (`Id_Docente`),
+  CONSTRAINT `participacion_ibfk_1` FOREIGN KEY (`Id_Estudiante`) REFERENCES `estudiante` (`Id_Estudiante`),
+  CONSTRAINT `participacion_ibfk_2` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`),
+  CONSTRAINT `participacion_ibfk_3` FOREIGN KEY (`Id_Docente`) REFERENCES `docente` (`Id_Docente`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `participacion`
+--
+
+LOCK TABLES `participacion` WRITE;
+/*!40000 ALTER TABLE `participacion` DISABLE KEYS */;
+INSERT INTO `participacion` VALUES (1,1198,11,1196,'2025-10-10','2025-I',5,'Excelente participación en clase'),(2,1199,12,1197,'2025-10-10','2025-I',3,'Participa ocasionalmente'),(3,1200,12,1197,'2025-10-10','2025-I',4,'Buena interacción'),(4,1198,11,1196,'2025-10-16','2025-II',4,'Participa con interés'),(5,1200,12,1197,'2025-10-16','2025-II',2,'Poca participación en debates');
+/*!40000 ALTER TABLE `participacion` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -501,7 +540,7 @@ CREATE TABLE `usuario` (
   `Telefono` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`Id_Usuario`),
   UNIQUE KEY `Email` (`Email`)
-) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1201 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -510,7 +549,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (84,'Julian','segurajulian711@santateresita.ac.cr','$2y$10$nblUF0kqX5c7xfOnFaKISuPTZSMKC4ChU.qZjVtnzLvzDSFUTNLiS','Administrador','Activo','222'),(91,'Pana','segurajulian71@santateresita.ac.cr','$2y$10$h/fGvuRhddEAScirooRjMuE1RgkMpRZtQ9vb8QwHxZMCSZ0fFQckq','Docente','Activo','123'),(92,'Juan','segurajulian712@santateresita.ac.cr','$2y$10$GbhwkBwNVRh0.lbhJc3vWuepXDfKEk75yCJ99cXC.ZBd/nmfJjwcS','Estudiante','Activo','123'),(100,'Yo','segurajulian71@gmail.com','$2y$10$B3HZhHNeXYhOGrDswj4H7uuN3GE2mqsOPoSa/GWoyNT32OBBjTmIy','Administrador','Activo','123'),(101,'Luis','aa@santateresita.ac.cr','$2y$10$M2EytltoW0sl2QqCnoSH8uB3hx9TI1gp4JjpZnjX6K4mZCIJxu/Li','Docente','Activo','123'),(102,'PANA12','a@santateresita.ac.cr','$2y$10$8ENtPy4Ybs9mwCaCLCiKfuEnO4jrYTY2nBaVUC8xKPnVtF6YaKm.6','Docente','Activo','123');
+INSERT INTO `usuario` VALUES (84,'Julian','segurajulian711@santateresita.ac.cr','$2y$10$nblUF0kqX5c7xfOnFaKISuPTZSMKC4ChU.qZjVtnzLvzDSFUTNLiS','Administrador','Activo','222'),(91,'Pana','segurajulian71@santateresita.ac.cr','$2y$10$h/fGvuRhddEAScirooRjMuE1RgkMpRZtQ9vb8QwHxZMCSZ0fFQckq','Docente','Activo','123'),(92,'Juan','segurajulian712@santateresita.ac.cr','$2y$10$GbhwkBwNVRh0.lbhJc3vWuepXDfKEk75yCJ99cXC.ZBd/nmfJjwcS','Estudiante','Activo','123'),(100,'Yo','segurajulian71@gmail.com','$2y$10$B3HZhHNeXYhOGrDswj4H7uuN3GE2mqsOPoSa/GWoyNT32OBBjTmIy','Administrador','Activo','123'),(101,'Luis','aa@santateresita.ac.cr','$2y$10$M2EytltoW0sl2QqCnoSH8uB3hx9TI1gp4JjpZnjX6K4mZCIJxu/Li','Docente','Activo','123'),(102,'PANA12','a@santateresita.ac.cr','$2y$10$8ENtPy4Ybs9mwCaCLCiKfuEnO4jrYTY2nBaVUC8xKPnVtF6YaKm.6','Docente','Activo','123'),(1196,'Carlos Gómez','carlos@santateresita.ac.cr','$2y$10$NxJq5Qt8LXXIiRrUyznjJuXGO6BTnWuC5mhE.RHcSDdOYis8xuf1O','Docente','Activo','88888888'),(1197,'Laura Torres','laura@santateresita.ac.cr','$2y$10$NxJq5Qt8LXXIiRrUyznjJuXGO6BTnWuC5mhE.RHcSDdOYis8xuf1O','Docente','Activo','77777777'),(1198,'Ana López','ana@santateresita.ac.cr','$2y$10$NxJq5Qt8LXXIiRrUyznjJuXGO6BTnWuC5mhE.RHcSDdOYis8xuf1O','Estudiante','Activo','55555555'),(1199,'Miguel Hernández','miguel@santateresita.ac.cr','$2y$10$NxJq5Qt8LXXIiRrUyznjJuXGO6BTnWuC5mhE.RHcSDdOYis8xuf1O','Estudiante','Activo','66666666'),(1200,'Lucía Castillo','lucia@santateresita.ac.cr','$2y$10$NxJq5Qt8LXXIiRrUyznjJuXGO6BTnWuC5mhE.RHcSDdOYis8xuf1O','Estudiante','Activo','44444444');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -993,6 +1032,27 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_FechaAsistencia` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_FechaAsistencia`()
+BEGIN
+    SELECT DISTINCT Fecha
+    FROM asistencia
+    ORDER BY Fecha DESC;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_matricularEstudiantes` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1264,6 +1324,140 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_PeriodosParticipacion` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_PeriodosParticipacion`()
+BEGIN
+    SELECT DISTINCT Periodo
+    FROM participacion
+    ORDER BY Periodo DESC;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_ReporteAsistencia` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_ReporteAsistencia`(
+    IN p_fecha DATE,
+    IN p_offset INT,
+    IN p_limit INT
+)
+BEGIN
+    SELECT 
+        a.Id_Asistencia,
+        e.Id_Estudiante,
+        u_e.Nombre AS Estudiante,
+        e.Grado,
+        e.Seccion,
+        c.Id_Curso AS IdCurso,
+        c.Nombre AS Curso,
+        d.Id_Docente AS IdDocente,
+        u_d.Nombre AS Docente,
+        a.Fecha,
+        a.Presente
+    FROM asistencia a
+    INNER JOIN estudiante e ON a.Id_Estudiante = e.Id_Estudiante
+    INNER JOIN usuario u_e ON e.Id_Estudiante = u_e.Id_Usuario
+    INNER JOIN curso c ON a.Id_Curso = c.Id_Curso
+    INNER JOIN docente d ON c.Id_Docente = d.Id_Docente
+    INNER JOIN usuario u_d ON d.Id_Docente = u_d.Id_Usuario
+    WHERE p_fecha IS NULL OR a.Fecha = p_fecha
+    ORDER BY a.Fecha DESC, u_e.Nombre ASC
+    LIMIT p_limit OFFSET p_offset;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_ReporteParticipacion` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_ReporteParticipacion`(
+    IN p_periodo VARCHAR(20),
+    IN p_offset INT,
+    IN p_limit INT
+)
+BEGIN
+    SELECT 
+        u_e.Nombre AS Estudiante,
+        c.Nombre AS Curso,
+        u_d.Nombre AS Docente,
+        p.Periodo,
+        ROUND(AVG(p.NivelParticipacion), 2) AS PromedioParticipacion,
+        CASE
+            WHEN AVG(p.NivelParticipacion) >= 4 THEN 'Alta participación'
+            WHEN AVG(p.NivelParticipacion) >= 2.5 THEN 'Media participación'
+            ELSE 'Baja participación'
+        END AS ValoracionCualitativa
+    FROM participacion p
+    INNER JOIN estudiante e ON p.Id_Estudiante = e.Id_Estudiante
+    INNER JOIN usuario u_e ON e.Id_Estudiante = u_e.Id_Usuario
+    INNER JOIN docente d ON p.Id_Docente = d.Id_Docente
+    INNER JOIN usuario u_d ON d.Id_Docente = u_d.Id_Usuario
+    INNER JOIN curso c ON p.Id_Curso = c.Id_Curso
+    WHERE p_periodo IS NULL OR p.Periodo = p_periodo
+    GROUP BY e.Id_Estudiante, c.Id_Curso, p.Periodo
+    ORDER BY u_e.Nombre ASC
+    LIMIT p_limit OFFSET p_offset;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_ReporteParticipacion_Total` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_ReporteParticipacion_Total`(IN p_periodo VARCHAR(20))
+BEGIN
+    SELECT COUNT(*) AS total
+    FROM (
+        SELECT 1
+        FROM participacion p
+        INNER JOIN estudiante e ON p.Id_Estudiante = e.Id_Estudiante
+        INNER JOIN curso c ON p.Id_Curso = c.Id_Curso
+        WHERE p_periodo IS NULL OR p.Periodo = p_periodo
+        GROUP BY e.Id_Estudiante, c.Id_Curso, p.Periodo
+    ) x;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Final view structure for view `vw_usuarios_detalle`
@@ -1292,4 +1486,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-10-19  8:57:00
+-- Dump completed on 2025-10-21  3:47:19

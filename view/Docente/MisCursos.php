@@ -2,16 +2,16 @@
 session_start();
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/CursoModel.php";
 
-// Validar sesión y rol docente
+
 if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['rol']) || strtolower($_SESSION['rol']) !== 'docente') {
     header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php?error=NoAutorizado");
     exit();
 }
 
-// Obtener ID del docente
+
 $docenteId = $_SESSION['id_usuario'];
 
-// Obtener cursos del docente
+
 $misCursos = CursoModel::obtenerCursosDocente($docenteId);
 ?>
 <!DOCTYPE html>
@@ -31,7 +31,7 @@ $misCursos = CursoModel::obtenerCursosDocente($docenteId);
         .card-body h5 { font-weight: 600; }
         .card-body p { margin-bottom: 10px; }
 
-        /* Botones circulares */
+  
         .icon-btn {
             display: inline-flex;
             align-items: center;
@@ -68,9 +68,7 @@ $misCursos = CursoModel::obtenerCursosDocente($docenteId);
                             <h5 class="card-title"><?= htmlspecialchars($curso['nombre'] ?? 'Sin nombre') ?></h5>
                             <p class="card-text"><?= htmlspecialchars($curso['descripcion'] ?? 'Sin descripción') ?></p>
                             <div class="btn-container">
-                                <a class="icon-btn btn-ver" href="/Aula-Virtual-Santa-Teresita/view/Docente/VerCurso.php?id=<?= htmlspecialchars($curso['id']) ?>" title="Ver Curso">
-                                    <i class="fa-solid fa-book"></i>
-                                </a>
+                            
                                 <a class="icon-btn btn-tarea" href="/Aula-Virtual-Santa-Teresita/view/Docente/AsignarTarea.php?id=<?= htmlspecialchars($curso['id']) ?>" title="Añadir Tarea">
                                     <i class="fa-solid fa-plus"></i>
                                 </a>

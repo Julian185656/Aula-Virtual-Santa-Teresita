@@ -24,7 +24,7 @@ session_start();
 </head>
 <body>
   <a href="https://front.codes/" class="logo" target="_blank">
-    <img src="" alt="Logo"> 
+    
   </a>
 
   <div class="section">
@@ -49,14 +49,14 @@ session_start();
             <?php endif; ?>
   
 
-            <h6 class="mb-0 pb-3"><span>Inicia sesión </span><span>Quienes somos?</span></h6>
+            <h6 class="mb-0 pb-3"><span>Quienes somos?</span><span>Inicia sesión</span></h6>
             <input class="checkbox" type="checkbox" id="reg-log" name="reg-log"/>
             <label for="reg-log"></label>
             <div class="card-3d-wrap mx-auto">
               <div class="card-3d-wrapper">
 
   
-                <div class="card-front">
+                <div class="card-back">
                   <div class="center-wrap">
                     <div class="section text-center">
                       <h4 class="mb-4 pb-3">Inicia sesión</h4>
@@ -76,7 +76,7 @@ session_start();
                   </div>
                 </div>
 
-                <div class="card-back">
+                <div class="card-front">
   <div class="center-wrap">
     <div class="section text-center">
       <h4 class="mb-4 pb-3">¿Quiénes somos?</h4>

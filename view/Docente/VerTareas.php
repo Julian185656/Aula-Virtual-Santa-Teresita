@@ -3,19 +3,17 @@ session_start();
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/TareaModel.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/CursoModel.php";
 
-// Validar sesión y rol docente
+
 if (!isset($_SESSION['id_usuario']) || strtolower($_SESSION['rol'] ?? '') !== 'docente') {
     header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php?error=NoAutorizado");
     exit();
 }
 
-// Validar ID del curso
 $cursoId = $_GET['id'] ?? null;
 if (!$cursoId) {
     die("Curso no especificado.");
 }
 
-// Obtener curso
 $curso = CursoModel::obtenerCursoPorId($cursoId);
 if (!$curso) {
     die("Curso no encontrado.");
@@ -24,7 +22,7 @@ if (!$curso) {
 $tareaModel = new TareaModel($pdo);
 $tareas = $tareaModel->obtenerTareasPorCurso($cursoId);
 
-// Eliminar tarea si se recibe acción
+
 if (isset($_GET['eliminar'])) {
     $idTarea = (int)$_GET['eliminar'];
     $tareaModel->eliminarTarea($idTarea);
@@ -50,7 +48,7 @@ if (isset($_GET['eliminar'])) {
         .btn-edit:hover   { background-color: #0069d9; }
         .btn-delete { background-color: #DC3545; }
         .btn-delete:hover { background-color: #c82333; }
-        .btn-eval   { background-color: #6c757d; }          /* gris para Evaluar */
+        .btn-eval   { background-color: #6c757d; }       
         .btn-eval:hover   { background-color: #5c636a; }
         h2 { text-align: center; margin-bottom: 30px; }
     </style>
@@ -70,24 +68,24 @@ if (isset($_GET['eliminar'])) {
                         <small>Entrega: <?= htmlspecialchars($tarea['Fecha_Entrega']) ?></small>
                     </div>
                     <div class="tarea-acciones">
-                        <!-- ✏️ Editar -->
+           
                         <a class="btn-icon btn-edit" href="EditarTarea.php?id=<?= (int)$tarea['Id_Tarea'] ?>">
                             <i class="fas fa-edit"></i>
                         </a>
 
-                        <!-- 🗑️ Eliminar -->
+                
                         <a class="btn-icon btn-delete"
                            href="VerTareas.php?id=<?= (int)$cursoId ?>&eliminar=<?= (int)$tarea['Id_Tarea'] ?>"
                            onclick="return confirm('¿Eliminar esta tarea?')">
                             <i class="fas fa-trash"></i>
                         </a>
 
-                        <!-- 👩‍🏫 Evaluar (NUEVO) -->
+                    
                         <a class="btn-icon btn-eval"
-                           href="/Aula-Virtual-Santa-Teresita/view/Docente/EvaluarTarea.php?idTarea=<?= (int)$tarea['Id_Tarea'] ?>&idCurso=<?= (int)$cursoId ?>"
-                           title="Evaluar entregas de esta tarea">
-                            👩‍🏫
-                        </a>
+   href="/Aula-Virtual-Santa-Teresita/view/Docente/EvaluarTarea.php?idTarea=<?= (int)$tarea['Id_Tarea'] ?>&idCurso=<?= (int)$cursoId ?>"
+   title="Evaluar entregas de esta tarea">
+   <i class="fas fa-clipboard-check"></i>
+</a>
                     </div>
                 </div>
             </div>
@@ -100,7 +98,7 @@ if (isset($_GET['eliminar'])) {
 
     <div class="text-center mt-4">
         <a href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php" class="btn btn-secondary">Volver a Mis Cursos</a>
-        <a href="/Aula-Virtual-Santa-Teresita/view/Docente/AsignarTarea.php?id=<?= (int)$cursoId ?>" class="btn btn-primary">Añadir Nueva Tarea</a>
+
     </div>
 </div>
 
