@@ -11,7 +11,7 @@ class ParticipacionModel
         $this->pdo = $pdo;
     }
 
-    // Obtener el reporte general
+
     public function obtenerReporteParticipacion($periodo, $offset, $limite)
     {
         try {
@@ -30,7 +30,6 @@ class ParticipacionModel
         }
     }
 
-    // Obtener lista de periodos
     public function obtenerPeriodos()
     {
         try {

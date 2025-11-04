@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Guard y DB con rutas seguras
 require_once __DIR__ . "/controller_guard_docente.php";
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Aula-Virtual-Santa-Teresita/model/db.php";
 
@@ -16,7 +15,6 @@ if ($idTarea<=0 || $idCurso<=0 || $idEstudiante<=0 || $nota===null || $nota<0 ||
   exit("Datos inválidos");
 }
 
-// Verifica que el estudiante pertenece al curso
 $chk = $pdo->prepare("SELECT 1 FROM matricula WHERE Id_Estudiante=? AND Id_Curso=?");
 $chk->execute([$idEstudiante, $idCurso]);
 if (!$chk->fetch()) {
@@ -24,7 +22,6 @@ if (!$chk->fetch()) {
   exit("No autorizado");
 }
 
-// Verifica que exista la entrega (solo se evalúan entregas)
 $sel = $pdo->prepare("SELECT Id_Entrega FROM entrega_tarea WHERE Id_Tarea=? AND Id_Estudiante=?");
 $sel->execute([$idTarea, $idEstudiante]);
 $entrega = $sel->fetch(PDO::FETCH_ASSOC);
@@ -33,7 +30,6 @@ if (!$entrega) {
   exit("No existe entrega para evaluar");
 }
 
-// Actualiza calificación y comentario
 $upd = $pdo->prepare("UPDATE entrega_tarea
                       SET Calificacion = ?, Comentario = ?
                       WHERE Id_Entrega = ?");

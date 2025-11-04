@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Guard y DB: ambos con rutas seguras
+
 require_once __DIR__ . "/controller_guard_docente.php";
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Aula-Virtual-Santa-Teresita/model/db.php";
 
@@ -9,7 +9,7 @@ $idTarea = (int)($_GET['idTarea'] ?? 0);
 $idCurso = (int)($_GET['idCurso'] ?? 0);
 if ($idTarea <= 0 || $idCurso <= 0) { http_response_code(400); exit("Parámetros inválidos"); }
 
-// Datos de la tarea y curso
+
 $sqlT = "SELECT t.Id_Tarea, t.Titulo, t.Fecha_Entrega, c.Id_Curso, c.Nombre AS Curso
          FROM tarea t
          JOIN curso c ON c.Id_Curso = t.Id_Curso
@@ -19,7 +19,7 @@ $stmt->execute([$idTarea, $idCurso]);
 $tarea = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$tarea) { http_response_code(404); exit("Tarea/curso no encontrados"); }
 
-// Listado de estudiantes del curso + estado de la entrega
+
 $sql = "SELECT
           u.Id_Usuario     AS Id_Estudiante,
           u.Nombre         AS Estudiante,
@@ -95,7 +95,7 @@ $filas = $st->fetchAll(PDO::FETCH_ASSOC);
 
           <?php if ($entregada && $row['Archivo_URL']): ?>
             <div class="mt-2">
-              📎 <a href="<?= htmlspecialchars($row['Archivo_URL']) ?>" target="_blank" rel="noopener">Ver archivo</a>
+               <a href="<?= htmlspecialchars($row['Archivo_URL']) ?>" target="_blank" rel="noopener">Ver archivo</a>
             </div>
           <?php endif; ?>
         </div>
@@ -127,7 +127,7 @@ $filas = $st->fetchAll(PDO::FETCH_ASSOC);
           </form>
         <?php else: ?>
           <div class="ms-3 text-muted">
-            🙈 No puedes evaluar porque no hay entrega.
+            No puedes evaluar porque no hay entrega.
           </div>
         <?php endif; ?>
       </div>

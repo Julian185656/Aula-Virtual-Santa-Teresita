@@ -1,124 +1,71 @@
 <?php
-require_once __DIR__ . '/../../controller/CursoController.php';
+session_start();
 require_once __DIR__ . '/../../model/CursoModel.php';
-
-$mensajeMatricula = '';
-
-// Manejo de formularios
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['crearCurso'])) {
-        CursoController::crearCurso();
-    } elseif (isset($_POST['asignarDocentes'])) {
-        CursoController::asignarDocentes();
-    } elseif (isset($_POST['eliminarCurso'])) {
-        CursoController::eliminarCurso($_POST['idCursoEliminar']);
-    } elseif (isset($_POST['matricularEstudiantes'])) {
-        // Matricular estudiantes
-        CursoModel::matricularEstudiantes($_POST['idCursoMatricula'], $_POST['estudiantes'] ?? []);
-        $mensajeMatricula = "Estudiantes matriculados correctamente.";
-    }
-}
-
-// Obtener listas
-$docentes = CursoModel::obtenerDocentes();
-$cursos = CursoModel::obtenerCursos();
-$estudiantes = CursoModel::obtenerEstudiantes(); // Nuevo método
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestionar Cursos</title>
-<link rel="stylesheet" href="../Styles/crearCurso.css">
+    <meta charset="UTF-8">
+    <title>Crear Curso - Santa Teresita</title>
+
+
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 {
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
 </head>
+
 <body>
+    <div class="container">
+        <h2 class="text-primary mb-4">Crear Nuevo Curso</h2>
 
-<div class="container">
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="alert alert-success text-center">
+                <?= htmlspecialchars($_SESSION['success']); unset($_SESSION['success']); ?>
+            </div>
+        <?php elseif (isset($_SESSION['error'])): ?>
+            <div class="alert alert-danger text-center">
+                <?= htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?>
+            </div>
+        <?php endif; ?>
 
-    <!-- Crear Curso -->
-    <h2>Crear Curso</h2>
-    <form method="POST">
-        <label>Nombre:</label>
-        <input type="text" name="nombre" required>
-        <label>Descripción:</label>
-        <textarea name="descripcion" required></textarea>
-        <button type="submit" name="crearCurso">Crear Curso</button>
-    </form>
-    <hr>
+        <form method="POST" action="/Aula-Virtual-Santa-Teresita/controller/CursoController.php">
+            <div class="mb-3">
+                <label class="form-label">Nombre del Curso</label>
+                <input type="text" name="nombre" class="form-control" required placeholder="Ingrese el nombre del curso">
+            </div>
 
-    <!-- Asignar Docentes -->
-    <h2>Asignar docentes a un curso</h2>
-    <form method="POST">
-        <label>Curso:</label>
-        <select name="idCurso" required>
-            <option value="" selected disabled>Seleccione un curso</option>
-            <?php foreach ($cursos as $curso): ?>
-                <option value="<?= htmlspecialchars($curso['id']) ?>">
-                    <?= htmlspecialchars($curso['nombre'] ?? 'Sin nombre') ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
+            <div class="mb-3">
+                <label class="form-label">Descripción</label>
+                <textarea name="descripcion" class="form-control" rows="3" required placeholder="Describa brevemente el curso"></textarea>
+            </div>
 
-        <label>Docentes:</label>
-        <select name="docentes[]" multiple size="5" required>
-            <?php foreach ($docentes as $docente): ?>
-                <option value="<?= htmlspecialchars($docente['id']) ?>">
-                    <?= htmlspecialchars($docente['nombre'] ?? 'Sin nombre') ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
+            <div class="d-flex justify-content-between">
+                <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/HomeCurso.php" class="btn btn-secondary">← Volver</a>
+                <button type="submit" class="btn btn-primary">Guardar Curso</button>
+            </div>
+        </form>
+    </div>
 
-        <button type="submit" name="asignarDocentes">Asignar docentes</button>
-    </form>
-    <hr>
-
-    <!-- Eliminar Curso -->
-    <h2>Eliminar Curso</h2>
-    <form method="POST">
-        <label>Seleccione curso a eliminar:</label>
-        <select name="idCursoEliminar" required>
-            <option value="" selected disabled>Seleccione un curso</option>
-            <?php foreach ($cursos as $curso): ?>
-                <option value="<?= htmlspecialchars($curso['id']) ?>">
-                    <?= htmlspecialchars($curso['nombre'] ?? 'Sin nombre') ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-        <button type="submit" name="eliminarCurso" class="delete-btn">Eliminar Curso</button>
-    </form>
-    <hr>
-
-    <!-- Matricular Estudiantes -->
-    <h2>Matricular Estudiantes a un Curso</h2>
-    <?php if ($mensajeMatricula): ?>
-        <div class="alert alert-success"><?= htmlspecialchars($mensajeMatricula) ?></div>
-    <?php endif; ?>
-    <form method="POST">
-        <label>Curso:</label>
-        <select name="idCursoMatricula" required>
-            <option value="" selected disabled>Seleccione un curso</option>
-            <?php foreach ($cursos as $curso): ?>
-                <option value="<?= htmlspecialchars($curso['id']) ?>">
-                    <?= htmlspecialchars($curso['nombre'] ?? 'Sin nombre') ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-
-        <label>Estudiantes:</label>
-        <select name="estudiantes[]" multiple size="5" required>
-            <?php foreach ($estudiantes as $estudiante): ?>
-                <option value="<?= htmlspecialchars($estudiante['id']) ?>">
-                    <?= htmlspecialchars($estudiante['nombre'] ?? 'Sin nombre') ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-
-        <button type="submit" name="matricularEstudiantes">Matricular Estudiantes</button>
-    </form>
-
-</div>
-
+    <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

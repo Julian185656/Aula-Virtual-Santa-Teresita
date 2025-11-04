@@ -7,22 +7,21 @@ session_start();
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Santa Teresita - Módulo de Reportería</title>
-
+    <title>Santa Teresita - Gestión de Cursos</title>
 
     <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900" rel="stylesheet">
-    <link href="../../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../assets/css/fontawesome.css">
-    <link rel="stylesheet" href="../../assets/css/templatemo-grad-school.css">
-    <link rel="stylesheet" href="../../assets/css/owl.css">
-    <link rel="stylesheet" href="../../assets/css/lightbox.css">
+    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/fontawesome.css">
+    <link rel="stylesheet" href="../assets/css/templatemo-grad-school.css">
+    <link rel="stylesheet" href="../assets/css/owl.css">
+    <link rel="stylesheet" href="../assets/css/lightbox.css">
 
     <style>
         body {
             background-color: #fafafa;
         }
 
-        .fondo-reporteria {
+        .fondo-cursos {
             min-height: 92.5vh;
             display: flex;
             align-items: center;
@@ -94,7 +93,6 @@ session_start();
             <ul class="main-menu">
                 <li><a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php">🏠 Inicio</a></li>
                 <?php if (isset($_SESSION['nombre'])): ?>
-                    <?php $rolActual = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null); ?>
                     <li><a href="#" style="color:white;">👤 <?= htmlspecialchars($_SESSION['nombre']); ?></a></li>
                     <li><a href="/Aula-Virtual-Santa-Teresita/view/Login/Logout.php" style="color:red;">
                             <i class="fas fa-sign-out-alt"></i> Cerrar sesión</a></li>
@@ -106,44 +104,43 @@ session_start();
         </nav>
     </header>
 
-
-    <section class="fondo-reporteria">
+    <section class="fondo-cursos">
         <div class="card-container">
 
             <div class="card text-center">
-                <h5 class="card-title text-primary">📋 Reporte de Asistencia</h5>
+                <h5 class="card-title text-primary">🆕 Crear Curso</h5>
                 <p class="card-text">
-                    Consulta y descarga la asistencia de los estudiantes por fecha y curso.
+                    Registra nuevos cursos con nombre, descripción y configuración inicial.
                 </p>
-                <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/Asistencia/AsistenciaController.php"
-                    class="btn btn-primary mt-2">Ver reporte</a>
+                <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/CrearCurso.php"
+                    class="btn btn-primary mt-2">Ir a Crear Curso</a>
             </div>
 
             <div class="card text-center">
-                <h5 class="card-title text-success">🧾 Reporte de Calificaciones</h5>
+                <h5 class="card-title text-success">👨‍🏫 Asignar Docentes</h5>
                 <p class="card-text">
-                    Consulta las notas registradas de los estudiantes en los distintos cursos.
+                    Asigna uno o varios docentes a los cursos disponibles en la plataforma.
                 </p>
-                <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/Rendimiento/RendimientoController.php"
-                    class="btn btn-success mt-2">Ver reporte</a>
+                <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/AsignarDocente.php"
+                    class="btn btn-success mt-2">Ir a Asignar</a>
             </div>
 
             <div class="card text-center">
-                <h5 class="card-title text-warning">📚 Reporte de Cursos</h5>
+                <h5 class="card-title text-danger">🗑️ Eliminar Curso</h5>
                 <p class="card-text">
-                    Visualiza información general de los cursos activos y docentes asignados.
+                    Elimina cursos que ya no estén activos o sean duplicados.
                 </p>
-                <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/Tareas/ReporteCursos.php"
-                    class="btn btn-warning text-white mt-2">Ver reporte</a>
+                <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/EliminarCurso.php"
+                    class="btn btn-danger mt-2">Ir a Eliminar</a>
             </div>
 
             <div class="card text-center">
-                <h5 class="card-title text-danger">👥 Reporte de Participación</h5>
+                <h5 class="card-title text-warning">🎓 Matricular Estudiantes</h5>
                 <p class="card-text">
-                    Analiza la participación de los estudiantes en foros, tareas y actividades.
+                    Asigna estudiantes a los cursos de forma rápida y organizada.
                 </p>
-                <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/Participacion/ParticipacionController.php"
-                    class="btn btn-danger mt-2">Ver reporte</a>
+                <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/MatricularEstudiantes.php"
+                    class="btn btn-warning text-white mt-2">Ir a Matricular</a>
             </div>
 
         </div>

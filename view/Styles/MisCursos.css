@@ -1,0 +1,104 @@
+body { 
+            background-color: #fafafa; 
+            font-family: 'Montserrat', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        .fondo-cursos { 
+            min-height: 92.5vh; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 80px 0 60px; 
+        }
+
+        .card-container { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 30px; 
+            width: 100%; 
+            max-width: 1200px; 
+        }
+
+        .card { 
+            width: 260px; 
+            background: white; 
+            padding: 25px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+            text-align: center; 
+            transition: transform 0.2s ease-in-out, box-shadow 0.3s ease; 
+        }
+
+        .card:hover { 
+            transform: translateY(-6px); 
+            box-shadow: 0 6px 18px rgba(0,0,0,0.2); 
+        }
+
+        .card-title { 
+            font-weight: bold; 
+            margin-bottom: 10px; 
+        }
+
+        .card-text { 
+            font-size: 14px; 
+            color: #6c757d; 
+            min-height: 70px; 
+        }
+
+        .icon-btn { 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 45px; 
+            height: 45px; 
+            border-radius: 50%; 
+            color: white; 
+            font-size: 18px; 
+            margin: 0 5px; 
+            transition: all 0.3s; 
+        }
+
+        .icon-btn:hover { 
+            transform: translateY(-3px); 
+            opacity: 0.9; 
+        }
+
+        .btn-tareas { 
+            background-color: #0d6efd; 
+        }
+
+        .volver { 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            background-color: #6c757d; 
+            color: white; 
+            padding: 10px 20px; 
+            border-radius: 8px; 
+            text-decoration: none; 
+            font-weight: 500; 
+            transition: all 0.3s; 
+        }
+
+        .volver:hover { 
+            background-color: #5a6268; 
+            text-decoration: none; 
+            transform: translateY(-2px); 
+        }
+
+        footer { 
+            background-color: #111; 
+            color: white; 
+            padding: 15px 0; 
+            text-align: center; 
+            position: relative; 
+            width: 100%; 
+        }
+
+        footer p { 
+            margin: 0; 
+        }
