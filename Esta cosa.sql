@@ -171,7 +171,7 @@ CREATE TABLE `curso_docente` (
   KEY `Id_Docente` (`Id_Docente`),
   CONSTRAINT `curso_docente_ibfk_2` FOREIGN KEY (`Id_Docente`) REFERENCES `docente` (`Id_Docente`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_curso_docente_curso` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -180,7 +180,7 @@ CREATE TABLE `curso_docente` (
 
 LOCK TABLES `curso_docente` WRITE;
 /*!40000 ALTER TABLE `curso_docente` DISABLE KEYS */;
-INSERT INTO `curso_docente` VALUES (6,2,91),(8,9,91),(10,12,91);
+INSERT INTO `curso_docente` VALUES (6,2,91),(8,9,91),(10,12,91),(16,15,91),(17,14,91);
 /*!40000 ALTER TABLE `curso_docente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -364,7 +364,7 @@ CREATE TABLE `matricula` (
   KEY `Id_Curso` (`Id_Curso`),
   CONSTRAINT `fk_matricula_curso` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`) ON DELETE CASCADE,
   CONSTRAINT `matricula_ibfk_1` FOREIGN KEY (`Id_Estudiante`) REFERENCES `estudiante` (`Id_Estudiante`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -373,7 +373,7 @@ CREATE TABLE `matricula` (
 
 LOCK TABLES `matricula` WRITE;
 /*!40000 ALTER TABLE `matricula` DISABLE KEYS */;
-INSERT INTO `matricula` VALUES (5,92,2,NULL),(8,1200,2,'2025-10-20'),(9,92,12,NULL),(10,1199,15,NULL),(11,92,14,NULL);
+INSERT INTO `matricula` VALUES (5,92,2,NULL),(8,1200,2,'2025-10-20'),(9,92,12,NULL),(10,1199,15,NULL),(11,92,14,NULL),(12,1198,15,NULL),(13,1199,15,NULL),(14,1198,14,NULL);
 /*!40000 ALTER TABLE `matricula` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1368,13 +1368,18 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_alumnos_docente`(IN docenteId INT)
 BEGIN
-    SELECT u.Id_Usuario AS id, u.Nombre AS nombre, u.Email AS correo,
-           c.Id_Curso AS id_curso, e.Id_Estudiante AS id_estudiante
+    SELECT 
+        u.Id_Usuario AS id, 
+        u.Nombre AS nombre, 
+        u.Email AS correo,
+        c.Id_Curso AS id_curso, 
+        e.Id_Estudiante AS id_estudiante
     FROM usuario u
     INNER JOIN estudiante e ON u.Id_Usuario = e.Id_Estudiante
     INNER JOIN matricula m ON e.Id_Estudiante = m.Id_Estudiante
     INNER JOIN curso c ON m.Id_Curso = c.Id_Curso
-    WHERE c.Id_Docente = docenteId;
+    INNER JOIN curso_docente cd ON c.Id_Curso = cd.Id_Curso
+    WHERE cd.Id_Docente = docenteId;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1630,4 +1635,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-04  1:57:17
+-- Dump completed on 2025-11-08  3:46:05
