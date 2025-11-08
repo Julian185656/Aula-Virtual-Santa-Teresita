@@ -122,15 +122,7 @@ session_start();
             </nav>
         </div>
     </section>
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 text-center text-white py-3 bg-dark">
-                    <p>© 2025 | Módulo de Reportería - Santa Teresita</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+    
 
     <script src="../../../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="scripts/toasts.js"></script>

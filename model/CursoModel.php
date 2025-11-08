@@ -3,7 +3,7 @@ require_once __DIR__ . '/db.php';
 
 class CursoModel {
 
-    // Crear curso usando SP
+
     public static function crearCurso($nombre, $descripcion) {
         global $pdo;
         $stmt = $pdo->prepare("CALL sp_crearCurso(:nombre, :descripcion)");
@@ -13,21 +13,21 @@ class CursoModel {
         ]);
     }
 
-    // Obtener docentes con nombre real usando SP
+
     public static function obtenerDocentes() {
         global $pdo;
         $stmt = $pdo->query("CALL sp_obtenerDocentes()");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Obtener cursos usando SP
+
     public static function obtenerCursos() {
         global $pdo;
         $stmt = $pdo->query("CALL sp_obtenerCursos()");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Asignar docentes a un curso usando SP
+
     public static function asignarDocentes($idCurso, $docentes) {
         global $pdo;
         $stmt = $pdo->prepare("CALL sp_asignarDocentes(:idCurso, :idDocente)");
@@ -40,14 +40,14 @@ class CursoModel {
         return true;
     }
 
-    // Eliminar curso usando SP
+
     public static function eliminarCurso($idCurso) {
         global $pdo;
         $stmt = $pdo->prepare("CALL sp_eliminarCurso(:idCurso)");
         return $stmt->execute([':idCurso' => (int)$idCurso]);
     }
 
-    // Obtener cursos asignados a un docente usando SP
+
     public static function obtenerCursosDocente($idDocente) {
         global $pdo;
         $stmt = $pdo->prepare("CALL sp_obtenerCursosDocente(:idDocente)");
@@ -56,7 +56,6 @@ class CursoModel {
     }
 
 
-// ✅ Nuevo método para obtener un curso por ID
     public static function obtenerCursoPorId($idCurso) {
         global $pdo;
         $stmt = $pdo->prepare("SELECT * FROM curso WHERE Id_Curso = :idCurso LIMIT 1");
@@ -71,7 +70,6 @@ public static function obtenerEstudiantes() {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Matricular estudiantes a un curso
 public static function matricularEstudiantes($idCurso, $estudiantes) {
     global $pdo;
     $stmt = $pdo->prepare("CALL sp_matricularEstudiantes(:idCurso, :idEstudiante)");
