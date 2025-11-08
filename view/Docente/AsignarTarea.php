@@ -3,16 +3,23 @@ session_start();
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/TareaModel.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/CursoModel.php";
 
+// Validar sesión y rol docente
 if (!isset($_SESSION['id_usuario']) || strtolower($_SESSION['rol'] ?? '') !== 'docente') {
     header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php?error=NoAutorizado");
     exit();
 }
 
+// Validar ID del curso
 $cursoId = $_GET['id'] ?? null;
-if (!$cursoId) die("Curso no especificado.");
+if (!$cursoId) {
+    die("Curso no especificado.");
+}
 
+// Obtener datos del curso usando tu modelo
 $curso = CursoModel::obtenerCursoPorId($cursoId);
-if (!$curso) die("Curso no encontrado.");
+if (!$curso) {
+    die("Curso no encontrado.");
+}
 
 $mensaje = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -21,10 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fechaEntrega = $_POST['fecha_entrega'] ?? '';
 
     if ($titulo && $fechaEntrega) {
-        $tareaModel = new TareaModel($pdo);
-        $mensaje = $tareaModel->crearTarea($cursoId, $titulo, $descripcion, $fechaEntrega)
-            ? "Tarea creada con éxito."
-            : "Error al crear la tarea.";
+        $tareaModel = new TareaModel($pdo); // usar el global $pdo de db.php
+        if ($tareaModel->crearTarea($cursoId, $titulo, $descripcion, $fechaEntrega)) {
+            $mensaje = "Tarea creada con éxito.";
+        } else {
+            $mensaje = "Error al crear la tarea.";
+        }
     } else {
         $mensaje = "El título y la fecha de entrega son obligatorios.";
     }
@@ -38,30 +47,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Asignar Tarea - <?= htmlspecialchars($curso['nombre'] ?? 'Curso desconocido') ?></title>
     <link href="/Aula-Virtual-Santa-Teresita/view/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            background: #f4f4f4;
-            font-family: 'Montserrat', sans-serif;
-            height: 100vh;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .form-container {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-        }
-        .btn-crear {
-            background-color: #007BFF;
-            color: white;
-        }
-        .btn-crear:hover {
-            background-color: #0069d9;
-        }
+        body { background: #f4f4f4; font-family: 'Montserrat', sans-serif; padding: 20px; }
+        .form-container { background: white; padding: 30px; border-radius: 12px; max-width: 600px; margin: auto; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+        .btn-crear { background-color: #007BFF; color: white; }
+        .btn-crear:hover { background-color: #0069d9; }
     </style>
 </head>
 <body>
@@ -70,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h3 class="text-center mb-4">Asignar Tarea a: <?= htmlspecialchars($curso['nombre'] ?? 'Curso desconocido') ?></h3>
 
     <?php if ($mensaje): ?>
-        <div class="alert alert-info text-center"><?= htmlspecialchars($mensaje) ?></div>
+        <div class="alert alert-info"><?= htmlspecialchars($mensaje) ?></div>
     <?php endif; ?>
 
     <form method="POST">

@@ -6,23 +6,26 @@ require_once __DIR__ . '/ParticipacionModel.php';
 
 $model = new ParticipacionModel();
 
-
+// Parámetros GET
 $periodo = isset($_GET['periodo']) && $_GET['periodo'] !== '' ? $_GET['periodo'] : null;
 $pagina = isset($_GET['pagina']) ? intval($_GET['pagina']) : 1;
 $limite = 15;
 $offset = ($pagina - 1) * $limite;
 
-
+// Obtener datos desde el modelo
 $reporte = $model->obtenerReporteParticipacion($periodo, $offset, $limite);
 $periodos = $model->obtenerPeriodos();
 
-
+// Calcular total de páginas (paginación)
 $totalRegistros = is_array($reporte) ? count($reporte) : 0;
 $totalPaginas = ($totalRegistros < $limite) ? 1 : ceil($totalRegistros / $limite);
 
-
+// ----------------------------------------------------
+// 📄 EXPORTAR A PDF
+// ----------------------------------------------------
 if (isset($_GET['exportar']) && $_GET['exportar'] === 'pdf') {
-
+    // Ruta ajustada según tu estructura (fpdf dentro de /view/vendor/)
+    //$rutaFPDF = __DIR__ . '/../../../../vendor/fpdf/fpdf.php';
     $rutaFPDF = __DIR__ . '/../../../vendor/fpdf/fpdf.php';
 
 
@@ -46,7 +49,7 @@ if (isset($_GET['exportar']) && $_GET['exportar'] === 'pdf') {
             $this->Cell(0, 6, utf8_decode('Generado el: ' . date('Y-m-d H:i')), 0, 1, 'C');
             $this->Ln(4);
 
-
+            // Encabezado de tabla
             $this->SetFillColor(0, 74, 173);
             $this->SetTextColor(255, 255, 255);
             $this->SetFont('Arial', 'B', 9);
@@ -67,7 +70,7 @@ if (isset($_GET['exportar']) && $_GET['exportar'] === 'pdf') {
         }
     }
 
-
+    // Crear PDF horizontal
     $pdf = new PDF('L', 'mm', 'A4');
     $pdf->AliasNbPages();
     $pdf->AddPage();
@@ -86,11 +89,13 @@ if (isset($_GET['exportar']) && $_GET['exportar'] === 'pdf') {
         $pdf->Cell(0, 10, utf8_decode('No hay registros para mostrar.'), 1, 1, 'C');
     }
 
-
+    // Nombre dinámico del archivo
     $nombreArchivo = 'Reporte_Participacion_' . ($periodo ?? 'General') . '.pdf';
     $pdf->Output('I', $nombreArchivo);
     exit;
 }
 
-
+// ----------------------------------------------------
+// ✅ Cargar la vista del reporte
+// ----------------------------------------------------
 require_once __DIR__ . '/ReporteParticipacion.php';

@@ -32,11 +32,7 @@ CREATE TABLE `asistencia` (
   KEY `Id_Estudiante` (`Id_Estudiante`),
   KEY `Id_Curso` (`Id_Curso`),
   CONSTRAINT `asistencia_ibfk_1` FOREIGN KEY (`Id_Estudiante`) REFERENCES `estudiante` (`Id_Estudiante`),
-<<<<<<<< HEAD:Actualizado 4.0.sql
   CONSTRAINT `asistencia_ibfk_2` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`)
-========
-  CONSTRAINT `fk_asistencia_curso` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`) ON DELETE CASCADE
->>>>>>>> 00c45eed26bb55808f354cd71385abe37ebb7587:Esta cosa.sql
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -146,11 +142,7 @@ CREATE TABLE `curso` (
   PRIMARY KEY (`Id_Curso`),
   KEY `Id_Docente` (`Id_Docente`),
   CONSTRAINT `curso_ibfk_1` FOREIGN KEY (`Id_Docente`) REFERENCES `docente` (`Id_Docente`)
-<<<<<<<< HEAD:Actualizado 4.0.sql
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-========
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
->>>>>>>> 00c45eed26bb55808f354cd71385abe37ebb7587:Esta cosa.sql
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -159,11 +151,7 @@ CREATE TABLE `curso` (
 
 LOCK TABLES `curso` WRITE;
 /*!40000 ALTER TABLE `curso` DISABLE KEYS */;
-<<<<<<<< HEAD:Actualizado 4.0.sql
 INSERT INTO `curso` VALUES (1,'Mate','Aprende ',91),(2,'Hola','a',91),(9,'Taky','Taky',NULL),(10,'yyyyyyyyyyyyyy','aaa',NULL),(11,'Matemáticas','Curso de operaciones fundamentales',1196),(12,'Artes Plasticas','Teoria del color',1197);
-========
-INSERT INTO `curso` VALUES (2,'Hola','a',91),(9,'Taky','Taky',NULL),(11,'Matemáticas','Curso de operaciones fundamentales',1196),(12,'Artes Plasticas','Teoria del color',1197),(13,'Estudios','gfhg',NULL),(14,'Taky2','sdf',NULL),(15,'Taky','ggg',NULL);
->>>>>>>> 00c45eed26bb55808f354cd71385abe37ebb7587:Esta cosa.sql
 /*!40000 ALTER TABLE `curso` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -181,9 +169,9 @@ CREATE TABLE `curso_docente` (
   PRIMARY KEY (`Id`),
   KEY `Id_Curso` (`Id_Curso`),
   KEY `Id_Docente` (`Id_Docente`),
-  CONSTRAINT `curso_docente_ibfk_2` FOREIGN KEY (`Id_Docente`) REFERENCES `docente` (`Id_Docente`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_curso_docente_curso` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  CONSTRAINT `curso_docente_ibfk_1` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `curso_docente_ibfk_2` FOREIGN KEY (`Id_Docente`) REFERENCES `docente` (`Id_Docente`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -192,7 +180,7 @@ CREATE TABLE `curso_docente` (
 
 LOCK TABLES `curso_docente` WRITE;
 /*!40000 ALTER TABLE `curso_docente` DISABLE KEYS */;
-INSERT INTO `curso_docente` VALUES (6,2,91),(8,9,91),(10,12,91),(16,15,91),(17,14,91);
+INSERT INTO `curso_docente` VALUES (6,2,91),(8,9,91),(9,10,102);
 /*!40000 ALTER TABLE `curso_docente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -235,7 +223,7 @@ CREATE TABLE `encuesta` (
   `Id_Curso` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id_Encuesta`),
   KEY `Id_Curso` (`Id_Curso`),
-  CONSTRAINT `fk_encuesta_curso` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`) ON DELETE CASCADE
+  CONSTRAINT `encuesta_ibfk_1` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -266,15 +254,9 @@ CREATE TABLE `entrega_tarea` (
   PRIMARY KEY (`Id_Entrega`),
   KEY `Id_Tarea` (`Id_Tarea`),
   KEY `Id_Estudiante` (`Id_Estudiante`),
-<<<<<<<< HEAD:Actualizado 4.0.sql
   CONSTRAINT `entrega_tarea_ibfk_1` FOREIGN KEY (`Id_Tarea`) REFERENCES `tarea` (`Id_Tarea`),
   CONSTRAINT `entrega_tarea_ibfk_2` FOREIGN KEY (`Id_Estudiante`) REFERENCES `estudiante` (`Id_Estudiante`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-========
-  CONSTRAINT `entrega_tarea_ibfk_2` FOREIGN KEY (`Id_Estudiante`) REFERENCES `estudiante` (`Id_Estudiante`),
-  CONSTRAINT `fk_entrega_tarea_tarea` FOREIGN KEY (`Id_Tarea`) REFERENCES `tarea` (`Id_Tarea`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
->>>>>>>> 00c45eed26bb55808f354cd71385abe37ebb7587:Esta cosa.sql
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -283,11 +265,7 @@ CREATE TABLE `entrega_tarea` (
 
 LOCK TABLES `entrega_tarea` WRITE;
 /*!40000 ALTER TABLE `entrega_tarea` DISABLE KEYS */;
-<<<<<<<< HEAD:Actualizado 4.0.sql
 INSERT INTO `entrega_tarea` VALUES (1,1,92,'/Aula-Virtual-Santa-Teresita/uploads/1761010847_imagen_2025-10-21_034045973.png','2025-10-21',NULL,NULL),(2,2,92,'/Aula-Virtual-Santa-Teresita/uploads/1761010919_Captura de pantalla 2025-10-21 034037.png','2025-10-21',80.00,'Esta bien');
-========
-INSERT INTO `entrega_tarea` VALUES (2,2,92,'/Aula-Virtual-Santa-Teresita/uploads/1761010919_Captura de pantalla 2025-10-21 034037.png','2025-10-21',80.00,'Esta bien'),(3,2,1200,'/Aula-Virtual-Santa-Teresita/uploads/1761030598_Bitácora de proyecto spint 2.pdf','2025-10-21',10.00,'Bien'),(4,3,92,'/Aula-Virtual-Santa-Teresita/uploads/1762216988_SC602_Practica03.docx','2025-11-04',NULL,NULL);
->>>>>>>> 00c45eed26bb55808f354cd71385abe37ebb7587:Esta cosa.sql
 /*!40000 ALTER TABLE `entrega_tarea` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -331,7 +309,7 @@ CREATE TABLE `evaluacion` (
   `Id_Curso` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id_Evaluacion`),
   KEY `Id_Curso` (`Id_Curso`),
-  CONSTRAINT `fk_evaluacion_curso` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`) ON DELETE CASCADE
+  CONSTRAINT `evaluacion_ibfk_1` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -356,7 +334,7 @@ CREATE TABLE `foro` (
   `Id_Curso` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id_Foro`),
   KEY `Id_Curso` (`Id_Curso`),
-  CONSTRAINT `fk_foro_curso` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`) ON DELETE CASCADE
+  CONSTRAINT `foro_ibfk_1` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -384,15 +362,9 @@ CREATE TABLE `matricula` (
   PRIMARY KEY (`Id_Matricula`),
   KEY `Id_Estudiante` (`Id_Estudiante`),
   KEY `Id_Curso` (`Id_Curso`),
-<<<<<<<< HEAD:Actualizado 4.0.sql
   CONSTRAINT `matricula_ibfk_1` FOREIGN KEY (`Id_Estudiante`) REFERENCES `estudiante` (`Id_Estudiante`),
   CONSTRAINT `matricula_ibfk_2` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-========
-  CONSTRAINT `fk_matricula_curso` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`) ON DELETE CASCADE,
-  CONSTRAINT `matricula_ibfk_1` FOREIGN KEY (`Id_Estudiante`) REFERENCES `estudiante` (`Id_Estudiante`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
->>>>>>>> 00c45eed26bb55808f354cd71385abe37ebb7587:Esta cosa.sql
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -401,11 +373,7 @@ CREATE TABLE `matricula` (
 
 LOCK TABLES `matricula` WRITE;
 /*!40000 ALTER TABLE `matricula` DISABLE KEYS */;
-<<<<<<<< HEAD:Actualizado 4.0.sql
 INSERT INTO `matricula` VALUES (1,92,1,'0000-00-00'),(2,101,1,'0000-00-00'),(4,92,1,NULL),(5,92,2,NULL),(6,1198,1,'2025-10-20'),(7,1199,1,'2025-10-20'),(8,1200,2,'2025-10-20');
-========
-INSERT INTO `matricula` VALUES (5,92,2,NULL),(8,1200,2,'2025-10-20'),(9,92,12,NULL),(10,1199,15,NULL),(11,92,14,NULL),(12,1198,15,NULL),(13,1199,15,NULL),(14,1198,14,NULL);
->>>>>>>> 00c45eed26bb55808f354cd71385abe37ebb7587:Esta cosa.sql
 /*!40000 ALTER TABLE `matricula` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -481,13 +449,8 @@ CREATE TABLE `participacion` (
   KEY `Id_Estudiante` (`Id_Estudiante`),
   KEY `Id_Curso` (`Id_Curso`),
   KEY `Id_Docente` (`Id_Docente`),
-<<<<<<<< HEAD:Actualizado 4.0.sql
   CONSTRAINT `participacion_ibfk_1` FOREIGN KEY (`Id_Estudiante`) REFERENCES `estudiante` (`Id_Estudiante`),
   CONSTRAINT `participacion_ibfk_2` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`),
-========
-  CONSTRAINT `fk_participacion_curso` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`) ON DELETE CASCADE,
-  CONSTRAINT `participacion_ibfk_1` FOREIGN KEY (`Id_Estudiante`) REFERENCES `estudiante` (`Id_Estudiante`),
->>>>>>>> 00c45eed26bb55808f354cd71385abe37ebb7587:Esta cosa.sql
   CONSTRAINT `participacion_ibfk_3` FOREIGN KEY (`Id_Docente`) REFERENCES `docente` (`Id_Docente`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -546,8 +509,8 @@ CREATE TABLE `tarea` (
   `Id_Curso` int(11) DEFAULT NULL,
   PRIMARY KEY (`Id_Tarea`),
   KEY `Id_Curso` (`Id_Curso`),
-  CONSTRAINT `fk_tarea_curso` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  CONSTRAINT `tarea_ibfk_1` FOREIGN KEY (`Id_Curso`) REFERENCES `curso` (`Id_Curso`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -556,7 +519,7 @@ CREATE TABLE `tarea` (
 
 LOCK TABLES `tarea` WRITE;
 /*!40000 ALTER TABLE `tarea` DISABLE KEYS */;
-INSERT INTO `tarea` VALUES (2,'Julian','Debe de hacer los ejercicios de la pagina 18','2025-10-09',2),(3,'Entrega2','Esa ','2025-10-16',2),(5,'Maqueta','Cualquier cosa','2025-10-03',12);
+INSERT INTO `tarea` VALUES (1,'Entrega2','Es obligatoria la entrega','2025-10-18',1),(2,'Julian','Debe de hacer los ejercicios de la pagina 18','2025-10-09',2),(3,'Entrega2','Esa ','2025-10-16',2);
 /*!40000 ALTER TABLE `tarea` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1218,91 +1181,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_ObtenerReporteCalificaciones` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_ObtenerReporteCalificaciones`(
-    IN p_IdCurso INT,                 -- Curso específico (NULL para todos)
-    IN p_Pagina INT,                  -- Número de página
-    IN p_RegistrosPorPagina INT,      -- Registros por página (15)
-    OUT p_TotalRegistros INT          -- Total de resultados
-)
-BEGIN
-    DECLARE v_Offset INT;
-
-    -- Calculamos el punto inicial para la paginación
-    SET v_Offset = (p_Pagina - 1) * p_RegistrosPorPagina;
-
-    -- Calculamos el total de registros (sin límite)
-    IF p_IdCurso IS NULL THEN
-        SELECT COUNT(*) INTO p_TotalRegistros
-        FROM entrega_tarea et
-        INNER JOIN matricula m ON et.Id_Estudiante = m.Id_Estudiante
-        INNER JOIN curso_docente cd ON m.Id_Curso = cd.Id_Curso
-        INNER JOIN usuario u ON et.Id_Estudiante = u.Id_Usuario
-        INNER JOIN docente d ON cd.Id_Docente = d.Id_Docente;
-    ELSE
-        SELECT COUNT(*) INTO p_TotalRegistros
-        FROM entrega_tarea et
-        INNER JOIN matricula m ON et.Id_Estudiante = m.Id_Estudiante
-        INNER JOIN curso_docente cd ON m.Id_Curso = cd.Id_Curso
-        INNER JOIN usuario u ON et.Id_Estudiante = u.Id_Usuario
-        INNER JOIN docente d ON cd.Id_Docente = d.Id_Docente
-        WHERE cd.Id_Curso = p_IdCurso;
-    END IF;
-
-    -- Obtenemos los registros de la página actual
-    IF p_IdCurso IS NULL THEN
-        SELECT 
-            u.Id_Usuario AS IdEstudiante,
-            u.Nombre AS Estudiante,
-            cd.Id_Curso,
-            d.Especialidad AS Curso,
-            d.Id_Docente,
-            CONCAT('Prof. ', (SELECT Nombre FROM usuario WHERE Id_Usuario = d.Id_Docente)) AS Docente,
-            et.Calificacion,
-            et.Comentario,
-            et.Fecha_Entrega
-        FROM entrega_tarea et
-        INNER JOIN matricula m ON et.Id_Estudiante = m.Id_Estudiante
-        INNER JOIN curso_docente cd ON m.Id_Curso = cd.Id_Curso
-        INNER JOIN usuario u ON et.Id_Estudiante = u.Id_Usuario
-        INNER JOIN docente d ON cd.Id_Docente = d.Id_Docente
-        ORDER BY Curso, Estudiante, et.Fecha_Entrega
-        LIMIT p_RegistrosPorPagina OFFSET v_Offset;
-    ELSE
-        SELECT 
-            u.Id_Usuario AS IdEstudiante,
-            u.Nombre AS Estudiante,
-            cd.Id_Curso,
-            d.Especialidad AS Curso,
-            d.Id_Docente,
-            CONCAT('Prof. ', (SELECT Nombre FROM usuario WHERE Id_Usuario = d.Id_Docente)) AS Docente,
-            et.Calificacion,
-            et.Comentario,
-            et.Fecha_Entrega
-        FROM entrega_tarea et
-        INNER JOIN matricula m ON et.Id_Estudiante = m.Id_Estudiante
-        INNER JOIN curso_docente cd ON m.Id_Curso = cd.Id_Curso
-        INNER JOIN usuario u ON et.Id_Estudiante = u.Id_Usuario
-        INNER JOIN docente d ON cd.Id_Docente = d.Id_Docente
-        WHERE cd.Id_Curso = p_IdCurso
-        ORDER BY Estudiante, et.Fecha_Entrega
-        LIMIT p_RegistrosPorPagina OFFSET v_Offset;
-    END IF;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_obtenerTareaPorId` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1405,18 +1283,13 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_obtener_alumnos_docente`(IN docenteId INT)
 BEGIN
-    SELECT 
-        u.Id_Usuario AS id, 
-        u.Nombre AS nombre, 
-        u.Email AS correo,
-        c.Id_Curso AS id_curso, 
-        e.Id_Estudiante AS id_estudiante
+    SELECT u.Id_Usuario AS id, u.Nombre AS nombre, u.Email AS correo,
+           c.Id_Curso AS id_curso, e.Id_Estudiante AS id_estudiante
     FROM usuario u
     INNER JOIN estudiante e ON u.Id_Usuario = e.Id_Estudiante
     INNER JOIN matricula m ON e.Id_Estudiante = m.Id_Estudiante
     INNER JOIN curso c ON m.Id_Curso = c.Id_Curso
-    INNER JOIN curso_docente cd ON c.Id_Curso = cd.Id_Curso
-    WHERE cd.Id_Docente = docenteId;
+    WHERE c.Id_Docente = docenteId;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1585,68 +1458,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-<<<<<<<< HEAD:Actualizado 4.0.sql
-========
-/*!50003 DROP PROCEDURE IF EXISTS `sp_VerPromedioPorEstudiante` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_VerPromedioPorEstudiante`(IN p_IdCurso INT)
-BEGIN
-    SELECT 
-        u.Id_Usuario AS IdEstudiante,
-        u.Nombre AS Estudiante,
-        d.Especialidad AS Curso,
-        ROUND(AVG(et.Calificacion), 2) AS PromedioEstudiante
-    FROM entrega_tarea et
-    INNER JOIN matricula m ON et.Id_Estudiante = m.Id_Estudiante
-    INNER JOIN curso_docente cd ON m.Id_Curso = cd.Id_Curso
-    INNER JOIN usuario u ON et.Id_Estudiante = u.Id_Usuario
-    INNER JOIN docente d ON cd.Id_Docente = d.Id_Docente
-    WHERE cd.Id_Curso = p_IdCurso
-    GROUP BY u.Id_Usuario, u.Nombre, d.Especialidad
-    ORDER BY Estudiante;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_VerResumenCalificaciones` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_VerResumenCalificaciones`()
-BEGIN
-    SELECT 
-        cd.Id_Curso,
-        d.Especialidad AS Curso,
-        ROUND(AVG(et.Calificacion), 2) AS PromedioCurso
-    FROM entrega_tarea et
-    INNER JOIN matricula m ON et.Id_Estudiante = m.Id_Estudiante
-    INNER JOIN curso_docente cd ON m.Id_Curso = cd.Id_Curso
-    INNER JOIN docente d ON cd.Id_Docente = d.Id_Docente
-    GROUP BY cd.Id_Curso, d.Especialidad
-    ORDER BY d.Especialidad;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
->>>>>>>> 00c45eed26bb55808f354cd71385abe37ebb7587:Esta cosa.sql
 
 --
 -- Final view structure for view `vw_usuarios_detalle`
@@ -1675,8 +1486,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-<<<<<<<< HEAD:Actualizado 4.0.sql
 -- Dump completed on 2025-10-21  3:47:19
-========
--- Dump completed on 2025-11-08  3:46:05
->>>>>>>> 00c45eed26bb55808f354cd71385abe37ebb7587:Esta cosa.sql

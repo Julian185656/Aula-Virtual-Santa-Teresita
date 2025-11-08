@@ -1,4 +1,4 @@
-
+// scripts/toasts.js
 function mostrarToast(mensaje, tipo = 'info') {
     const colores = {
         success: 'bg-success text-white',
@@ -18,6 +18,6 @@ function mostrarToast(mensaje, tipo = 'info') {
         </div>`;
     contenedor.appendChild(toast);
 
-
+    // Ocultar el toast después de 4 segundos
     setTimeout(() => toast.remove(), 4000);
 }
