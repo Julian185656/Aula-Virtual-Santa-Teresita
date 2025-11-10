@@ -1487,3 +1487,23 @@ DELIMITER ;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-10-21  3:47:19
+
+CREATE TABLE agenda (
+  Id_Agenda INT AUTO_INCREMENT PRIMARY KEY,
+  Id_Docente INT NOT NULL,
+  Titulo VARCHAR(100) NOT NULL,
+  Descripcion TEXT,
+  Fecha DATE NOT NULL,
+  Hora TIME NOT NULL,
+  FOREIGN KEY (Id_Docente) REFERENCES usuario(Id_Usuario)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE notificaciones (
+  Id_Notificacion INT AUTO_INCREMENT PRIMARY KEY,
+  Asunto VARCHAR(150) NOT NULL,
+  Mensaje TEXT NOT NULL,
+  Fecha_Envio DATE NOT NULL,
+  Hora_Envio TIME NOT NULL,
+  Destinatario VARCHAR(100) NOT NULL,
+  Estado ENUM('Pendiente','Enviada') DEFAULT 'Pendiente'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
