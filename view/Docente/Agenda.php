@@ -1,112 +1,140 @@
 <?php
 session_start();
-require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/db.php";
-require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/AgendaModel.php";
+require_once __DIR__ . '/../../model/db.php';
+require_once __DIR__ . '/../../model/AgendaModel.php';
 
-$rol = $_SESSION['rol'] ?? '';
-$idDocente = $_SESSION['id_usuario'] ?? 0;
-
-if ($rol !== 'Docente') {
+// ✅ Verificar sesión activa
+if (!isset($_SESSION['id_usuario']) || $_SESSION['rol'] !== 'Docente') {
     header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php");
     exit();
 }
 
 $model = new AgendaModel($pdo);
+$idDocente = $_SESSION['id_usuario'];
+
+// ✅ Crear actividad
+if (isset($_POST['crearActividad'])) {
+    $titulo = trim($_POST['titulo']);
+    $descripcion = trim($_POST['descripcion']);
+    $fecha = $_POST['fecha'];
+    $hora = $_POST['hora'];
+
+    if ($titulo && $fecha && $hora) {
+        $model->crearActividad($idDocente, $titulo, $descripcion, $fecha, $hora);
+        $msg = "Actividad creada correctamente.";
+    }
+}
+
+// ✅ Eliminar actividad
+if (isset($_POST['eliminarActividad'])) {
+    $idAgenda = intval($_POST['idAgenda']);
+    if ($idAgenda > 0) {
+        $model->eliminarActividad($idAgenda);
+        $msg = "Actividad eliminada correctamente.";
+    }
+}
+
+// ✅ Obtener actividades del docente
 $actividades = $model->obtenerActividadesDocente($idDocente);
-$msg = $_GET['msg'] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Agenda Semanal | Docente</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda del Docente</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+<body style="background-color:#f8f9fa;">
 
-<body style="background-color:#f9f9fb;">
+<div class="container mt-5 mb-5">
+    <h2 class="text-center text-primary mb-4">
+        <i class="fa-solid fa-calendar-days"></i> Agenda Semanal
+    </h2>
 
-<nav class="navbar navbar-dark shadow" style="background-color:#0b1a35;">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php">
-      <span style="color:#ff9d00;">SANTA</span> TERESITA
-    </a>
-    <a href="/Aula-Virtual-Santa-Teresita/view/Login/Logout.php" class="btn btn-danger">Cerrar sesión</a>
-  </div>
-</nav>
+    <?php if (!empty($msg)): ?>
+        <div class="alert alert-success text-center"><?= htmlspecialchars($msg) ?></div>
+    <?php endif; ?>
 
-<div class="container mt-5">
-  <h2 class="fw-bold text-center text-primary mb-4">📅 Agenda Semanal</h2>
-
-  <?php if ($msg): ?>
-      <div class="alert alert-success text-center">
-        <?= htmlspecialchars(str_replace('_',' ',ucfirst($msg))) ?> correctamente.
-      </div>
-  <?php endif; ?>
-
-  <!-- Formulario Nueva Actividad -->
-  <div class="card mb-4 shadow-sm">
-    <div class="card-body">
-      <h5 class="fw-bold">➕ Agregar Actividad</h5>
-      <form method="POST" action="/Aula-Virtual-Santa-Teresita/controller/AgendaController.php">
-        <input type="hidden" name="accion" value="crear">
-        <div class="row g-3">
-          <div class="col-md-4"><input type="text" name="titulo" class="form-control" placeholder="Título" required></div>
-          <div class="col-md-3"><input type="date" name="fecha" class="form-control" required></div>
-          <div class="col-md-2"><input type="time" name="hora" class="form-control" required></div>
-          <div class="col-md-3"><input type="text" name="descripcion" class="form-control" placeholder="Descripción"></div>
+    <!-- ✅ Formulario Crear Actividad -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white">
+            <h5 class="mb-0 text-dark"><i class="fa-solid fa-plus"></i> Agregar Actividad</h5>
         </div>
-        <button class="btn btn-primary mt-3"><i class="fa fa-plus"></i> Crear</button>
-      </form>
+        <div class="card-body">
+            <form method="POST">
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <input type="text" name="titulo" class="form-control" placeholder="Título" required>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" name="fecha" class="form-control" required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="time" name="hora" class="form-control" required>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" name="descripcion" class="form-control" placeholder="Descripción">
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" name="crearActividad" class="btn btn-primary w-100">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
 
-  <!-- Lista de actividades -->
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <h5 class="fw-bold mb-3">🗂 Actividades Programadas</h5>
-      <?php if (empty($actividades)): ?>
-        <div class="alert alert-warning text-center">No hay actividades programadas.</div>
-      <?php else: ?>
-        <table class="table table-hover align-middle text-center">
-          <thead class="table-primary">
-            <tr>
-              <th>Título</th>
-              <th>Descripción</th>
-              <th>Fecha</th>
-              <th>Hora</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php foreach ($actividades as $a): ?>
-            <tr>
-              <td><?= htmlspecialchars($a['Titulo']) ?></td>
-              <td><?= htmlspecialchars($a['Descripcion']) ?></td>
-              <td><?= htmlspecialchars($a['Fecha']) ?></td>
-              <td><?= htmlspecialchars($a['Hora']) ?></td>
-              <td><?= htmlspecialchars($a['Estado']) ?></td>
-              <td>
-                <!-- Editar -->
-                <form method="POST" action="/Aula-Virtual-Santa-Teresita/controller/AgendaController.php" class="d-inline">
-                  <input type="hidden" name="accion" value="eliminar">
-                  <input type="hidden" name="id" value="<?= $a['Id_Actividad'] ?>">
-                  <button class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i></button>
-                </form>
-              </td>
-            </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
-      <?php endif; ?>
+    <!-- ✅ Tabla de Actividades -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <h5 class="mb-0 text-dark"><i class="fa-solid fa-folder-open"></i> Actividades Programadas</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle text-center">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Título</th>
+                            <th>Descripción</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($actividades)): ?>
+                            <?php foreach ($actividades as $actividad): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($actividad['Titulo']) ?></td>
+                                    <td><?= htmlspecialchars($actividad['Descripcion']) ?></td>
+                                    <td><?= htmlspecialchars($actividad['Fecha']) ?></td>
+                                    <td><?= htmlspecialchars($actividad['Hora']) ?></td>
+                                    <td><?= htmlspecialchars($actividad['Estado']) ?></td>
+                                    <td>
+                                        <form method="POST" action="">
+                                            <input type="hidden" name="idAgenda" value="<?= $actividad['Id_Agenda'] ?>">
+                                            <button type="submit" name="eliminarActividad" class="btn btn-danger btn-sm">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="6" class="text-muted text-center">No hay actividades programadas.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
-
-<footer class="mt-5 text-center text-light py-3" style="background-color:#1c223a;">
-  <p class="mb-0">© 2025 Aula Virtual Santa Teresita | Design by TemplateMo</p>
-</footer>
 
 </body>
 </html>
