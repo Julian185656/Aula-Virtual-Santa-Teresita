@@ -1,0 +1,118 @@
+<?php
+session_start();
+require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/ForoModel.php";
+
+// ✅ Solo DOCENTE
+$rol = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null);
+if (!isset($_SESSION['id_usuario']) || !is_string($rol) || strcasecmp($rol, 'Docente') !== 0) {
+    header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php?error=NoAutorizado");
+    exit();
+}
+
+// 📌 Curso
+$idCurso  = (int)($_GET['idCurso'] ?? 0);
+$nombre   = trim((string)($_GET['nombre'] ?? ''));
+if ($idCurso <= 0) {
+    header("Location: /Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php");
+    exit();
+}
+
+// 📨 Responder a una publicación
+$flashOk = $flashErr = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['responder'])) {
+    $idForo = (int)($_POST['idForo'] ?? 0);
+    $texto  = trim((string)($_POST['texto'] ?? ''));
+    if ($idForo <= 0 || strlen($texto) < 2) {
+        $flashErr = "Escribe una respuesta válida.";
+    } else {
+        try {
+            $ok = ForoModel::responder($idForo, (int)$_SESSION['id_usuario'], $texto);
+            $flashOk = $ok ? "Respuesta publicada." : "No se pudo publicar la respuesta.";
+        } catch (Throwable $e) {
+            $flashErr = "Error: " . $e->getMessage();
+        }
+    }
+}
+
+// 📥 Cargar publicaciones del curso (solo Activas)
+$posts = ForoModel::listarPublicacionesPorCurso($idCurso);
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Foro — <?= htmlspecialchars($nombre !== '' ? $nombre : ('Curso #'.$idCurso)) ?></title>
+    <link href="/Aula-Virtual-Santa-Teresita/view/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body{background:#f7f9fc;font-family:Montserrat,system-ui,Segoe UI,Roboto,Helvetica,Arial}
+        .page{max-width:1100px;margin:24px auto}
+        .card{border:0;border-radius:14px;box-shadow:0 10px 20px rgba(0,0,0,.06)}
+        .comment{border-left:3px solid #e5e7eb;padding-left:12px;margin-left:6px}
+    </style>
+</head>
+<body>
+<div class="page container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="m-0">💬 Foro — <?= htmlspecialchars($nombre !== '' ? $nombre : ('Curso #'.$idCurso)) ?></h3>
+        <a class="btn btn-secondary" href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php">⬅ Volver</a>
+    </div>
+
+    <div class="alert alert-info">
+        Aquí puedes <strong>responder</strong> a las publicaciones de los estudiantes del curso <strong>#<?= (int)$idCurso ?></strong>.
+    </div>
+
+    <?php if ($flashOk): ?><div class="alert alert-success"><?= htmlspecialchars($flashOk) ?></div><?php endif; ?>
+    <?php if ($flashErr): ?><div class="alert alert-danger"><?= htmlspecialchars($flashErr) ?></div><?php endif; ?>
+
+    <?php if (!empty($posts)): ?>
+        <?php foreach ($posts as $p): ?>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-title mb-1"><?= htmlspecialchars($p['Titulo']) ?></h5>
+                        <span class="text-muted small">#<?= (int)$p['Id_Foro'] ?></span>
+                    </div>
+                    <div class="text-muted small mb-2">
+                        Por <?= htmlspecialchars($p['Autor']) ?> — <?= htmlspecialchars($p['Fecha_Creacion']) ?>
+                    </div>
+                    <p class="mb-3"><?= nl2br(htmlspecialchars($p['Contenido'])) ?></p>
+
+                    <?php
+                        $reps = ForoModel::listarComentarios((int)$p['Id_Foro']);
+                        if (!empty($reps)):
+                    ?>
+                        <div class="bg-light p-3 rounded mb-3">
+                            <div class="fw-semibold mb-2">Comentarios (<?= count($reps) ?>)</div>
+                            <?php foreach ($reps as $r): ?>
+                                <div class="comment mb-3">
+                                    <div class="small text-muted">
+                                        <?= htmlspecialchars($r['Autor']) ?> • <?= htmlspecialchars($r['Fecha_Creacion']) ?>
+                                    </div>
+                                    <div><?= nl2br(htmlspecialchars($r['Texto'])) ?></div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <div class="text-muted mb-3">Sin comentarios todavía.</div>
+                    <?php endif; ?>
+
+                    <!-- ✍️ Responder -->
+                    <form method="post" class="mt-2">
+                        <input type="hidden" name="idForo" value="<?= (int)$p['Id_Foro'] ?>">
+                        <div class="mb-2">
+                            <label class="form-label">Tu respuesta</label>
+                            <textarea name="texto" class="form-control" rows="2" required></textarea>
+                        </div>
+                        <button class="btn btn-primary" name="responder">Responder</button>
+                    </form>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <div class="alert alert-warning">Aún no hay publicaciones.</div>
+    <?php endif; ?>
+</div>
+
+<script src="/Aula-Virtual-Santa-Teresita/view/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

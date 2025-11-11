@@ -1507,3 +1507,171 @@ CREATE TABLE notificaciones (
   Destinatario VARCHAR(100) NOT NULL,
   Estado ENUM('Pendiente','Enviada') DEFAULT 'Pendiente'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-----------------------------------------------------------------------
+START TRANSACTION;
+
+-- =======================
+-- PUBLICACIONES (tabla foro)
+-- =======================
+ALTER TABLE foro
+  ADD COLUMN Titulo           VARCHAR(150)              NOT NULL AFTER Id_Curso,
+  ADD COLUMN Contenido        TEXT                      NOT NULL AFTER Titulo,
+  ADD COLUMN Id_Autor         INT                       NOT NULL AFTER Contenido,
+  ADD COLUMN Fecha_Creacion   DATETIME                  NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER Id_Autor,
+  ADD COLUMN Estado           ENUM('Activo','Eliminado') NOT NULL DEFAULT 'Activo' AFTER Fecha_Creacion;
+
+-- FK autor publicación
+ALTER TABLE foro
+  ADD CONSTRAINT fk_foro_autor
+  FOREIGN KEY (Id_Autor) REFERENCES usuario(Id_Usuario)
+  ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Índices recomendados
+CREATE INDEX ix_foro_curso_estado ON foro (Id_Curso, Estado);
+CREATE INDEX ix_foro_fecha        ON foro (Fecha_Creacion);
+
+-- =======================
+-- RESPUESTAS (tabla comentarios)
+-- =======================
+ALTER TABLE comentarios
+  ADD COLUMN Id_Autor         INT                       NOT NULL AFTER Id_Foro,
+  ADD COLUMN Fecha_Creacion   DATETIME                  NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER Texto,
+  ADD COLUMN Estado           ENUM('Activo','Eliminado') NOT NULL DEFAULT 'Activo' AFTER Fecha_Creacion;
+
+-- FK autor respuesta
+ALTER TABLE comentarios
+  ADD CONSTRAINT fk_coment_autor
+  FOREIGN KEY (Id_Autor) REFERENCES usuario(Id_Usuario)
+  ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Índices recomendados
+CREATE INDEX ix_coment_foro_estado ON comentarios (Id_Foro, Estado);
+CREATE INDEX ix_coment_fecha       ON comentarios (Fecha_Creacion);
+
+COMMIT;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE sp_foro_crearPublicacion(
+  IN p_idCurso INT,
+  IN p_idAutor INT,          -- Id_Usuario (rol Estudiante)
+  IN p_titulo  VARCHAR(150),
+  IN p_contenido TEXT
+)
+BEGIN
+  INSERT INTO foro (Id_Curso, Titulo, Contenido, Id_Autor)
+  VALUES (p_idCurso, p_titulo, p_contenido, p_idAutor);
+
+  SELECT LAST_INSERT_ID() AS Id_Foro;
+END$$
+DELIMITER ;
+-----------------------------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE sp_foro_listarPublicacionesPorCurso(
+  IN p_idCurso INT
+)
+BEGIN
+  SELECT f.Id_Foro, f.Id_Curso, f.Titulo, f.Contenido,
+         f.Id_Autor, u.Nombre AS Autor,
+         f.Fecha_Creacion, f.Estado
+  FROM foro f
+  JOIN usuario u ON u.Id_Usuario = f.Id_Autor
+  WHERE f.Id_Curso = p_idCurso
+    AND f.Estado = 'Activo'
+  ORDER BY f.Fecha_Creacion DESC;
+END$$
+DELIMITER ;
+-----------------------------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE sp_foro_listarPublicacionesPorCurso(
+  IN p_idCurso INT
+)
+BEGIN
+  SELECT f.Id_Foro, f.Id_Curso, f.Titulo, f.Contenido,
+         f.Id_Autor, u.Nombre AS Autor,
+         f.Fecha_Creacion, f.Estado
+  FROM foro f
+  JOIN usuario u ON u.Id_Usuario = f.Id_Autor
+  WHERE f.Id_Curso = p_idCurso
+    AND f.Estado = 'Activo'
+  ORDER BY f.Fecha_Creacion DESC;
+END$$
+DELIMITER ;
+-----------------------------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE sp_foro_responder(
+  IN p_idForo  INT,
+  IN p_idAutor INT,       -- Id_Usuario (rol Docente)
+  IN p_texto   TEXT
+)
+BEGIN
+  INSERT INTO comentarios (Id_Foro, Texto, Id_Autor)
+  VALUES (p_idForo, p_texto, p_idAutor);
+
+  SELECT LAST_INSERT_ID() AS Id_Comentario;
+END$$
+DELIMITER ;
+-----------------------------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE sp_foro_listarRespuestas(
+  IN p_idForo INT
+)
+BEGIN
+  SELECT c.Id_Comentario, c.Id_Foro, c.Texto,
+         c.Id_Autor, u.Nombre AS Autor,
+         c.Fecha_Creacion, c.Estado
+  FROM comentarios c
+  JOIN usuario u ON u.Id_Usuario = c.Id_Autor
+  WHERE c.Id_Foro = p_idForo
+    AND c.Estado = 'Activo'
+  ORDER BY c.Fecha_Creacion ASC;
+END$$
+DELIMITER ;
+-----------------------------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE sp_foro_moderar_publicacion(
+  IN p_idForo INT,
+  IN p_eliminar_respuestas TINYINT -- 1 = también marcar respuestas como Eliminado
+)
+BEGIN
+  UPDATE foro
+     SET Estado = 'Eliminado'
+   WHERE Id_Foro = p_idForo;
+
+  IF p_eliminar_respuestas = 1 THEN
+    UPDATE comentarios
+       SET Estado = 'Eliminado'
+     WHERE Id_Foro = p_idForo;
+  END IF;
+END$$
+DELIMITER ;
+-----------------------------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE sp_foro_moderar_respuesta(
+  IN p_idComentario INT
+)
+BEGIN
+  UPDATE comentarios
+     SET Estado = 'Eliminado'
+   WHERE Id_Comentario = p_idComentario;
+END$$
+DELIMITER ;
+-----------------------------------------------------------------------
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE sp_foro_admin_listar(
+  IN p_idCurso INT,            -- NULL = todos
+  IN p_estado  VARCHAR(10)     -- 'Activo' | 'Eliminado' | NULL=todos
+)
+BEGIN
+  SELECT f.Id_Foro, f.Id_Curso, c.Nombre AS Curso,
+         f.Titulo, f.Contenido,
+         f.Id_Autor, u.Nombre AS Autor,
+         f.Fecha_Creacion, f.Estado
+  FROM foro f
+  JOIN curso c   ON c.Id_Curso   = f.Id_Curso
+  JOIN usuario u ON u.Id_Usuario = f.Id_Autor
+  WHERE (p_idCurso IS NULL OR f.Id_Curso = p_idCurso)
+    AND (p_estado  IS NULL OR f.Estado   = p_estado)
+  ORDER BY f.Fecha_Creacion DESC;
+END$$
+DELIMITER ;
+-----------------------------------------------------------------------

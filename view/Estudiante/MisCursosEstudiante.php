@@ -46,8 +46,17 @@ $cursos = CursoModel::obtenerCursosEstudiante($estudianteId);
                         <div class="card-body">
                             <h5 class="card-title"><?= htmlspecialchars($curso['Nombre'] ?? 'Sin nombre') ?></h5>
                             <p class="card-text"><?= htmlspecialchars($curso['Descripcion'] ?? 'Sin descripción') ?></p>
-                            <a class="btn-tareas" href="/Aula-Virtual-Santa-Teresita/view/Estudiante/TareasEstudiante.php?idCurso=<?= htmlspecialchars($curso['Id_Curso']) ?>">
+
+                            <!-- Botones de acciones -->
+                            <a class="btn-tareas"
+                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/TareasEstudiante.php?idCurso=<?= htmlspecialchars($curso['Id_Curso']) ?>">
                                 <i class="fa-solid fa-list"></i> Ver Tareas
+                            </a>
+
+                            <!-- botón Foro (estudiante) -->
+                            <a class="btn btn-outline-dark ms-2"
+                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/ForoCurso.php?idCurso=<?= urlencode($curso['Id_Curso']) ?>&nombre=<?= urlencode($curso['Nombre'] ?? '') ?>">
+                                <i class="fa-solid fa-comments"></i> Foro
                             </a>
                         </div>
                     </div>

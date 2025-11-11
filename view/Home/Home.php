@@ -10,7 +10,6 @@ session_start();
     <title>Grad School HTML5 Template</title>
 
     <link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900" rel="stylesheet">
-
     <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -33,6 +32,7 @@ session_start();
 
                 <?php if (isset($_SESSION['nombre'])): ?>
                     <?php
+                    // Soporta ambas formas de guardar el rol en la sesión
                     $rolActual = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null);
                     ?>
 
@@ -45,7 +45,7 @@ session_start();
                         </li>
                         <li>
                             <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/HomeReportes.php">
-                                <i class=""></i> Reportes
+                                Reportes
                             </a>
                         </li>
                         <li>
@@ -53,15 +53,20 @@ session_start();
                                 Gestionar Cursos
                             </a>
                         </li>
-                        <!-- ✉️ NUEVO BOTÓN PARA ADMIN -->
                         <li>
                             <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Notificaciones.php">
-                                ✉️ Notificaciones
+                                Notificaciones
+                            </a>
+                        </li>
+                        <!--  ÚNICO acceso a foros -->
+                        <li>
+                            <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Foro/ForoAdmin.php">
+                                Foros
                             </a>
                         </li>
                     <?php endif; ?>
 
-                    <!-- 🔹 DOCENTE -->
+                    <!-- 🔹 DOCENTE (sin foros) -->
                     <?php if ($rolActual === 'Docente'): ?>
                         <li>
                             <a href="/Aula-Virtual-Santa-Teresita/view/Docente/ListaDocente.php">
@@ -73,21 +78,22 @@ session_start();
                                 Mis Cursos
                             </a>
                         </li>
-                        <!-- 📅 NUEVO BOTÓN PARA DOCENTE -->
                         <li>
                             <a href="/Aula-Virtual-Santa-Teresita/view/Docente/Agenda.php">
-                                📅 Mi Agenda
+                                Mi Agenda
                             </a>
                         </li>
+                        <!-- (Se eliminó 'Foros (responder)') -->
                     <?php endif; ?>
 
-                    <!-- 🔹 ESTUDIANTE -->
+                    <!-- 🔹 ESTUDIANTE (sin foros) -->
                     <?php if ($rolActual === 'Estudiante'): ?>
                         <li>
                             <a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php">
                                 Mis Cursos
                             </a>
                         </li>
+                        <!-- (Se eliminó 'Foros (publicar)') -->
                     <?php endif; ?>
 
                     <!-- PERFIL Y CIERRE DE SESIÓN -->
@@ -120,7 +126,7 @@ session_start();
         <div class="video-overlay header-text">
             <div class="caption">
                 <h6>Graduate School of Management</h6>
-                <h2><em>Your</em> Classroom</h2>
+            <h2><em>Your</em> Classroom</h2>
                 <div class="main-button">
                     <div class="scroll-to-section"><a href="#section2">Discover more</a></div>
                 </div>

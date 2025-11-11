@@ -2,16 +2,12 @@
 session_start();
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/CursoModel.php";
 
-
 if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['rol']) || strtolower($_SESSION['rol']) !== 'docente') {
     header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php?error=NoAutorizado");
     exit();
 }
 
-
 $docenteId = $_SESSION['id_usuario'];
-
-
 $misCursos = CursoModel::obtenerCursosDocente($docenteId);
 ?>
 <!DOCTYPE html>
@@ -31,7 +27,6 @@ $misCursos = CursoModel::obtenerCursosDocente($docenteId);
         .card-body h5 { font-weight: 600; }
         .card-body p { margin-bottom: 10px; }
 
-  
         .icon-btn {
             display: inline-flex;
             align-items: center;
@@ -50,7 +45,8 @@ $misCursos = CursoModel::obtenerCursosDocente($docenteId);
         .btn-ver { background-color: #4CAF50; }
         .btn-tarea { background-color: #007BFF; }
         .btn-tareas-asignadas { background-color: #FFC107; color: #212529; }
-
+        /* Nuevo: botón Foro */
+        .btn-foro { background-color: #6f42c1; } /* morado */
         .btn-container { text-align: center; margin-top: 10px; }
     </style>
 </head>
@@ -68,12 +64,23 @@ $misCursos = CursoModel::obtenerCursosDocente($docenteId);
                             <h5 class="card-title"><?= htmlspecialchars($curso['nombre'] ?? 'Sin nombre') ?></h5>
                             <p class="card-text"><?= htmlspecialchars($curso['descripcion'] ?? 'Sin descripción') ?></p>
                             <div class="btn-container">
-                            
-                                <a class="icon-btn btn-tarea" href="/Aula-Virtual-Santa-Teresita/view/Docente/AsignarTarea.php?id=<?= htmlspecialchars($curso['id']) ?>" title="Añadir Tarea">
+                                <a class="icon-btn btn-tarea"
+                                   href="/Aula-Virtual-Santa-Teresita/view/Docente/AsignarTarea.php?id=<?= htmlspecialchars($curso['id']) ?>"
+                                   title="Añadir Tarea">
                                     <i class="fa-solid fa-plus"></i>
                                 </a>
-                                <a class="icon-btn btn-tareas-asignadas" href="/Aula-Virtual-Santa-Teresita/view/Docente/VerTareas.php?id=<?= htmlspecialchars($curso['id']) ?>" title="Ver Tareas">
+
+                                <a class="icon-btn btn-tareas-asignadas"
+                                   href="/Aula-Virtual-Santa-Teresita/view/Docente/VerTareas.php?id=<?= htmlspecialchars($curso['id']) ?>"
+                                   title="Ver Tareas">
                                     <i class="fa-solid fa-list"></i>
+                                </a>
+
+                                <!-- NUEVO: Botón Foro (docente) -->
+                                <a class="icon-btn btn-foro"
+                                   href="/Aula-Virtual-Santa-Teresita/view/Docente/ForoCurso.php?idCurso=<?= urlencode($curso['id']) ?>&nombre=<?= urlencode($curso['nombre'] ?? '') ?>"
+                                   title="Foro del Curso">
+                                    <i class="fa-solid fa-comments"></i>
                                 </a>
                             </div>
                         </div>
@@ -88,7 +95,6 @@ $misCursos = CursoModel::obtenerCursosDocente($docenteId);
     </div>
 
     <div class="text-center mt-4">
-        <!-- Cambiado para llevar al Home -->
         <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn btn-secondary">Volver al Panel</a>
     </div>
 </div>
