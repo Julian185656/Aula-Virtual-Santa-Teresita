@@ -13,7 +13,7 @@ class AgendaModel
     // ✅ Obtener actividades semanales del docente
     public function obtenerActividadesDocente($idDocente)
     {
-        $sql = "SELECT Id_Actividad, Titulo, Descripcion, Fecha, Hora, Estado 
+        $sql = "SELECT Id_Agenda, Titulo, Descripcion, Fecha, Hora, Estado 
                 FROM agenda 
                 WHERE Id_Docente = :idDocente
                 ORDER BY Fecha ASC";
@@ -38,26 +38,26 @@ class AgendaModel
     }
 
     // ✅ Editar actividad
-    public function editarActividad($idActividad, $titulo, $descripcion, $fecha, $hora)
+    public function editarActividad($idAgenda, $titulo, $descripcion, $fecha, $hora)
     {
         $sql = "UPDATE agenda
                 SET Titulo = :titulo, Descripcion = :descripcion, Fecha = :fecha, Hora = :hora
-                WHERE Id_Actividad = :idActividad";
+                WHERE Id_Agenda = :idAgenda";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             ':titulo' => $titulo,
             ':descripcion' => $descripcion,
             ':fecha' => $fecha,
             ':hora' => $hora,
-            ':idActividad' => $idActividad
+            ':idAgenda' => $idAgenda
         ]);
     }
 
     // ✅ Eliminar actividad
-    public function eliminarActividad($idActividad)
+    public function eliminarActividad($idAgenda)
     {
-        $stmt = $this->pdo->prepare("DELETE FROM agenda WHERE Id_Actividad = ?");
-        return $stmt->execute([$idActividad]);
+        $stmt = $this->pdo->prepare("DELETE FROM agenda WHERE Id_Agenda = ?");
+        return $stmt->execute([$idAgenda]);
     }
 }
 ?>
