@@ -3,6 +3,7 @@ session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -15,6 +16,7 @@ session_start();
     <link rel="stylesheet" href="../assets/css/owl.css">
     <link rel="stylesheet" href="../assets/css/lightbox.css">
 </head>
+
 <body>
     <header class="main-header clearfix" role="header">
         <div class="logo">
@@ -36,6 +38,8 @@ session_start();
                         <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/ListaDocente.php">Ver Perfiles Alumnos</a></li>
                         <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php">Mis Cursos</a></li>
                         <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/Agenda.php">Mi Agenda</a></li>
+                        <!-- ✅ NUEVO: Asistencias  -->
+                        <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/HomeAsistencia.php">Asistencias</a></li>
                     <?php endif; ?>
                     <?php if ($rolActual === 'Estudiante'): ?>
                         <li><a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php">Mis Cursos</a></li>
@@ -166,4 +170,5 @@ session_start();
     <script src="../assets/js/slick-slider.js"></script>
     <script src="../assets/js/custom.js"></script>
 </body>
+
 </html>
