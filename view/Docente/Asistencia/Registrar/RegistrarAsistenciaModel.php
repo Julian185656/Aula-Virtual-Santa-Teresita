@@ -12,7 +12,7 @@ class RegistrarAsistenciaModel
     }
 
     /**
-     
+     * Obtiene los cursos asignados al docente.
      * @return array [ [Id_Curso, Curso], ... ]
      */
     public function obtenerCursosDocente(int $docenteId): array
@@ -30,7 +30,7 @@ class RegistrarAsistenciaModel
     }
 
     /**
-    
+     * Obtiene alumnos de un curso con paginación.
      * @return array ['alumnos' => [...], 'total' => int]
      */
     public function obtenerAlumnosPaginado(int $cursoId, int $pagina = 1, int $limite = 15): array
@@ -59,8 +59,8 @@ class RegistrarAsistenciaModel
     }
 
     /**
-     
-     * @return array Mapa [Id_Estudiante => (int)Presente]
+     * Obtiene la asistencia de un día para un curso, como mapa:
+     * [Id_Estudiante => (int)Presente]
      */
     public function obtenerAsistenciaDia(int $cursoId, string $fecha): array
     {
@@ -75,7 +75,6 @@ class RegistrarAsistenciaModel
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
             $stmt->closeCursor();
 
-            // Convertir a mapa: [Id_Estudiante => Presente]
             $map = [];
             foreach ($rows as $r) {
                 $map[(int)$r['Id_Estudiante']] = (int)$r['Presente'];
@@ -87,7 +86,15 @@ class RegistrarAsistenciaModel
     }
 
     /**
-    
+     * Guarda en lote la asistencia de un curso para una fecha.
+     * Sin modificar la tabla:
+     *  - Si ya existe registro (Id_Estudiante, Id_Curso, Fecha) → UPDATE.
+     *  - Si no existe → INSERT.
+     *
+     * @param int   $cursoId
+     * @param string $fecha
+     * @param int   $docenteId  (no se usa en la tabla actual, pero se mantiene por firma)
+     * @param array $items      [ ['Id_Estudiante' => int, 'Presente' => 0|1], ... ]
      * @return array ['ok' => bool, 'procesados' => int]
      */
     public function guardarLoteAsistencia(int $cursoId, string $fecha, int $docenteId, array $items): array
@@ -97,24 +104,50 @@ class RegistrarAsistenciaModel
         try {
             $this->pdo->beginTransaction();
 
-            $sql = "CALL sp_asist_upsert_uno(:curso, :est, :fecha, :pres, :doc)";
-            $stmt = $this->pdo->prepare($sql);
+            // 1) Intento de actualización
+            $sqlUpdate = "
+                UPDATE asistencia
+                   SET Presente = :presente
+                 WHERE Id_Estudiante = :estudiante
+                   AND Id_Curso      = :curso
+                   AND Fecha         = :fecha
+            ";
+            $stmtUpdate = $this->pdo->prepare($sqlUpdate);
+
+            // 2) Inserción si no existía registro
+            $sqlInsert = "
+                INSERT INTO asistencia (Id_Estudiante, Id_Curso, Fecha, Presente)
+                VALUES (:estudiante, :curso, :fecha, :presente)
+            ";
+            $stmtInsert = $this->pdo->prepare($sqlInsert);
 
             $procesados = 0;
+
             foreach ($items as $item) {
-                // Sanitizar/normalizar entrada
                 $est = (int)($item['Id_Estudiante'] ?? 0);
                 $pres = isset($item['Presente']) && (int)$item['Presente'] === 1 ? 1 : 0;
 
-                if ($est <= 0) continue; // ignora filas inválidas
+                if ($est <= 0) {
+                    continue; // ignora filas inválidas
+                }
 
-                $stmt->bindParam(':curso', $cursoId, PDO::PARAM_INT);
-                $stmt->bindParam(':est', $est, PDO::PARAM_INT);
-                $stmt->bindParam(':fecha', $fecha, PDO::PARAM_STR);
-                $stmt->bindParam(':pres', $pres, PDO::PARAM_INT);
-                $stmt->bindParam(':doc', $docenteId, PDO::PARAM_INT);
-                $stmt->execute();
-                $stmt->closeCursor(); // importante tras CALL
+                // UPDATE primero
+                $stmtUpdate->execute([
+                    ':presente'   => $pres,
+                    ':estudiante' => $est,
+                    ':curso'      => $cursoId,
+                    ':fecha'      => $fecha
+                ]);
+
+                // Si no se actualizó nada, hacemos INSERT
+                if ($stmtUpdate->rowCount() === 0) {
+                    $stmtInsert->execute([
+                        ':presente'   => $pres,
+                        ':estudiante' => $est,
+                        ':curso'      => $cursoId,
+                        ':fecha'      => $fecha
+                    ]);
+                }
 
                 $procesados++;
             }
@@ -135,7 +168,7 @@ class RegistrarAsistenciaModel
         if (!$fecha || trim($fecha) === '') {
             return date('Y-m-d');
         }
-        // Acepta formatos comunes (YYYY-mm-dd, dd/mm/YYYY)
+        // Acepta formatos dd/mm/YYYY
         if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $fecha)) {
             [$d, $m, $y] = explode('/', $fecha);
             return sprintf('%04d-%02d-%02d', (int)$y, (int)$m, (int)$d);

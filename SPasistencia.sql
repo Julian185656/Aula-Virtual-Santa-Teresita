@@ -130,3 +130,244 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+
+--- SP Para el Historial de Asistencia
+DELIMITER $$
+
+CREATE PROCEDURE sp_asist_historial_alumno (
+    IN  p_curso       INT,
+    IN  p_estudiante  INT,
+    IN  p_fecha_desde DATE,
+    IN  p_fecha_hasta DATE,
+    IN  p_pagina      INT,
+    IN  p_limite      INT,
+    OUT p_total       INT
+)
+BEGIN
+    DECLARE v_offset INT;
+
+    -- Normalizar fechas
+    IF p_fecha_desde IS NULL THEN
+        SET p_fecha_desde = '2000-01-01';
+    END IF;
+
+    IF p_fecha_hasta IS NULL THEN
+        SET p_fecha_hasta = CURDATE();
+    END IF;
+
+    -- Normalizar paginación
+    IF p_pagina IS NULL OR p_pagina < 1 THEN
+        SET p_pagina = 1;
+    END IF;
+
+    IF p_limite IS NULL OR p_limite < 1 THEN
+        SET p_limite = 15;
+    END IF;
+
+    SET v_offset = (p_pagina - 1) * p_limite;
+
+    -- Total de registros en el rango (para la paginación)
+    SELECT COUNT(*) INTO p_total
+    FROM asistencia a
+    WHERE a.Id_Curso      = p_curso
+      AND a.Id_Estudiante = p_estudiante
+      AND a.Fecha BETWEEN p_fecha_desde AND p_fecha_hasta;
+
+    -- Query principal con datos + totales del alumno en ese rango
+    SELECT
+        a.Fecha,
+        a.Presente,
+        CASE 
+            WHEN a.Presente = 1 THEN 'Presente'
+            ELSE 'Ausente'
+        END AS EstadoTexto,
+        u.Nombre AS Estudiante,
+        u.Email  AS Correo,
+        c.Nombre AS Curso,
+
+        -- Totales del alumno en ese curso y rango
+        (SELECT COUNT(*)
+         FROM asistencia a2
+         WHERE a2.Id_Curso      = p_curso
+           AND a2.Id_Estudiante = p_estudiante
+           AND a2.Fecha BETWEEN p_fecha_desde AND p_fecha_hasta
+           AND a2.Presente = 1) AS TotalPresentes,
+
+        (SELECT COUNT(*)
+         FROM asistencia a3
+         WHERE a3.Id_Curso      = p_curso
+           AND a3.Id_Estudiante = p_estudiante
+           AND a3.Fecha BETWEEN p_fecha_desde AND p_fecha_hasta
+           AND a3.Presente = 0) AS TotalAusentes
+
+    FROM asistencia a
+    INNER JOIN estudiante e ON a.Id_Estudiante = e.Id_Estudiante
+    INNER JOIN usuario   u  ON e.Id_Estudiante = u.Id_Usuario
+    INNER JOIN curso     c  ON a.Id_Curso      = c.Id_Curso
+    WHERE a.Id_Curso      = p_curso
+      AND a.Id_Estudiante = p_estudiante
+      AND a.Fecha BETWEEN p_fecha_desde AND p_fecha_hasta
+    ORDER BY a.Fecha ASC
+    LIMIT v_offset, p_limite;
+END$$
+
+DELIMITER ;
+
+--- Justificacion de Ausencias-----
+
+--// se altera la tabla asistencia para agregar la justificacion//----
+ALTER TABLE asistencia
+ADD COLUMN Justificada TINYINT(1) NOT NULL DEFAULT 0 AFTER Presente,
+ADD COLUMN ComentarioJustificacion VARCHAR(255) NULL AFTER Justificada;
+
+DROP PROCEDURE IF EXISTS sp_asist_ausencias_pendientes;
+DELIMITER $$
+
+CREATE PROCEDURE sp_asist_ausencias_pendientes (
+    IN  p_docente     INT,
+    IN  p_curso       INT,       -- 0 = todos los cursos del docente
+    IN  p_fecha_desde DATE,
+    IN  p_fecha_hasta DATE,
+    IN  p_pagina      INT,
+    IN  p_limite      INT,
+    OUT p_total       INT
+)
+BEGIN
+    DECLARE v_offset INT;
+
+    -- Normalizar fechas
+    IF p_fecha_desde IS NULL THEN
+        SET p_fecha_desde = '2000-01-01';
+    END IF;
+
+    IF p_fecha_hasta IS NULL THEN
+        SET p_fecha_hasta = CURDATE();
+    END IF;
+
+    -- Normalizar paginación
+    IF p_pagina IS NULL OR p_pagina < 1 THEN
+        SET p_pagina = 1;
+    END IF;
+
+    IF p_limite IS NULL OR p_limite < 1 THEN
+        SET p_limite = 15;
+    END IF;
+
+    SET v_offset = (p_pagina - 1) * p_limite;
+
+    -- Conteo total de ausencias pendientes
+    SELECT COUNT(*) INTO p_total
+    FROM asistencia a
+    INNER JOIN curso_docente cd ON a.Id_Curso = cd.Id_Curso
+    WHERE cd.Id_Docente   = p_docente
+      AND a.Presente      = 0          -- ausente
+      AND a.Justificada   = 0          -- no justificada
+      AND a.Fecha BETWEEN p_fecha_desde AND p_fecha_hasta
+      AND (p_curso = 0 OR a.Id_Curso = p_curso);
+
+    -- Listado paginado
+    SELECT
+        a.Id_Curso,
+        a.Id_Estudiante,
+        a.Fecha,
+        a.Presente,
+        a.Justificada,
+        a.ComentarioJustificacion,
+        u.Nombre AS Estudiante,
+        u.Email  AS Correo,
+        c.Nombre AS Curso
+    FROM asistencia a
+    INNER JOIN curso_docente cd ON a.Id_Curso = cd.Id_Curso
+    INNER JOIN estudiante e     ON a.Id_Estudiante = e.Id_Estudiante
+    INNER JOIN usuario   u      ON e.Id_Estudiante = u.Id_Usuario
+    INNER JOIN curso     c      ON a.Id_Curso      = c.Id_Curso
+    WHERE cd.Id_Docente   = p_docente
+      AND a.Presente      = 0
+      AND a.Justificada   = 0
+      AND a.Fecha BETWEEN p_fecha_desde AND p_fecha_hasta
+      AND (p_curso = 0 OR a.Id_Curso = p_curso)
+    ORDER BY a.Fecha ASC
+    LIMIT v_offset, p_limite;
+END$$
+
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS sp_asist_marcar_justificada;
+DELIMITER $$
+
+CREATE PROCEDURE sp_asist_marcar_justificada (
+    IN p_curso      INT,
+    IN p_estudiante INT,
+    IN p_fecha      DATE,
+    IN p_docente    INT,
+    IN p_comentario VARCHAR(255)
+)
+BEGIN
+    -- Solo actualizamos si realmente es AUSENTE y NO está justificada aún
+    UPDATE asistencia a
+    INNER JOIN curso_docente cd 
+        ON a.Id_Curso = cd.Id_Curso
+    SET 
+        a.Justificada             = 1,
+        a.ComentarioJustificacion = p_comentario
+    WHERE a.Id_Curso      = p_curso
+      AND a.Id_Estudiante = p_estudiante
+      AND a.Fecha         = p_fecha
+      AND a.Presente      = 0        -- era ausencia
+      AND a.Justificada   = 0        -- no justificada aún
+      AND cd.Id_Docente   = p_docente; -- solo su propio curso
+END$$
+
+DELIMITER ;
+
+
+
+
+--- Descargar reporte estudiante --
+
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS sp_asist_reporte_curso $$
+CREATE PROCEDURE sp_asist_reporte_curso(
+    IN p_curso      INT,
+    IN p_desde      DATE,
+    IN p_hasta      DATE,
+    IN p_estudiante INT
+)
+BEGIN
+    -- Normalizar fechas
+    IF p_desde IS NULL OR p_desde = '' THEN
+        SET p_desde = '1900-01-01';
+    END IF;
+
+    IF p_hasta IS NULL OR p_hasta = '' THEN
+        SET p_hasta = '2999-12-31';
+    END IF;
+
+    SELECT
+        a.Id_Asistencia,
+        a.Fecha,
+        a.Id_Estudiante,
+        u.Nombre  AS Estudiante,
+        u.Email   AS Email,
+        c.Id_Curso,
+        c.Nombre  AS Curso,
+        a.Presente,
+        a.Justificada,
+       a.ComentarioJustificacion AS Comentario_Justificacion
+    FROM asistencia a
+    INNER JOIN estudiante e ON e.Id_Estudiante = a.Id_Estudiante
+    INNER JOIN usuario   u ON u.Id_Usuario    = e.Id_Estudiante
+    INNER JOIN curso     c ON c.Id_Curso      = a.Id_Curso
+    WHERE a.Id_Curso = p_curso
+      AND a.Fecha BETWEEN p_desde AND p_hasta
+      AND (
+            p_estudiante IS NULL OR
+            p_estudiante = 0 OR
+            a.Id_Estudiante = p_estudiante
+          )
+    ORDER BY u.Nombre, a.Fecha;
+END $$
+
+DELIMITER ;

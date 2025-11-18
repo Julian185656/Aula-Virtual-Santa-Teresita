@@ -40,6 +40,7 @@ session_start();
                         <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/Agenda.php">Mi Agenda</a></li>
                         <!-- ✅ NUEVO: Asistencias  -->
                         <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/HomeAsistencia.php">Asistencias</a></li>
+
                     <?php endif; ?>
                     <?php if ($rolActual === 'Estudiante'): ?>
                         <li><a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php">Mis Cursos</a></li>

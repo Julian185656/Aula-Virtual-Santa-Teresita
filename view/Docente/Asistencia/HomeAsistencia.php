@@ -93,7 +93,7 @@ session_start();
                             <p class="card-text flex-grow-1 text-muted">
                                 Consulta el historial de asistencia individual de los estudiantes.
                             </p>
-                            <a href=""
+                            <a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/Historial/HistorialAsistenciaController.php"
                                 class="btn btn-success mt-auto">Ver Historial</a>
                         </div>
                     </div>
@@ -107,7 +107,7 @@ session_start();
                             <p class="card-text flex-grow-1 text-muted">
                                 Registra como justificada la ausencias de los estudiantes, con justificacion Valida
                             </p>
-                            <a href=""
+                            <a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/Justificacion/JustificarAusenciaController.php"
                                 class="btn btn-warning text-white mt-auto">Justificar ausencia</a>
                         </div>
                     </div>
@@ -121,7 +121,7 @@ session_start();
                             <p class="card-text flex-grow-1 text-muted">
                                 Visualiza un reporte de asistencia de los estudiantes por curso.
                             </p>
-                            <a href=""
+                            <a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/Reporte/ReporteAsistenciaController.php"
                                 class="btn btn-danger mt-auto">Ver reporte</a>
                         </div>
                     </div>
