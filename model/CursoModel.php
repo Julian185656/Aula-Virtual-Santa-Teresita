@@ -65,11 +65,7 @@ class CursoModel {
     }
 
 
-public static function obtenerEstudiantes() {
-    global $pdo;
-    $stmt = $pdo->query("CALL sp_obtenerEstudiantes()");
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+
 
 public static function matricularEstudiantes($idCurso, $estudiantes) {
     global $pdo;
@@ -94,6 +90,77 @@ public static function matricularEstudiantes($idCurso, $estudiantes) {
 }
 
 
+// Obtener todos los estudiantes (opcional filtro por nombre, paginación)
+
+
+// Contar estudiantes (opcional filtro por nombre)
+
+
+// Obtener estudiantes por curso (filtro, paginación)
+
+
+
+
+
+
+
+// Obtener todos los estudiantes (filtro por nombre, paginación)
+
+
+// Obtener estudiantes por curso
+public static function obtenerEstudiantesPorCurso($idCurso, $nombre = '', $limit = 10, $offset = 0) {
+    global $pdo;
+    $sql = "SELECT u.Id_Usuario, u.Nombre
+            FROM usuario u
+            INNER JOIN matricula m ON u.Id_Usuario = m.id_estudiante
+            WHERE m.id_curso = :idCurso AND u.Nombre LIKE :nombre
+            ORDER BY u.Nombre
+            LIMIT :limit OFFSET :offset";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':idCurso', (int)$idCurso, PDO::PARAM_INT);
+    $stmt->bindValue(':nombre', "%$nombre%", PDO::PARAM_STR);
+    $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+// Contar estudiantes por curso
+public static function contarEstudiantesPorCurso($idCurso, $nombre = '') {
+    global $pdo;
+    $sql = "SELECT COUNT(*)
+            FROM usuario u
+            INNER JOIN matricula m ON u.Id_Usuario = m.id_estudiante
+            WHERE m.id_curso = :idCurso AND u.Nombre LIKE :nombre";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':idCurso', (int)$idCurso, PDO::PARAM_INT);
+    $stmt->bindValue(':nombre', "%$nombre%", PDO::PARAM_STR);
+    $stmt->execute();
+    return $stmt->fetchColumn();
+}
+
+
+
+
+public static function obtenerEstudiantes($nombre = '', $limite = 10, $offset = 0) {
+    global $pdo;
+    $stmt = $pdo->prepare("
+        SELECT Id_Usuario, Nombre
+        FROM usuario
+        WHERE Rol = 'Estudiante' AND Nombre LIKE :nombre
+        ORDER BY Nombre
+        LIMIT :limite OFFSET :offset
+    ");
+    $stmt->bindValue(':nombre', "%$nombre%", PDO::PARAM_STR);
+    $stmt->bindValue(':limite', (int)$limite, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+
+
 
 
 public static function obtenerEstudiantesPaginado($nombre='', $limite=10, $offset=0) {
@@ -109,14 +176,16 @@ public static function obtenerEstudiantesPaginado($nombre='', $limite=10, $offse
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    // Contar estudiantes para paginación
-    public static function contarEstudiantes($nombre='') {
-        global $pdo;
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuario WHERE Rol='Estudiante' AND Nombre LIKE :nombre");
-        $stmt->execute([':nombre' => "%$nombre%"]);
-        return $stmt->fetchColumn();
-    }
+public static function contarEstudiantes($nombre = '') {
+    global $pdo;
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) 
+        FROM usuario
+        WHERE Rol='Estudiante' AND Nombre LIKE :nombre
+    ");
+    $stmt->execute([':nombre' => "%$nombre%"]);
+    return $stmt->fetchColumn();
+}
 
 
 
