@@ -71,18 +71,56 @@ public static function obtenerEstudiantes() {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Matricular estudiantes a un curso
 public static function matricularEstudiantes($idCurso, $estudiantes) {
     global $pdo;
-    $stmt = $pdo->prepare("CALL sp_matricularEstudiantes(:idCurso, :idEstudiante)");
+    $stmt = $pdo->prepare("
+        INSERT INTO matricula (id_curso, id_estudiante)
+        SELECT :idCursoInsert, :idEstudianteInsert
+        WHERE NOT EXISTS (
+            SELECT 1 FROM matricula 
+            WHERE id_curso = :idCursoCheck AND id_estudiante = :idEstudianteCheck
+        )
+    ");
+
     foreach ($estudiantes as $idEstudiante) {
         $stmt->execute([
-            ':idCurso' => (int)$idCurso,
-            ':idEstudiante' => (int)$idEstudiante
+            ':idCursoInsert' => (int)$idCurso,
+            ':idEstudianteInsert' => (int)$idEstudiante,
+            ':idCursoCheck' => (int)$idCurso,
+            ':idEstudianteCheck' => (int)$idEstudiante
         ]);
     }
     return true;
 }
+
+
+
+
+public static function obtenerEstudiantesPaginado($nombre='', $limite=10, $offset=0) {
+        global $pdo;
+        $sql = "SELECT * FROM usuario 
+                WHERE Rol='Estudiante' AND Nombre LIKE :nombre 
+                ORDER BY Nombre 
+                LIMIT :limite OFFSET :offset";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':nombre', "%$nombre%", PDO::PARAM_STR);
+        $stmt->bindValue(':limite', (int)$limite, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Contar estudiantes para paginación
+    public static function contarEstudiantes($nombre='') {
+        global $pdo;
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuario WHERE Rol='Estudiante' AND Nombre LIKE :nombre");
+        $stmt->execute([':nombre' => "%$nombre%"]);
+        return $stmt->fetchColumn();
+    }
+
+
+
+
 
 
 public static function obtenerCursosEstudiante($idEstudiante) {
@@ -92,21 +130,19 @@ public static function obtenerCursosEstudiante($idEstudiante) {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-public static function obtenerCursosPorEstudiante($idEstudiante)
-{
+public static function obtenerCursosPorEstudiante($idEstudiante) {
     global $pdo;
-
-    $stmt = $pdo->prepare("CALL sp_cursos_por_estudiante(?)");
+    $stmt = $pdo->prepare("
+        SELECT c.nombre
+        FROM matricula m
+        INNER JOIN curso c ON c.Id_Curso = m.id_curso
+        WHERE m.id_estudiante = ?
+    ");
     $stmt->execute([$idEstudiante]);
-
     $resultados = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
     $stmt->closeCursor();
-
     return $resultados;
 }
-
-
 public static function obtenerEstudiantesConCurso() {
     global $pdo;
     $stmt = $pdo->query("CALL sp_estudiantes_con_curso()");
@@ -114,6 +150,23 @@ public static function obtenerEstudiantesConCurso() {
     $stmt->closeCursor();
     return $data;
 }
+
+public static function eliminarMatricula($idCurso, $idEstudiante) {
+    global $pdo;
+    $stmt = $pdo->prepare("DELETE FROM matricula WHERE id_curso = :idCurso AND id_estudiante = :idEstudiante");
+    return $stmt->execute([':idCurso' => $idCurso, ':idEstudiante' => $idEstudiante]);
+}
+
+public static function obtenerCursoIdPorNombre($nombreCurso) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT Id_Curso FROM curso WHERE nombre = :nombre LIMIT 1");
+    $stmt->execute([':nombre' => $nombreCurso]);
+    $curso = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+    return $curso['Id_Curso'] ?? null;
+}
+
+
 
 }
 ?>

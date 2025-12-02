@@ -204,12 +204,12 @@ session_start();
     <p>Consultar estadísticas y reportes de la plataforma.</p>
     <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modalReporteria">Ir</a>
 </div>
-                <div class="role-card">
-                    <i class="fa fa-book"></i>
-                    <h4>Gestionar Cursos</h4>
-                    <p>Crear y administrar cursos disponibles.</p>
-                    <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/CrearCurso.php">Ir</a>
-                </div>
+              <div class="role-card">
+    <i class="fa fa-book"></i>
+    <h4>Gestionar Cursos</h4>
+    <p>Crear, editar y administrar cursos disponibles.</p>
+    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modalGestionCursos">Ir</a>
+</div>
                 <div class="role-card">
                     <i class="fa fa-bell"></i>
                     <h4>Notificaciones</h4>
@@ -257,6 +257,73 @@ session_start();
             <?php endif; ?>
         </div>
     </div>
+
+
+<div class="modal fade" id="modalGestionCursos" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content" 
+         style="background: rgba(255,255,255,0.12); backdrop-filter: blur(12px); 
+                border-radius: 20px; border: 1px solid rgba(255,255,255,0.25); color:white;">
+
+      <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.15);">
+        <h3 class="modal-title">Gestión de Cursos</h3>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row justify-content-center g-4">
+
+
+          <div class="col-md-6 col-lg-3">
+            <div class="role-card">
+                <i class="fa fa-plus-circle"></i>
+                <h4>Crear Curso</h4>
+                <p>Agregar nuevos cursos a la plataforma.</p>
+                <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/CrearCursos.php">Ir</a>
+            </div>
+          </div>
+
+
+          <div class="col-md-6 col-lg-3">
+            <div class="role-card">
+                <i class="fa fa-edit"></i>
+                <h4>Eliminar</h4>
+                <p>Remover cursos existentes.</p>
+                <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/EliminarCurso.php">Ir</a>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-3">
+            <div class="role-card">
+                <i class="fa fa-layer-group"></i>
+                <h4>Asignar profesores</h4>
+                <p>Agregar profesores a un curso.</p>
+                <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/AsignarDocentes.php">Ir</a>
+            </div>
+          </div>
+
+   
+          <div class="col-md-6 col-lg-3">
+            <div class="role-card">
+                <i class="fa fa-user-graduate"></i>
+                <h4>Estudiantes</h4>
+                <p>Inscribir o retirar estudiantes de los cursos.</p>
+                <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/MatricularEstudiantes.php">Ir</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal-footer" style="border-top: 1px solid rgba(255,255,255,0.15);">
+        <button class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
 
     <div class="video-overlay header-text">
         <div class="caption">
@@ -307,16 +374,6 @@ session_start();
                 <h4>Calificaciones</h4>
                 <p>Consultar calificaciones generales por curso.</p>
                 <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/Rendimiento/RendimientoController.php">Ir</a>
-            </div>
-        </div>
-
-
-        <div class="col-md-6 col-lg-3">
-            <div class="role-card">
-                <i class="fa-solid fa-book"></i>
-                <h4>Cursos</h4>
-                <p>Ver información detallada de cursos.</p>
-                <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/Tareas/ReporteCursos.php">Ir</a>
             </div>
         </div>
 
