@@ -92,9 +92,28 @@ public static function obtenerCursosEstudiante($idEstudiante) {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+public static function obtenerCursosPorEstudiante($idEstudiante)
+{
+    global $pdo;
+
+    $stmt = $pdo->prepare("CALL sp_cursos_por_estudiante(?)");
+    $stmt->execute([$idEstudiante]);
+
+    $resultados = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    $stmt->closeCursor();
+
+    return $resultados;
+}
 
 
-
+public static function obtenerEstudiantesConCurso() {
+    global $pdo;
+    $stmt = $pdo->query("CALL sp_estudiantes_con_curso()");
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+    return $data;
+}
 
 }
 ?>

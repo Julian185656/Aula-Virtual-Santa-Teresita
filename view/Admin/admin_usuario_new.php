@@ -12,9 +12,97 @@ $estados = ['Activo','Inactivo'];
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nuevo usuario</title>
+
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
- <link rel="stylesheet" href="../Styles/New.css">
+
+<style>
+body {
+    background: #1f272b;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    padding: 40px 15px;
+}
+
+.card-container {
+    max-width: 500px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.07);
+    backdrop-filter: blur(12px);
+    padding: 35px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+}
+
+h1 {
+    text-align: center;
+    font-size: 1.7rem;
+    margin-bottom: 25px;
+    color: #fff;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-style {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    font-size: 0.95rem;
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.25);
+}
+
+.form-style::placeholder {
+    color: #ddd;
+}
+
+select.form-style option {
+    background: #1f272b;
+    color: #fff;
+}
+
+.btn-custom {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 12px;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.25s ease;
+    font-size: 1rem;
+}
+
+.btn-custom:hover {
+    background: rgba(255,255,255,0.35);
+}
+
+.btn-back {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    padding: 10px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 12px;
+    color: #fff;
+    text-decoration: none;
+    transition: 0.25s;
+}
+
+.btn-back:hover {
+    background: rgba(255,255,255,0.35);
+}
+</style>
+
 </head>
 <body>
 
@@ -24,23 +112,31 @@ $estados = ['Activo','Inactivo'];
     <?php if (isset($_SESSION['error_message'])): ?>
         <div class="alert alert-danger alert-custom"><?= $_SESSION['error_message']; unset($_SESSION['error_message']); ?></div>
     <?php endif; ?>
+
     <?php if (isset($_SESSION['success_message'])): ?>
-        <div class="alert alert-success alert-custom"><?= $_SESSION['success_message']; unset($_SESSION['success_message']); ?></div>
+        <div class="alert alert-success alert-custom" style="background:#28a745;">
+            <?= $_SESSION['success_message']; unset($_SESSION['success_message']); ?>
+        </div>
     <?php endif; ?>
 
     <form action="admin_usuario_new_post.php" method="post">
+
         <div class="form-group">
             <input name="Nombre" class="form-style" placeholder="Nombre completo" required>
         </div>
+
         <div class="form-group">
             <input name="Email" type="email" class="form-style" placeholder="Email institucional" required pattern=".+@santateresita\.ac\.cr">
         </div>
+
         <div class="form-group">
             <input name="Telefono" class="form-style" placeholder="Teléfono">
         </div>
+
         <div class="form-group">
             <input name="Contrasena" type="password" class="form-style" placeholder="Contraseña" required>
         </div>
+
         <div class="form-group">
             <select name="Rol" id="rol" class="form-style">
                 <?php foreach ($roles as $r): ?>
@@ -48,6 +144,7 @@ $estados = ['Activo','Inactivo'];
                 <?php endforeach; ?>
             </select>
         </div>
+
         <div class="form-group">
             <select name="Estado" class="form-style">
                 <?php foreach ($estados as $e): ?>
@@ -55,13 +152,18 @@ $estados = ['Activo','Inactivo'];
                 <?php endforeach; ?>
             </select>
         </div>
+
+        <!-- Campos Docente -->
         <div id="camposDocente" style="display:none">
             <input name="Especialidad" class="form-style" placeholder="Especialidad (Docente)">
         </div>
+
+        <!-- Campos Estudiante -->
         <div id="camposEstudiante" style="display:none">
             <input name="Grado" class="form-style" placeholder="Grado (Estudiante)">
             <input name="Seccion" class="form-style" placeholder="Sección (Estudiante)">
         </div>
+
         <button type="submit" class="btn-custom">Crear</button>
         <a href="admin_usuarios_list.php" class="btn-back">Volver</a>
     </form>
@@ -77,5 +179,6 @@ rolSel.addEventListener('change', () => {
     est.style.display = rolSel.value === 'Estudiante' ? 'block' : 'none';
 });
 </script>
+
 </body>
 </html>

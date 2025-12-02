@@ -10,7 +10,7 @@ class AgendaModel
         $this->pdo = $pdo;
     }
 
-    // ✅ Obtener actividades semanales del docente
+
     public function obtenerActividadesDocente($idDocente)
     {
         $sql = "SELECT Id_Agenda, Titulo, Descripcion, Fecha, Hora, Estado 
@@ -22,7 +22,7 @@ class AgendaModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // ✅ Crear nueva actividad
+
     public function crearActividad($idDocente, $titulo, $descripcion, $fecha, $hora)
     {
         $sql = "INSERT INTO agenda (Id_Docente, Titulo, Descripcion, Fecha, Hora, Estado)
@@ -37,7 +37,7 @@ class AgendaModel
         ]);
     }
 
-    // ✅ Editar actividad
+
     public function editarActividad($idAgenda, $titulo, $descripcion, $fecha, $hora)
     {
         $sql = "UPDATE agenda
@@ -53,7 +53,7 @@ class AgendaModel
         ]);
     }
 
-    // ✅ Eliminar actividad
+
     public function eliminarActividad($idAgenda)
     {
         $stmt = $this->pdo->prepare("DELETE FROM agenda WHERE Id_Agenda = ?");
