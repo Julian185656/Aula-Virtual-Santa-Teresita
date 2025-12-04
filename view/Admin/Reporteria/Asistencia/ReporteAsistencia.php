@@ -13,11 +13,23 @@ session_start();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background: #1f272b;
-            color: #ffffff !important;
-        }
+body{
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #c4c3ca;
+    padding: 40px 15px;
+
+    background-color: #2a2b38;
+    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+    
+    background-repeat: repeat;       
+    background-size: 600px;         
+    background-position: center top;
+
+    overflow-x: hidden;
+}
 
         h2, label, th, td, p, a, span {
             color: #ffffff !important;

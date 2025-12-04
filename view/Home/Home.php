@@ -165,11 +165,8 @@ session_start();
                 <?php $rolActual = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null); ?>
                 <?php if ($rolActual === 'Administrador'): ?>
 
-                <?php elseif ($rolActual === 'Docente'): ?>
-                    <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/ListaDocente.php">Ver Perfiles Alumnos</a></li>
-                    <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php">Mis Cursos</a></li>
-                    <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/Agenda.php">Mi Agenda</a></li>
-                    <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/HomeAsistencia.php">Asistencias</a></li>
+
+                    
                 <?php elseif ($rolActual === 'Estudiante'): ?>
                     <li><a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php">Mis Cursos</a></li>
                     <li><a href="https://wa.me/50622222222" style="color: #25D366;"><i class="fa-brands fa-whatsapp"></i> Soporte tecnico</a></li>
@@ -223,12 +220,26 @@ session_start();
                     <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Foro/ForoAdmin.php">Ir</a>
                 </div>
             <?php elseif ($rolActual === 'Docente'): ?>
+
+
                 <div class="role-card">
                     <i class="fa fa-graduation-cap"></i>
                     <h4>Mis Cursos</h4>
                     <p>Accede a tus cursos y contenidos.</p>
                     <a href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php">Ir</a>
                 </div>
+
+
+
+       <div class="role-card">
+                    <i class="fa fa-graduation-cap"></i>
+                    <h4>Ver Perfiles Alumnos</h4>
+                    <p>Ver Perfiles Alumnos</p>
+                    <a href="/Aula-Virtual-Santa-Teresita/view/Docente/ListaDocente.php">Ir</a>
+                </div>
+
+
+
                 <div class="role-card">
                     <i class="fa fa-calendar-alt"></i>
                     <h4>Mi Agenda</h4>
