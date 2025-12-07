@@ -2,16 +2,12 @@
 session_start();
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/CursoModel.php";
 
-// Validar sesión y rol estudiante
-if (!isset($_SESSION['id_usuario']) || strtolower($_SESSION['rol'] ?? '') !== 'estudiante') {
+if (!isset($_SESSION['id_usuario']) || strtolower($_SESSION['rol']) !== 'estudiante') {
     header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php?error=NoAutorizado");
     exit();
 }
 
-// Obtener ID del estudiante
-$estudianteId = (int)$_SESSION['id_usuario'];
-
-// Obtener cursos del estudiante
+$estudianteId = $_SESSION['id_usuario'];
 $cursos = CursoModel::obtenerCursosEstudiante($estudianteId);
 ?>
 <!DOCTYPE html>
@@ -21,62 +17,63 @@ $cursos = CursoModel::obtenerCursosEstudiante($estudianteId);
     <title>Mis Cursos</title>
     <link href="/Aula-Virtual-Santa-Teresita/view/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
     <style>
         body { background: #f4f4f4; font-family: 'Montserrat', sans-serif; padding: 20px; }
-        h2 { text-align: center; margin-bottom: 25px; }
-        .card { border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .card-body h5 { font-weight: 600; }
-        .btn-tareas {
-            background-color: #0d6efd; color: #fff; border-radius: 6px; padding: 6px 12px;
-            text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
-        }
-        .btn-tareas:hover { background-color: #0b5ed7; color: #fff; }
+        .card { border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+        .btn-tareas { background-color: #0d6efd; color: white; padding: 6px 12px; border-radius: 6px; }
+        .btn-material { background-color: #17a2b8; color: white; padding: 6px 12px; border-radius: 6px; }
     </style>
 </head>
+
 <body>
 
-<h2>Mis Cursos</h2>
+<h2 class="text-center mb-4">Mis Cursos</h2>
 
 <div class="container">
     <div class="row">
+
         <?php if (!empty($cursos)): ?>
             <?php foreach ($cursos as $curso): ?>
                 <div class="col-lg-4 col-md-6 col-12 mb-3">
+
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title"><?= htmlspecialchars($curso['Nombre'] ?? 'Sin nombre') ?></h5>
-                            <p class="card-text"><?= htmlspecialchars($curso['Descripcion'] ?? 'Sin descripción') ?></p>
 
-                            <!-- Botones de acciones -->
+                            <h5><?= htmlspecialchars($curso['Nombre']) ?></h5>
+                            <p><?= htmlspecialchars($curso['Descripcion']) ?></p>
+
                             <a class="btn-tareas"
-                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/TareasEstudiante.php?idCurso=<?= htmlspecialchars($curso['Id_Curso']) ?>">
-                                <i class="fa-solid fa-list"></i> Ver Tareas
+                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/TareasEstudiante.php?idCurso=<?= $curso['Id_Curso'] ?>">
+                                Ver Tareas
                             </a>
 
-                            <!-- botón Foro (estudiante) -->
                             <a class="btn btn-outline-dark ms-2"
-                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/ForoCurso.php?idCurso=<?= urlencode($curso['Id_Curso']) ?>&nombre=<?= urlencode($curso['Nombre'] ?? '') ?>">
-                                <i class="fa-solid fa-comments"></i> Foro
+                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/ForoCurso.php?idCurso=<?= $curso['Id_Curso'] ?>&nombre=<?= urlencode($curso['Nombre']) ?>">
+                                Foro
                             </a>
+
+                            <a class="btn-material ms-2"
+                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/Material.php?curso=<?= $curso['Id_Curso'] ?>">
+                                Material
+                            </a>
+
                         </div>
                     </div>
+
                 </div>
             <?php endforeach; ?>
+
         <?php else: ?>
-            <div class="col-12 text-center">
-                <p>No estás matriculado en ningún curso.</p>
-            </div>
+            <p class="text-center">No estás matriculado en ningún curso.</p>
         <?php endif; ?>
+
     </div>
 
-    <!-- ÚNICO botón inferior -->
     <div class="text-center mt-4">
-        <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn btn-secondary">
-            <i class="fa-solid fa-house"></i> Volver al Home
-        </a>
+        <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn btn-secondary">Volver al Home</a>
     </div>
-</div>
 
-<script src="/Aula-Virtual-Santa-Teresita/view/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</div>
 </body>
 </html>
