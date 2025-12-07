@@ -17,12 +17,26 @@ $estados = ['Activo','Inactivo'];
 <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
 
 <style>
-body {
-    background: #1f272b;
-    color: #fff;
-    font-family: 'Montserrat', sans-serif;
-    padding: 40px 15px;
+
+
+body{
+	font-family: 'Poppins', sans-serif;
+	font-weight: 300;
+	font-size: 15px;
+	line-height: 1.7;
+	color: #c4c3ca;
+padding: 40px 15px;
+	
+	background-color: #2a2b38;
+	background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+	background-position: bottom center;
+	background-repeat: no-repeat;
+	background-size: 300%;
+
+	overflow-x: hidden;
 }
+
+
 
 .card-container {
     max-width: 500px;

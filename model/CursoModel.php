@@ -90,24 +90,6 @@ public static function matricularEstudiantes($idCurso, $estudiantes) {
 }
 
 
-// Obtener todos los estudiantes (opcional filtro por nombre, paginación)
-
-
-// Contar estudiantes (opcional filtro por nombre)
-
-
-// Obtener estudiantes por curso (filtro, paginación)
-
-
-
-
-
-
-
-// Obtener todos los estudiantes (filtro por nombre, paginación)
-
-
-// Obtener estudiantes por curso
 public static function obtenerEstudiantesPorCurso($idCurso, $nombre = '', $limit = 10, $offset = 0) {
     global $pdo;
     $sql = "SELECT u.Id_Usuario, u.Nombre
@@ -188,7 +170,17 @@ public static function contarEstudiantes($nombre = '') {
 }
 
 
+public static function obtenerCursosAdmin() {
+    require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/config/Conexion.php";
+        global $pdo;
 
+    $sql = "SELECT Id_Curso, Nombre, Descripcion FROM cursos ORDER BY Nombre ASC";
+
+    $stmt = $con->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 
 

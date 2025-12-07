@@ -11,6 +11,28 @@ class ForoModel
         return $st->execute([$idCurso, trim($titulo), trim($contenido), $idAutor]);
     }
 
+
+
+public static function listarComentariosPorPublicacion(int $idForo)
+{
+    global $pdo;
+
+    $sql = "SELECT c.Id_Comentario, c.Texto, c.Fecha_Creacion,
+                   u.Nombre AS Autor
+            FROM comentarios_foro c
+            INNER JOIN usuarios u ON u.Id_Usuario = c.Id_Usuario
+            WHERE c.Id_Foro = ?
+            ORDER BY c.Fecha_Creacion ASC";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$idForo]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+
+
     /** Listar publicaciones activas por curso (más recientes arriba) */
     public static function listarPublicacionesPorCurso(int $idCurso): array {
         global $pdo;
@@ -69,25 +91,32 @@ class ForoModel
      * - Trae: Id_Foro, Estado, Fecha_Creacion, Id_Curso, Nombre del curso, Título,
      *   resumen de contenido (200 chars) y Autor.
      */
-    public static function adminListar(string $cursoNombre = null): array {
-        global $pdo;
-        $sql = "SELECT f.Id_Foro, f.Estado, f.Fecha_Creacion,
-                       c.Id_Curso, c.Nombre AS Curso,
-                       f.Titulo, LEFT(f.Contenido, 200) AS Resumen,
-                       u.Nombre AS Autor
-                FROM foro f
-                JOIN curso c   ON c.Id_Curso   = f.Id_Curso
-                JOIN usuario u ON u.Id_Usuario = f.Id_Autor
-                WHERE 1=1";
-        $params = [];
-        if ($cursoNombre !== null && $cursoNombre !== '') {
-            $sql .= " AND c.Nombre LIKE ?";
-            $params[] = "%".$cursoNombre."%";
-        }
-        $sql .= " ORDER BY f.Fecha_Creacion DESC";
+    public static function adminListar(?string $cursoNombre = null): array 
+{
+    global $pdo;
 
-        $st = $pdo->prepare($sql);
-        $st->execute($params);
-        return $st->fetchAll(PDO::FETCH_ASSOC);
+    $sql = "SELECT f.Id_Foro, f.Estado, f.Fecha_Creacion,
+                   c.Id_Curso, c.Nombre AS Curso,
+                   f.Titulo, LEFT(f.Contenido, 200) AS Resumen,
+                   u.Nombre AS Autor
+            FROM foro f
+            JOIN curso c   ON c.Id_Curso   = f.Id_Curso
+            JOIN usuario u ON u.Id_Usuario = f.Id_Autor
+            WHERE 1=1";
+
+    $params = [];
+
+    if (!empty($cursoNombre)) {
+        $sql .= " AND c.Nombre LIKE ?";
+        $params[] = "%$cursoNombre%";
     }
+
+    $sql .= " ORDER BY f.Fecha_Creacion DESC";
+
+    $st = $pdo->prepare($sql);
+    $st->execute($params);
+
+    return $st->fetchAll(PDO::FETCH_ASSOC);
+}
+
 }

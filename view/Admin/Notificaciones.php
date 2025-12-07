@@ -25,10 +25,23 @@ $error = $_GET['error'] ?? '';
 
 <style>
 
-body {
-    font-family: 'Montserrat', sans-serif;
-    background: #1f272b; 
-    color: #fff;
+
+body{
+    font-family: 'Montserrat', sans-serif !important;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #c4c3ca;
+    padding: 40px 15px;
+text-align: center;
+    background-color: #2a2b38;
+    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+    
+    background-repeat: repeat;       
+    background-size: 600px;         
+    background-position: center top;
+
+    overflow-x: hidden;
 }
 
 

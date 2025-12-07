@@ -158,7 +158,6 @@ session_start();
                     <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php">Mis Cursos</a></li>
                     <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/Agenda.php">Mi Agenda</a></li>
                     <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/HomeAsistencia.php">Asistencias</a></li>
-
                 <?php elseif ($rolActual === 'Estudiante'): ?>
                     <li><a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php">Mis Cursos</a></li>
                     <li><a href="https://wa.me/50622222222" style="color: #25D366;">Soporte Técnico</a></li>
@@ -227,14 +226,12 @@ session_start();
                 </div>
 
             <?php elseif ($rolActual === 'Docente'): ?>
-
                 <div class="role-card">
                     <i class="fa fa-graduation-cap"></i>
                     <h4>Mis Cursos</h4>
                     <p>Administrar contenido y tareas.</p>
                     <a href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php">Ir</a>
                 </div>
-
                 <div class="role-card">
                     <i class="fa fa-calendar-alt"></i>
                     <h4>Mi Agenda</h4>

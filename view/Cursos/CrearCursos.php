@@ -16,13 +16,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crearCurso'])) {
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <style>
-body {
+
+
+body{
     font-family: 'Montserrat', sans-serif !important;
-    background: #1f272b;
-    color: #fff;
-    padding: 20px;
-    text-align: center;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #c4c3ca;
+    padding: 40px 15px;
+text-align: center;
+    background-color: #2a2b38;
+    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+    
+    background-repeat: repeat;       
+    background-size: 600px;         
+    background-position: center top;
+
+    overflow-x: hidden;
 }
+
+
 
 
 .card-glass {
