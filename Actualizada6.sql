@@ -2364,3 +2364,36 @@ DELIMITER ;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-12-02 11:30:49
+
+ALTER TABLE entrega_tarea
+ADD COLUMN puntos_ranking TINYINT UNSIGNED NOT NULL DEFAULT 0;
+
+CREATE OR REPLACE VIEW vw_ranking_curso AS
+SELECT 
+    t.id_curso,
+    et.id_estudiante,
+    SUM(et.puntos_ranking) AS puntos_total
+FROM entrega_tarea et
+INNER JOIN tarea t ON t.id_tarea = et.id_tarea
+GROUP BY t.id_curso, et.id_estudiante;
+
+SELECT 
+    m.id_estudiante,
+    u.nombre AS nombre,
+    e.Grado,
+    e.Seccion,
+    COALESCE(SUM(et.puntos_ranking), 0) AS puntos_total
+FROM matricula m
+LEFT JOIN estudiante e 
+       ON e.Id_Estudiante = m.id_estudiante
+LEFT JOIN usuario u 
+       ON u.id_usuario = m.id_estudiante
+LEFT JOIN tarea t 
+       ON t.id_curso = m.id_curso
+LEFT JOIN entrega_tarea et  
+       ON et.id_tarea = t.id_tarea 
+      AND et.id_estudiante = m.id_estudiante
+WHERE m.id_curso = 1
+GROUP BY m.id_estudiante, u.nombre, e.Grado, e.Seccion
+ORDER BY puntos_total DESC, u.nombre ASC;
+

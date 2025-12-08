@@ -25,7 +25,8 @@ $sql = "SELECT
           et.Archivo_URL,
           et.Fecha_Entrega,
           et.Calificacion,
-          et.Comentario
+          et.Comentario,
+          et.Puntos_Ranking
         FROM matricula m
         JOIN usuario u ON u.Id_Usuario = m.Id_Estudiante
         LEFT JOIN estudiante e ON e.Id_Estudiante = m.Id_Estudiante
@@ -46,24 +47,21 @@ $filas = $st->fetchAll(PDO::FETCH_ASSOC);
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
-
-
     body{
-   
-            font-weight: 300;
-            font-size: 15px;
-            color: #c4c3ca;
-            margin: 0;
-            min-height: 100vh;
-            background-color: #2a2b38;
-            background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
-            background-repeat: no-repeat;
-            background-size: 300%;
-            background-position: center; 
-              min-height: 100vh;
+      font-weight: 300;
+      font-size: 15px;
+      color: #c4c3ca;
+      margin: 0;
+      min-height: 100vh;
+      background-color: #2a2b38;
+      background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+      background-repeat: no-repeat;
+      background-size: 300%;
+      background-position: center; 
+      min-height: 100vh;
       padding: 30px;
       font-family: 'Montserrat', sans-serif;
-        }
+    }
 
     .card-eval {
       border-left: 6px solid #4f46e5;
@@ -183,6 +181,15 @@ $filas = $st->fetchAll(PDO::FETCH_ASSOC);
           </div>
 
           <div class="mb-2">
+            <label class="form-label mb-1">Puntos Ranking (1–10)</label>
+            <input type="number" class="form-control" name="Puntos_Ranking" min="1" max="10"
+                   value="<?= $row['Puntos_Ranking'] !== null ? (int)$row['Puntos_Ranking'] : '' ?>" required>
+            <small class="text-muted">
+              Estos puntos se suman al ranking que verá el estudiante.
+            </small>
+          </div>
+
+          <div class="mb-2">
             <label class="form-label mb-1">Comentarios</label>
             <textarea class="form-control" name="Comentario" rows="2"><?= htmlspecialchars((string)$row['Comentario']) ?></textarea>
           </div>
@@ -192,7 +199,10 @@ $filas = $st->fetchAll(PDO::FETCH_ASSOC);
 
             <?php if ($evaluada): ?>
               <a class="btn btn-outline-secondary"
-                 onclick="event.preventDefault(); const f=this.closest('form'); f.Calificacion.value=''; f.Comentario.value='';">
+                 onclick="event.preventDefault(); const f=this.closest('form'); 
+                          f.Calificacion.value=''; 
+                          f.Puntos_Ranking.value=''; 
+                          f.Comentario.value='';">
                  Borrar
               </a>
             <?php endif; ?>

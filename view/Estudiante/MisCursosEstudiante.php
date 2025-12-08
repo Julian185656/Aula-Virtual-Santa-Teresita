@@ -21,8 +21,13 @@ $cursos = CursoModel::obtenerCursosEstudiante($estudianteId);
     <style>
         body { background: #f4f4f4; font-family: 'Montserrat', sans-serif; padding: 20px; }
         .card { border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
-        .btn-tareas { background-color: #0d6efd; color: white; padding: 6px 12px; border-radius: 6px; }
-        .btn-material { background-color: #17a2b8; color: white; padding: 6px 12px; border-radius: 6px; }
+
+        .btn-tareas { background-color: #0d6efd; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; }
+        .btn-material { background-color: #17a2b8; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; }
+
+        /* NUEVO */
+        .btn-ranking { background-color: #6f42c1; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; }
+        .btn-tareas:hover, .btn-material:hover, .btn-ranking:hover { opacity: 0.9; color: white; }
     </style>
 </head>
 
@@ -56,6 +61,12 @@ $cursos = CursoModel::obtenerCursosEstudiante($estudianteId);
                             <a class="btn-material ms-2"
                                href="/Aula-Virtual-Santa-Teresita/view/Estudiante/Material.php?curso=<?= $curso['Id_Curso'] ?>">
                                 Material
+                            </a>
+
+                            <!-- NUEVO BOTÓN RANKING -->
+                            <a class="btn-ranking ms-2"
+                               href="/Aula-Virtual-Santa-Teresita/controller/RankingController.php?idCurso=<?= $curso['Id_Curso'] ?>">
+                                Ranking
                             </a>
 
                         </div>
