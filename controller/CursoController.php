@@ -13,15 +13,14 @@ class CursoController {
         }
     }
 
-    public static function asignarDocentes() {
-        if (isset($_POST['idCurso'], $_POST['docentes'])) {
-            $idCurso = $_POST['idCurso'];
-            $docentes = $_POST['docentes'];
+public static function asignarDocentes() {
+    if (!empty($_POST['asignaciones'])) {
+        foreach ($_POST['asignaciones'] as $idCurso => $docentes) {
             CursoModel::asignarDocentes($idCurso, $docentes);
-            header("Location: AsignarDocentes.php");
-            exit;
         }
     }
+}
+
 
 
     public static function eliminarCurso($idCurso) {

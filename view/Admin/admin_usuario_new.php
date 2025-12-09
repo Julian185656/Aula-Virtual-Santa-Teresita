@@ -2,7 +2,7 @@
 require __DIR__ . '/../../controller/auth_admin.php';
 require __DIR__ . '/../../model/db.php';
 
-$roles = ['Administrador','Docente','Estudiante','Padre'];
+$roles = ['Administrador','Docente','Estudiante'];
 $estados = ['Activo','Inactivo'];
 ?>
 
@@ -169,12 +169,11 @@ select.form-style option {
 
 
         <div id="camposDocente" style="display:none">
-            <input name="Especialidad" class="form-style" placeholder="Especialidad (Docente)">
+
         </div>
 
         <div id="camposEstudiante" style="display:none">
-            <input name="Grado" class="form-style" placeholder="Grado (Estudiante)">
-            <input name="Seccion" class="form-style" placeholder="Sección (Estudiante)">
+            
         </div>
 
         <button type="submit" class="btn-custom">Crear</button>

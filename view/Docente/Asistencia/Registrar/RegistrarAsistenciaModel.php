@@ -15,19 +15,31 @@ class RegistrarAsistenciaModel
      * Obtiene los cursos asignados al docente.
      * @return array
      */
-    public function obtenerCursosDocente(int $docenteId): array
+public function obtenerCursosDocente(int $docenteId): array
 {
     try {
-    
-        $stmt = $this->pdo->prepare("EXEC aulavirtual.sp_asist_cursos_por_docente @docente_id = ?");
-        $stmt->execute([$docenteId]);
+        $sql = "
+            SELECT c.Id_Curso, c.Nombre AS Curso
+            FROM aulavirtual.curso c
+            INNER JOIN aulavirtual.curso_docente cd
+                ON cd.Id_Curso = c.Id_Curso
+            WHERE cd.Id_Docente = :docenteId
+            ORDER BY c.Nombre
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':docenteId', $docenteId, PDO::PARAM_INT);
+        $stmt->execute();
+
         $cursos = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
         $stmt->closeCursor();
+
         return $cursos;
     } catch (\Exception $e) {
         throw new \Exception("Error al obtener cursos del docente: " . $e->getMessage());
     }
 }
+
 
     /**
      * Obtiene alumnos de un curso con paginación.
@@ -83,13 +95,20 @@ public function obtenerAlumnosPaginado(int $cursoId, int $pagina = 1, int $limit
 
 
 
-    public function obtenerAsistenciaDia(int $cursoId, string $fecha): array
+public function obtenerAsistenciaDia(int $cursoId, string $fecha): array
 {
     try {
         $fecha = $this->normalizarFecha($fecha);
 
-        $stmt = $this->pdo->prepare("EXEC aulavirtual.sp_asist_obtener_dia @curso_id = ?, @fecha = ?");
-        $stmt->execute([$cursoId, $fecha]);
+        $stmt = $this->pdo->prepare("
+            SELECT Id_Estudiante, Presente
+            FROM aulavirtual.asistencia
+            WHERE Id_Curso = :curso AND Fecha = :fecha
+        ");
+        $stmt->execute([
+            ':curso' => $cursoId,
+            ':fecha' => $fecha
+        ]);
 
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
         $stmt->closeCursor();
@@ -99,6 +118,7 @@ public function obtenerAlumnosPaginado(int $cursoId, int $pagina = 1, int $limit
             $map[(int)$r['Id_Estudiante']] = (int)$r['Presente'];
         }
         return $map;
+
     } catch (\Exception $e) {
         throw new \Exception("Error al obtener la asistencia del día: " . $e->getMessage());
     }
