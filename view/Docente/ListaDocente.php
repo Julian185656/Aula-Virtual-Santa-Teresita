@@ -13,13 +13,12 @@ $model = new AlumnoModel($pdo);
 $medModel = new MedicoModel($pdo);
 $docenteId = $_SESSION['id_usuario'];
 
-// Parámetros de paginación y búsqueda
 $limit = 10;
 $page = isset($_GET['page']) ? max((int)$_GET['page'], 1) : 1;
 $search = $_GET['search'] ?? '';
 $offset = ($page - 1) * $limit;
 
-// Obtener alumnos y total
+
 $alumnos = $model->obtenerAlumnosDeDocentePaginado($docenteId, $limit, $offset, $search);
 $totalAlumnos = $model->contarAlumnos($docenteId, $search);
 $totalPaginas = ceil($totalAlumnos / $limit);

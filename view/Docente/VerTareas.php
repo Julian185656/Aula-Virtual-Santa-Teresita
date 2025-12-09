@@ -18,13 +18,13 @@ if (!$curso) {
     die("Curso no encontrado.");
 }
 
-// Nombre correcto según tu BD
+
 $cursoNombre = $curso['Nombre'];
 
 $tareaModel = new TareaModel($pdo);
 $tareas = $tareaModel->obtenerTareasPorCurso($cursoId);
 
-// Eliminar tarea
+
 if (isset($_GET['eliminar'])) {
     $idTarea = (int)$_GET['eliminar'];
     $tareaModel->eliminarTarea($idTarea);

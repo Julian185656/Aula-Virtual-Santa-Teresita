@@ -13,12 +13,12 @@ class RegistrarAsistenciaModel
 
     /**
      * Obtiene los cursos asignados al docente.
-     * @return array [ [Id_Curso, Curso], ... ]
+     * @return array
      */
     public function obtenerCursosDocente(int $docenteId): array
 {
     try {
-        // SQL Server: usar EXEC y parámetros con ?
+    
         $stmt = $this->pdo->prepare("EXEC aulavirtual.sp_asist_cursos_por_docente @docente_id = ?");
         $stmt->execute([$docenteId]);
         $cursos = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
@@ -41,7 +41,7 @@ public function obtenerAlumnosPaginado(int $cursoId, int $pagina = 1, int $limit
 
         $offset = ($pagina - 1) * $limite;
 
-        // 1) Total de alumnos
+    
         $stmtTotal = $this->pdo->prepare("
             SELECT COUNT(*) AS Total
             FROM aulavirtual.matricula m
@@ -51,8 +51,7 @@ public function obtenerAlumnosPaginado(int $cursoId, int $pagina = 1, int $limit
         $totalRow = $stmtTotal->fetch(PDO::FETCH_ASSOC);
         $total = isset($totalRow['Total']) ? (int)$totalRow['Total'] : 0;
 
-        // 2) Página de alumnos
-        // Usamos la tabla usuario directamente, no estudiante
+       
         $sql = "
             SELECT 
                 m.Id_Estudiante,
@@ -125,14 +124,14 @@ public function guardarLoteAsistencia(int $cursoId, string $fecha, int $docenteI
     try {
         $this->pdo->beginTransaction();
 
-        // Verificamos que el curso exista
+     
         $stmtCurso = $this->pdo->prepare("SELECT 1 FROM aulavirtual.curso WHERE Id_Curso = :curso");
         $stmtCurso->execute([':curso' => $cursoId]);
         if (!$stmtCurso->fetch()) {
             throw new \Exception("El curso no existe.");
         }
 
-        // UPDATE primero
+     
         $stmtUpdate = $this->pdo->prepare("
             UPDATE aulavirtual.asistencia
                SET Presente = :presente
@@ -141,13 +140,12 @@ public function guardarLoteAsistencia(int $cursoId, string $fecha, int $docenteI
                AND Fecha         = :fecha
         ");
 
-        // INSERT si no existía registro
+       
         $stmtInsert = $this->pdo->prepare("
             INSERT INTO aulavirtual.asistencia (Id_Estudiante, Id_Curso, Fecha, Presente)
             VALUES (:estudiante, :curso, :fecha, :presente)
         ");
 
-        // Traemos todos los estudiantes válidos
         $stmtEst = $this->pdo->query("SELECT Id_Usuario FROM aulavirtual.usuario WHERE Rol = 'Estudiante'");
         $estudiantesValidos = $stmtEst->fetchAll(PDO::FETCH_COLUMN, 0);
 
@@ -157,10 +155,10 @@ public function guardarLoteAsistencia(int $cursoId, string $fecha, int $docenteI
             $est = (int)($item['Id_Estudiante'] ?? 0);
             $pres = isset($item['Presente']) && (int)$item['Presente'] === 1 ? 1 : 0;
 
-            // Validar FK estudiante
+         
             if (!in_array($est, $estudiantesValidos)) continue;
 
-            // UPDATE primero
+          
             $stmtUpdate->execute([
                 ':presente'   => $pres,
                 ':estudiante' => $est,
@@ -168,7 +166,7 @@ public function guardarLoteAsistencia(int $cursoId, string $fecha, int $docenteI
                 ':fecha'      => $fecha
             ]);
 
-            // Si no se actualizó nada, hacemos INSERT
+            
             if ($stmtUpdate->rowCount() === 0) {
                 $stmtInsert->execute([
                     ':presente'   => $pres,
@@ -192,18 +190,18 @@ public function guardarLoteAsistencia(int $cursoId, string $fecha, int $docenteI
 
 
 
-    /** Normaliza fecha a 'Y-m-d'. Si viene vacía, usa hoy. */
+ 
     private function normalizarFecha(?string $fecha): string
     {
         if (!$fecha || trim($fecha) === '') {
             return date('Y-m-d');
         }
-        // Acepta formatos dd/mm/YYYY
+     
         if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $fecha)) {
             [$d, $m, $y] = explode('/', $fecha);
             return sprintf('%04d-%02d-%02d', (int)$y, (int)$m, (int)$d);
         }
-        // Confía si parece YYYY-mm-dd
+ 
         return substr($fecha, 0, 10);
     }
 }

@@ -23,6 +23,6 @@ class CN_BD {
     }
 }
 
-// Crear variable global $pdo
+
 $cn = new CN_BD();
 $pdo = $cn->conectar();

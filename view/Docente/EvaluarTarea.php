@@ -99,7 +99,7 @@ p {
 }
 
 .right-side {
-    flex: 0 0 360px; /* ancho fijo para formulario */
+    flex: 0 0 360px;
 }
 
 .btn-outline-secondary.back-btn {

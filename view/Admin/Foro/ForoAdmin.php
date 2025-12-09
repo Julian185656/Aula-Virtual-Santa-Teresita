@@ -46,7 +46,7 @@ body{
 }
 
 
-/* Título */
+
 .page-title {
     text-align: center;
     font-weight: 700;
@@ -54,7 +54,7 @@ body{
     margin-bottom: 25px;
 }
 
-/* FILTRO */
+
 #filtro {
     display: block;
     margin: 0 auto 25px auto;
@@ -72,7 +72,7 @@ body{
 #filtro::placeholder { color: #ddd; }
 #filtro:focus { background: rgba(255,255,255,0.2); box-shadow: 0 0 10px rgba(255,255,255,0.2); }
 
-/* GRID DE CURSOS */
+
 #gridCursos {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -80,7 +80,7 @@ body{
     padding-bottom: 40px;
 }
 
-/* TARJETA CUADRO */
+
 .item-curso .card {
     background: rgba(255,255,255,0.08);
     border-radius: 18px;
@@ -114,7 +114,7 @@ body{
     margin-bottom: 15px;
 }
 
-/* BOTÓN MODERAR */
+
 .item-curso .btn-foro {
     padding: 8px 18px;
     border-radius: 12px;
@@ -131,7 +131,7 @@ body{
     color: #1f272b;
 }
 
-/* BADGE ID */
+
 .badge-id {
     font-size: 0.75rem;
     background: rgba(255,255,255,0.15);
@@ -140,7 +140,7 @@ body{
     border-radius: 50px;
 }
 
-/* BOTÓN VOLVER */
+
 .btn-secondary {
     display: inline-block;
     background: rgba(255,255,255,0.15);

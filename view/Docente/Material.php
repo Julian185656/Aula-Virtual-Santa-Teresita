@@ -4,7 +4,7 @@ session_start();
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/db.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/MaterialModel.php";
 
-// Validar acceso (solo docente)
+
 $rol = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null);
 $rol = strtolower($rol);
 
@@ -53,7 +53,7 @@ $msg = $_GET['msg'] ?? '';
         <div class="alert alert-info fw-bold text-center"><?= htmlspecialchars($msg) ?></div>
     <?php endif; ?>
 
-    <!-- Subir material -->
+   
     <div class="glass mb-4">
         <form action="/Aula-Virtual-Santa-Teresita/controller/MaterialController.php" method="POST" enctype="multipart/form-data">
 
@@ -74,7 +74,6 @@ $msg = $_GET['msg'] ?? '';
         </form>
     </div>
 
-    <!-- Tabla de material -->
     <div class="glass">
         <table class="table table-dark table-striped">
             <thead>

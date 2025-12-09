@@ -131,7 +131,7 @@ public static function obtenerEstudiantesPorCurso($idCurso, $nombre = '', $limit
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Contar estudiantes por curso
+
 public static function contarEstudiantesPorCurso($idCurso, $nombre = '') {
     global $pdo;
     $sql = "SELECT COUNT(*)
@@ -210,10 +210,10 @@ public static function obtenerCursosAdmin() {
 public static function obtenerCursosEstudiante($idEstudiante) {
     global $pdo;
 
-    // Cambié :idEstudiante por ?
+
     $stmt = $pdo->prepare("EXEC aulavirtual.sp_obtenerCursosEstudiante ?");
     
-    // Pasar el parámetro como array posicional
+
     $stmt->execute([$idEstudiante]);
     
     return $stmt->fetchAll(PDO::FETCH_ASSOC);

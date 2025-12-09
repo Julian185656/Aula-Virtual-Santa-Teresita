@@ -5,11 +5,11 @@
 <title>Historial de Asistencia</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Bootstrap e íconos -->
+
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-<!-- Fuente -->
+
 <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
 
 <style>
@@ -30,7 +30,7 @@ body{
 .container { max-width: 1200px; margin: 0 auto; }
 h2 { color: #fff; text-align: center; margin-bottom: 30px; text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
 
-/* Botón volver */
+
 .btn-outline-light {
     border-radius: 15px;
     padding: 8px 20px;
@@ -64,7 +64,7 @@ form button {
     padding: 10px 20px;
 }
 
-/* Card */
+
 .card {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 20px;
@@ -73,7 +73,7 @@ form button {
     color: #fff;
 }
 
-/* Tabla */
+
 .table thead {
     background: rgba(255,255,255,0.1);
     font-weight: bold;
@@ -85,7 +85,7 @@ form button {
 .table tr:hover { background: rgba(255,255,255,0.1); }
 .badge { font-weight: 500; }
 
-/* Botones */
+
 .btn-primary {
     background-color: #6a5acd;
     border: none;
@@ -97,7 +97,7 @@ form button {
 }
 .btn-outline-primary:hover { background-color: rgba(255,255,255,0.15); }
 
-/* Paginación */
+
 .pagination a {
     color: #fff;
     background: rgba(255,255,255,0.1);
@@ -120,7 +120,6 @@ form button {
         Historial de asistencia individual
     </h2>
 
-    <!-- Filtros -->
     <form method="GET" class="row g-3 align-items-end mb-4">
         <div class="col-md-4">
             <label class="form-label">Curso</label>
@@ -154,7 +153,7 @@ form button {
 
     <div class="row">
 
-        <!-- Lista de alumnos -->
+   
         <div class="col-lg-5 mb-4">
             <div class="card shadow-sm h-100 p-3">
                 <h5 class="mb-3"><i class="bi bi-people-fill me-2"></i> Estudiantes del curso</h5>
@@ -187,7 +186,7 @@ form button {
             </div>
         </div>
 
-        <!-- Historial del alumno -->
+
         <div class="col-lg-7 mb-4">
             <div class="card shadow-sm h-100 p-3">
                 <h5 class="mb-3"><i class="bi bi-card-checklist me-2"></i> Historial del alumno</h5>

@@ -178,7 +178,7 @@ tbody tr:hover {
       <div class="alert alert-danger text-center"><?= htmlspecialchars($error) ?></div>
   <?php endif; ?>
 
-  <!-- Crear nueva notificación -->
+ 
   <div class="card shadow-sm">
       <div class="card-body">
           <h5 class="fw-bold mb-3">Crear nueva notificación</h5>
@@ -213,7 +213,7 @@ tbody tr:hover {
       </div>
   </div>
 
-  <!-- Historial de notificaciones -->
+
   <div class="card-glass">
       <h5 class="fw-bold mb-3">Historial de Notificaciones</h5>
       <?php if (empty($notificaciones)): ?>

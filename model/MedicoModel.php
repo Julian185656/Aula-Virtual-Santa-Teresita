@@ -6,7 +6,7 @@ class MedicoModel {
         $this->db = $pdo;
     }
 
-    // Obtener info médica de un estudiante
+ 
     public function obtenerInfoMedica($idEstudiante) {
         $sql = "SELECT Alergias, Medicamentos, EnfermedadesCronicas, Observaciones
                 FROM aulavirtual.informacion_medica
@@ -16,7 +16,7 @@ class MedicoModel {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Guardar info médica (insert o update)
+ 
     public function guardarInfoMedica($id, $alergias, $medicamentos, $enfermedades, $observaciones) {
         $sql = "
         IF EXISTS (SELECT 1 FROM aulavirtual.informacion_medica WHERE Id_Estudiante = ?)

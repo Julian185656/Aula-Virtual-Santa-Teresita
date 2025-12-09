@@ -25,7 +25,7 @@ if (!class_exists('CN_BD')) {
     }
 }
 
-// Crear la instancia global si aún no existe
+
 if (!isset($pdo)) {
     $cn = new CN_BD();
     $pdo = $cn->conectar();

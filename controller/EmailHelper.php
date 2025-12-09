@@ -9,7 +9,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . '/Aula-Virtual-Santa-Teresita/controlle
 function EnviarCorreo($asunto, $contenido, $destinatario)
 {
     $correoSalida = "grupomoras.a19@gmail.com";
-    $contrasennaSalida = "njdmhpkjalyjsosv"; // contraseña de app de Gmail
+    $contrasennaSalida = "njdmhpkjalyjsosv";
 
     $mail = new PHPMailer(true);
 

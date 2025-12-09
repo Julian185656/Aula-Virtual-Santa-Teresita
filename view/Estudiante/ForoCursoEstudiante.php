@@ -4,7 +4,7 @@ session_start();
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/ForoModel.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/CursoModel.php";
 
-/* --- Guardas y validaciones básicas --- */
+
 if (!isset($_SESSION['id_usuario']) || strtolower($_SESSION['rol'] ?? '') !== 'estudiante') {
   header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php?error=NoAutorizado");
   exit();
@@ -14,23 +14,23 @@ $estudianteId = (int) $_SESSION['id_usuario'];
 $idCurso      = (int) ($_GET['idCurso'] ?? 0);
 $nombreCurso  = trim($_GET['nombre'] ?? '');
 
-/* Si no viene idCurso o no está matriculado => redirigir */
+
 if ($idCurso <= 0) {
   header("Location: /Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php");
   exit();
 }
 
-/* --- Mensajes por PRG (Post/Redirect/Get) --- */
+
 $flash_ok = $_GET['ok'] ?? '';
 $flash_er = $_GET['er'] ?? '';
 
-/* --- CSRF simple para evitar doble envío por refresh --- */
+
 if (empty($_SESSION['csrf_for_est_forum'])) {
   $_SESSION['csrf_for_est_forum'] = bin2hex(random_bytes(16));
 }
 $csrf = $_SESSION['csrf_for_est_forum'];
 
-/* --- Crear publicación --- */
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crear'])) {
   if (!hash_equals($csrf, $_POST['csrf'] ?? '')) {
     header("Location: ?idCurso={$idCurso}&er=Token%20inv%C3%A1lido");
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crear'])) {
   exit();
 }
 
-/* --- Listado de publicaciones del curso --- */
+
 $posts = ForoModel::listarPublicacionesPorCurso($idCurso);
 ?>
 <!doctype html>
@@ -172,7 +172,7 @@ $posts = ForoModel::listarPublicacionesPorCurso($idCurso);
       <div class="alert alert-danger"><?= htmlspecialchars($flash_er) ?></div>
     <?php endif; ?>
 
-    <!-- Crear nueva publicación -->
+
     <div class="card mb-4">
       <div class="card-body">
         <h5 class="mb-3"><i class="fa-regular fa-square-plus"></i> Crear nueva publicación</h5>
@@ -193,7 +193,7 @@ $posts = ForoModel::listarPublicacionesPorCurso($idCurso);
       </div>
     </div>
 
-    <!-- Lista de publicaciones -->
+  
     <?php foreach ($posts as $p): ?>
       <div class="card mb-3">
         <div class="card-body">

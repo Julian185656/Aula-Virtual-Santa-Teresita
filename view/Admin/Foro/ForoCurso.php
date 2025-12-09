@@ -2,21 +2,21 @@
 session_start();
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/ForoModel.php";
 
-// ✅ Solo ADMIN
+
 $rol = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null);
 if (!isset($_SESSION['id_usuario']) || !is_string($rol) || strcasecmp($rol, 'Administrador') !== 0) {
     header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php?error=NoAutorizado");
     exit();
 }
 
-// 📌 Curso a moderar
+
 $idCurso = (int)($_GET['idCurso'] ?? 0);
 if ($idCurso <= 0) {
     header("Location: /Aula-Virtual-Santa-Teresita/view/Admin/Foro/ForoAdmin.php");
     exit();
 }
 
-// 🗑️ Acciones: eliminar publicación o comentario
+
 $flashOk = $flashErr = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// 📥 Cargar publicaciones reales del curso
+
 $posts = ForoModel::listarPublicacionesPorCurso($idCurso);
 ?>
 <!DOCTYPE html>
@@ -90,7 +90,7 @@ body{
     color: #dc3545;
 }
 
-/* Contenedor publicaciones */
+
 .container-posts {
     display: flex;
     flex-direction: column;
@@ -99,7 +99,7 @@ body{
     margin: 0 auto 30px;
 }
 
-/* Tarjetas glass */
+
 .card-glass {
     background: rgba(255,255,255,0.05);
     border-radius: 20px;
@@ -173,7 +173,7 @@ body{
     border-radius: 15px;
     padding: 10px;
     margin-top: 10px;
-    text-align: left; /* <-- Aquí forzamos que todo quede a la izquierda */
+    text-align: left;
 }
 
 .comment {
@@ -181,7 +181,7 @@ body{
     padding-left: 12px;
     margin-left: 6px;
     margin-bottom: 10px;
-    text-align: left; /* <-- Comentarios alineados a la izquierda */
+    text-align: left;
 }
 
 </style>

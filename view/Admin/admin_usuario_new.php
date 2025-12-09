@@ -167,12 +167,11 @@ select.form-style option {
             </select>
         </div>
 
-        <!-- Campos Docente -->
+
         <div id="camposDocente" style="display:none">
             <input name="Especialidad" class="form-style" placeholder="Especialidad (Docente)">
         </div>
 
-        <!-- Campos Estudiante -->
         <div id="camposEstudiante" style="display:none">
             <input name="Grado" class="form-style" placeholder="Grado (Estudiante)">
             <input name="Seccion" class="form-style" placeholder="Sección (Estudiante)">

@@ -4,18 +4,14 @@ session_start();
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/db.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/MaterialModel.php";
 
-/**********************************************************
- * VALIDACIÓN DE ACCESO
- **********************************************************/
 
-// Obtener rol sin importar estructura
 $rol = null;
 
-// Caso 1: Login guarda $_SESSION['usuario']['rol']
+
 if (isset($_SESSION['usuario']['rol'])) {
     $rol = strtolower($_SESSION['usuario']['rol']);
 }
-// Caso 2: Login guarda $_SESSION['rol']
+
 elseif (isset($_SESSION['rol'])) {
     $rol = strtolower($_SESSION['rol']);
 }
@@ -25,15 +21,9 @@ if (!isset($_SESSION['id_usuario']) || !in_array($rol, ['administrador', 'docent
     exit();
 }
 
-/**********************************************************
- * INSTANCIA DEL MODELO
- **********************************************************/
 $model = new MaterialModel($pdo);
 $idUsuario = $_SESSION['id_usuario'];
 
-/**********************************************************
- * SUBIR ARCHIVO
- **********************************************************/
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $accion = $_POST['accion'] ?? '';
@@ -62,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $model->guardarMaterial($cursoId, $idUsuario, $titulo, $descripcion, $rutaBD);
 
-            // Redirección correcta según rol
+       
             if ($rol === "administrador") {
                 header("Location: /Aula-Virtual-Santa-Teresita/view/Admin/MaterialAdmin.php?curso=$cursoId&msg=subido");
             } else {
@@ -75,9 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    /**********************************************************
-     * ELIMINAR ARCHIVO
-     **********************************************************/
     if ($accion === 'eliminar') {
 
         $idMaterial = intval($_POST['idMaterial']);
@@ -103,9 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-/**********************************************************
- * DESCARGAR ARCHIVO
- **********************************************************/
+
 if (isset($_GET['accion']) && $_GET['accion'] === 'descargar') {
 
     $idMaterial = intval($_GET['id']);

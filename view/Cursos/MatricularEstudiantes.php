@@ -1,22 +1,22 @@
 <?php
 require_once __DIR__ . '/../../model/CursoModel.php';
 
-// --- Parámetros de filtro y paginación ---
-$nombreFiltro = $_GET['nombreEstudiante'] ?? '';
-$pagina = max(1, (int)($_GET['pagina'] ?? 1)); // página actual
-$porPagina = 10;                               // registros por página
-$offset = ($pagina - 1) * $porPagina;         // inicio para LIMIT
 
-// --- Obtener cursos ---
+$nombreFiltro = $_GET['nombreEstudiante'] ?? '';
+$pagina = max(1, (int)($_GET['pagina'] ?? 1)); 
+$porPagina = 10;                               
+$offset = ($pagina - 1) * $porPagina;       
+
+
 $cursos = CursoModel::obtenerCursos();
 $cursoSeleccionado = $_POST['idCursoMatricula'] ?? $_GET['idCursoMatricula'] ?? null;
 
-// --- Obtener estudiantes y total ---
+
 $estudiantes = CursoModel::obtenerEstudiantes($nombreFiltro, $porPagina, $offset);
 $totalEstudiantes = CursoModel::contarEstudiantes($nombreFiltro);
 $totalPaginas = ceil($totalEstudiantes / $porPagina);
 
-// --- Corregir índices para evitar errores ---
+
 foreach ($estudiantes as &$est) {
     if (!isset($est['Id_Usuario'])) $est['Id_Usuario'] = $est['id'] ?? null;
     if (!isset($est['Nombre'])) $est['Nombre'] = $est['nombre'] ?? '';
@@ -25,7 +25,7 @@ unset($est);
 
 $mensaje = "";
 
-// --- Procesar formularios ---
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['matricular'])) {
         CursoModel::matricularEstudiantes($_POST['idCursoMatricula'], $_POST['estudiantes'] ?? []);
@@ -87,7 +87,7 @@ button:hover, .eliminar-btn:hover { background: rgba(255,255,255,0.35); }
 h1 i { font-size: 40px; margin-bottom: 10px; }
 .alert-success { background: rgba(0,255,0,0.2); color:#0f0; padding:10px; margin-bottom:20px; border-radius:10px; }
 
-/* Filtro */
+
 .form-filtro { display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:20px; max-width:600px; margin-left:auto; margin-right:auto; }
 .form-filtro form { flex:1; display:flex; gap:10px; align-items:center; }
 .form-filtro input[type="text"], .form-filtro select { flex:1; }
@@ -104,9 +104,9 @@ h1 i { font-size: 40px; margin-bottom: 10px; }
         <div class="alert alert-success"><?= htmlspecialchars($mensaje) ?></div>
     <?php endif; ?>
 
-    <!-- Filtro y selección de curso -->
+    
     <div class="form-filtro">
-        <!-- Buscador -->
+      
 
 
 <form method="GET">
@@ -128,11 +128,11 @@ h1 i { font-size: 40px; margin-bottom: 10px; }
             <button type="submit"><i class="bi bi-search"></i> Buscar</button>
         </form>
 
-        <!-- Selección de curso -->
+       
         
     </div>
 
-    <!-- Tabla de estudiantes -->
+   
     <form method="POST">
         <input type="hidden" name="idCursoMatricula" value="<?= htmlspecialchars($cursoSeleccionado) ?>">
         <table>
@@ -182,7 +182,7 @@ h1 i { font-size: 40px; margin-bottom: 10px; }
         <?php endif; ?>
     </form>
 
-    <!-- Paginación -->
+ 
     <div style="margin-top:20px;">
         <?php for ($p=1; $p<=$totalPaginas; $p++): ?>
             <a href="?nombreEstudiante=<?= urlencode($nombreFiltro) ?>&idCursoMatricula=<?= $cursoSeleccionado ?>&pagina=<?= $p ?>" style="margin:2px; padding:5px 10px; background:#333; color:#fff; border-radius:5px; text-decoration:none; <?= ($p==$pagina)?'font-weight:bold;background:#555;':'' ?>"><?= $p ?></a>

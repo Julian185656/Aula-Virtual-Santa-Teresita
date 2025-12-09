@@ -53,7 +53,7 @@ body{
     color: #ffffff;
     padding: 40px 15px;
     text-align: center;
-    background-color: #1e1f2a; /* fondo general oscuro */
+    background-color: #1e1f2a; 
     background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
     background-repeat: repeat;       
     background-size: 600px;         
@@ -61,27 +61,27 @@ body{
     overflow-x: hidden;
 }
 
-/* Contenedor general */
+
 .page {
     max-width: 1100px;
     margin: 24px auto;
 }
 
-/* Tarjetas de publicaciones */
+
 .card {
     border: 0;
     border-radius: 14px;
     box-shadow: 0 10px 20px rgba(0,0,0,.6);
-    background: rgba(30,30,40,0.9); /* fondo oscuro para la tarjeta */
+    background: rgba(30,30,40,0.9); 
     color: #ffffff;
-    text-align: center; /* títulos y contenido centrado */
+    text-align: center; 
 }
 
-/* Comentarios */
+
 .bg-light {
-    background: rgba(0,0,0,0.4) !important; /* fondo oscuro glass */
+    background: rgba(0,0,0,0.4) !important; 
     color: #ffffff !important;
-    text-align: left; /* comentarios alineados a la izquierda */
+    text-align: left; 
     padding: 15px;
     border-radius: 10px;
 }
@@ -94,7 +94,7 @@ body{
     text-align: left;
 }
 
-/* Botones */
+
 .btn-primary {
     background: #3b82f6;
     border: none;
@@ -115,7 +115,7 @@ body{
     background: rgba(255,255,255,0.35);
 }
 
-/* Inputs y textarea */
+
 textarea,
 input {
     background: rgba(255,255,255,0.1);
@@ -130,7 +130,7 @@ input::placeholder {
     opacity: 0.7;
 }
 
-/* Títulos */
+
 .header-title {
     font-weight: 700;
     color: #ffffff;

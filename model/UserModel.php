@@ -38,13 +38,13 @@ class UserModel
         return strtolower(trim($email));
     }
 
-    // LOGIN
+
     public static function iniciarSesion(string $correo, string $contrasenna): ?array
     {
         $correo = self::cleanEmail($correo);
         $pdo = self::conn();
 
-        // OJO: usar dbo.usuario o el schema correcto
+       
         $sql = "SELECT TOP 1 Id_Usuario, Nombre, Email, Contrasena, Rol, Estado, Telefono
 FROM aulavirtual.usuario
 WHERE Email = ?";
@@ -55,7 +55,7 @@ WHERE Email = ?";
 
         if (!$row) return null;
 
-        // Verifica contraseña en texto plano
+ 
         if ($contrasenna !== $row['Contrasena']) {
             return null;
         }
@@ -68,7 +68,7 @@ WHERE Email = ?";
         return $row;
     }
 
-    // REGISTRO
+
     public static function registrarUsuario(
         string $nombre,
         string $correo,

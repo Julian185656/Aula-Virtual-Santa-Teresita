@@ -71,7 +71,7 @@ session_start();
             <p class="text-muted mb-5">Selecciona el tipo de reporte que deseas visualizar o descargar:</p>
 
             <div class="row g-4 justify-content-center">
-                <!-- Registro de Asistencia -->
+              
                 <div class="col-md-6 col-lg-3">
                     <div class="card shadow-sm h-100">
                         <div class="card-body d-flex flex-column">
@@ -85,7 +85,6 @@ session_start();
                     </div>
                 </div>
 
-                <!-- Historial de asistencia -->
                 <div class="col-md-6 col-lg-3">
                     <div class="card shadow-sm h-100">
                         <div class="card-body d-flex flex-column">
@@ -99,7 +98,7 @@ session_start();
                     </div>
                 </div>
 
-                <!-- Justificacion de Ausencias -->
+              
                 <div class="col-md-6 col-lg-3">
                     <div class="card shadow-sm h-100">
                         <div class="card-body d-flex flex-column">
@@ -113,7 +112,7 @@ session_start();
                     </div>
                 </div>
 
-                <!-- Reporte de Asistencia del curso -->
+              
                 <div class="col-md-6 col-lg-3">
                     <div class="card shadow-sm h-100">
                         <div class="card-body d-flex flex-column">

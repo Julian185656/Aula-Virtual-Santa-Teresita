@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Guard y DB con rutas seguras
+
 require_once __DIR__ . "/controller_guard_docente.php";
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Aula-Virtual-Santa-Teresita/model/db.php";
 
@@ -12,7 +12,6 @@ $idEstudiante = (int)($_POST['Id_Estudiante'] ?? 0);
 $nota       = isset($_POST['Calificacion']) ? (float)$_POST['Calificacion'] : null;
 $comentario = trim($_POST['Comentario'] ?? '');
 
-// NUEVO: puntos de ranking (1–10)
 $puntosRanking = isset($_POST['Puntos_Ranking']) ? (int)$_POST['Puntos_Ranking'] : null;
 
 if (
@@ -24,7 +23,7 @@ if (
     exit("Datos inválidos");
 }
 
-// Verifica que el estudiante pertenece al curso
+
 $chk = $pdo->prepare("SELECT 1 FROM aulavirtual.matricula WHERE Id_Estudiante=? AND Id_Curso=?");
 $chk->execute([$idEstudiante, $idCurso]);
 if (!$chk->fetch()) {
@@ -32,7 +31,7 @@ if (!$chk->fetch()) {
     exit("No autorizado");
 }
 
-// Verifica que exista la entrega (solo se evalúan entregas)
+
 $sel = $pdo->prepare("SELECT Id_Entrega FROM aulavirtual.entrega_tarea WHERE Id_Tarea=? AND Id_Estudiante=?");
 $sel->execute([$idTarea, $idEstudiante]);
 $entrega = $sel->fetch(PDO::FETCH_ASSOC);
@@ -41,7 +40,7 @@ if (!$entrega) {
     exit("No existe entrega para evaluar");
 }
 
-// Actualiza calificación, comentario y puntos de ranking
+
 $upd = $pdo->prepare("
     UPDATE aulavirtual.entrega_tarea
     SET Calificacion = ?, Comentario = ?, Puntos_Ranking = ?

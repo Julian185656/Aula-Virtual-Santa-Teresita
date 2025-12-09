@@ -21,7 +21,7 @@ if (isset($_POST["btn-registrarse"])) {
 
 
     if (!esCorreoSantateresita($correo)) {
-        $_SESSION['error_message'] = "❌ Solo se permiten correos del dominio @santateresita.ac.cr";
+        $_SESSION['error_message'] = " Solo se permiten correos del dominio @santateresita.ac.cr";
         header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php");
         exit();
     }

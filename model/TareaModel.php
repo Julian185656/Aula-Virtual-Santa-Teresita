@@ -17,7 +17,7 @@ class TareaModel {
 
 
 
-// Crear nueva tarea
+
 public function crearTarea($idCurso, $titulo, $descripcion, $fechaEntrega) {
     $stmt = $this->pdo->prepare(
         "EXEC aulavirtual.sp_crearTarea 

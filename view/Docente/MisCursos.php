@@ -2,7 +2,7 @@
 session_start();
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/CursoModel.php";
 
-// Validación de acceso
+
 if (!isset($_SESSION['id_usuario']) || strtolower($_SESSION['rol']) !== 'docente') {
     header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php?error=NoAutorizado");
     exit();
@@ -28,14 +28,11 @@ body{
     line-height: 1.7;
     color: #c4c3ca;
     padding: 40px 15px;
-
     background-color: #2a2b38;
-    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
-    
+    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');    
     background-repeat: repeat;       
     background-size: 600px;         
     background-position: center top;
-
     overflow-x: hidden;
 }
 h1 {
@@ -45,15 +42,14 @@ h1 {
     font-weight: 700;
 }
 .card {
-   background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(10px);
-            border-radius: 18px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-            color: #fff;
-        }
-
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    color: #fff;
+}
 .card:hover {
     transform: translateY(-8px);
     box-shadow: 0 15px 40px rgba(0,0,0,0.25);
@@ -88,6 +84,7 @@ h1 {
 .btn-tarea { background-color: #007BFF; }
 .btn-tareas-asignadas { background-color: #FFC107; color: #212529; }
 .btn-foro { background-color: #6f42c1; }
+.btn-encuesta { background-color: #ff5722; } 
 .btn-container {
     text-align: center;
     margin-top: 10px;
@@ -142,6 +139,13 @@ h1 {
                                    href="/Aula-Virtual-Santa-Teresita/view/Docente/ForoCurso.php?idCurso=<?= urlencode($curso['id']) ?>&nombre=<?= urlencode($curso['nombre'] ?? '') ?>"
                                    title="Foro del Curso">
                                     <i class="fa-solid fa-comments"></i>
+                                </a>
+
+                           
+                                <a class="icon-btn btn-encuesta"
+                                   href="/Aula-Virtual-Santa-Teresita/view/Docente/EncuestasCurso.php?idCurso=<?= htmlspecialchars($curso['id']) ?>"
+                                   title="Encuestas del Curso">
+                                    <i class="fa-solid fa-poll"></i>
                                 </a>
                             </div>
                         </div>

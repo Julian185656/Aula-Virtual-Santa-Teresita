@@ -236,7 +236,7 @@ th {
         <div class="alert alert-success text-center"><?= htmlspecialchars($msg) ?></div>
     <?php endif; ?>
 
-    <!-- Formulario Crear Actividad -->
+   
     <div class="card mb-4">
         <div class="card-header">
             <i class="fa-solid fa-plus"></i> Agregar Actividad

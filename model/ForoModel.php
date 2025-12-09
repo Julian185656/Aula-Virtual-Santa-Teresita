@@ -3,7 +3,7 @@ require_once __DIR__ . '/db.php';
 $pdo = (new CN_BD())->conectar();
 class ForoModel
 {
-    /** Crear publicación del estudiante */
+
     public static function crearPublicacion(int $idCurso, int $idAutor, string $titulo, string $contenido): bool {
         global $pdo;
         $sql = "INSERT INTO aulavirtual.foro (Id_Curso, Titulo, Contenido, Id_Autor) VALUES (?,?,?,?)";
@@ -33,7 +33,7 @@ public static function listarComentariosPorPublicacion(int $idForo)
 
 
 
-    /** Listar publicaciones activas por curso (más recientes arriba) */
+    
     public static function listarPublicacionesPorCurso(int $idCurso): array {
         global $pdo;
         $sql = "SELECT f.Id_Foro, f.Titulo, f.Contenido, f.Fecha_Creacion,
@@ -47,7 +47,7 @@ public static function listarComentariosPorPublicacion(int $idForo)
         return $st->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /** Crear respuesta (docente o estudiante) */
+ 
     public static function responder(int $idForo, int $idAutor, string $texto): bool {
         global $pdo;
         $sql = "INSERT INTO aulavirtual.comentarios (Id_Foro, Id_Autor, Texto) VALUES (?,?,?)";
@@ -55,7 +55,7 @@ public static function listarComentariosPorPublicacion(int $idForo)
         return $st->execute([$idForo, $idAutor, trim($texto)]);
     }
 
-    /** Listar respuestas activas de una publicación */
+  
     public static function listarComentarios(int $idForo): array {
         global $pdo;
         $sql = "SELECT c.Id_Comentario, c.Texto, c.Fecha_Creacion,

@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $accion = $_POST['accion'] ?? '';
 
     switch ($accion) {
-        // Crear / programar
+
         case 'crear':
             $model->crearNotificacion(
                 $_POST['asunto'],
@@ -29,13 +29,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: /Aula-Virtual-Santa-Teresita/view/Admin/Notificaciones.php?msg=notificacion_creada");
             break;
 
-        // Eliminar
+
         case 'eliminar':
             $model->eliminarNotificacion($_POST['id']);
             header("Location: /Aula-Virtual-Santa-Teresita/view/Admin/Notificaciones.php?msg=notificacion_eliminada");
             break;
 
-        // Enviar inmediata
+
         case 'enviar_inmediato':
             $model->enviarInmediato($_POST['id']);
             header("Location: /Aula-Virtual-Santa-Teresita/view/Admin/Notificaciones.php?msg=notificacion_enviada");

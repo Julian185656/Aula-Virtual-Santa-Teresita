@@ -159,7 +159,7 @@ tbody tr:hover {
 
 <h1><i class="bi bi-folder-fill"></i><br>Administración de Material</h1>
 
-<!-- Formulario de subir material -->
+
 <div class="card-glass">
     <form action="/Aula-Virtual-Santa-Teresita/controller/MaterialController.php"
           method="POST" enctype="multipart/form-data">
@@ -175,7 +175,7 @@ tbody tr:hover {
     </form>
 </div>
 
-<!-- Lista de materiales -->
+
 <div class="card-glass table-container">
     <h4>Archivos del Curso</h4>
     <table>

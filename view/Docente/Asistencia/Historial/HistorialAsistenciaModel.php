@@ -48,7 +48,7 @@ class HistorialAsistenciaModel
         }
     }
 
-    // Obtener historial de un alumno con paginación
+ 
     public function obtenerHistorialAlumno(
         int $cursoId,
         int $usuarioId,
@@ -61,7 +61,7 @@ class HistorialAsistenciaModel
             $desde = $this->normalizarFecha($fechaDesde) ?? '1900-01-01';
             $hasta = $this->normalizarFecha($fechaHasta) ?? date('Y-m-d');
 
-            // Contar total registros
+    
             $sqlTotal = "
                 SELECT COUNT(*) AS total
                 FROM aulavirtual.asistencia
@@ -78,10 +78,9 @@ class HistorialAsistenciaModel
             $total = (int) $stmt->fetch(PDO::FETCH_ASSOC)['total'];
             $stmt->closeCursor();
 
-            // Calcular offset para paginación
+   
             $offset = ($pagina - 1) * $limite;
 
-            // Consultar historial
             $sql = "
                 SELECT Fecha, Presente
                 FROM aulavirtual.asistencia
@@ -103,7 +102,7 @@ class HistorialAsistenciaModel
             $filas = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
             $stmt->closeCursor();
 
-            // Contar presentes y ausentes
+        
             $presentes = 0;
             $ausentes = 0;
             foreach ($filas as $fila) {

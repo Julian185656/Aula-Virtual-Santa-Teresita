@@ -3,19 +3,19 @@ session_start();
 require_once __DIR__ . "/../../model/TareaModel.php";
 require_once __DIR__ . "/../../model/db.php";
 
-// Validar sesión y rol estudiante
+
 if (!isset($_SESSION['id_usuario']) || strtolower($_SESSION['rol'] ?? '') !== 'estudiante') {
     header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php?error=NoAutorizado");
     exit();
 }
 
-$idUsuario = (int)$_SESSION['id_usuario']; // ID real del estudiante
+$idUsuario = (int)$_SESSION['id_usuario'];
 $idCurso = $_GET['idCurso'] ?? null;
 
 $mensaje = '';
 $errores = [];
 
-// Manejar adjuntar tarea
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['entregarTarea'])) {
     $idTarea = (int)($_POST['idTarea'] ?? 0);
 
@@ -29,17 +29,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['entregarTarea'])) {
         if (move_uploaded_file($_FILES['archivo']['tmp_name'], $rutaDestino)) {
             $archivoUrl = "/Aula-Virtual-Santa-Teresita/uploads/" . $nombreArchivo;
 
-            // Verificar si ya existe entrega
+          
             $sel = $pdo->prepare("SELECT Id_Entrega FROM aulavirtual.entrega_tarea WHERE Id_Tarea = ? AND Id_Estudiante = ?");
             $sel->execute([$idTarea, $idUsuario]);
             $ex = $sel->fetch(PDO::FETCH_ASSOC);
 
             if ($ex) {
-                // Actualizar entrega existente
+          
                 $upd = $pdo->prepare("UPDATE aulavirtual.entrega_tarea SET Archivo_URL = ?, Fecha_Entrega = GETDATE() WHERE Id_Entrega = ?");
                 $upd->execute([$archivoUrl, $ex['Id_Entrega']]);
             } else {
-                // Insertar nueva entrega
+     
                 $ins = $pdo->prepare("INSERT INTO aulavirtual.entrega_tarea (Id_Tarea, Id_Estudiante, Archivo_URL, Fecha_Entrega) VALUES (?,?,?,GETDATE())");
                 $ins->execute([$idTarea, $idUsuario, $archivoUrl]);
             }
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['entregarTarea'])) {
     }
 }
 
-// Obtener tareas del estudiante
+
 $tareas = TareaModel::obtenerTareasEstudiante($idUsuario, $idCurso);
 ?>
 <!DOCTYPE html>
@@ -168,7 +168,7 @@ h2 {
 .container { max-width: 1200px; }
 
 input[type="file"] {
-    display: none; /* ocultamos el input original */
+    display: none;
 }
 </style>
 </head>
@@ -214,25 +214,25 @@ input[type="file"] {
                             <p><?= nl2br(htmlspecialchars($tarea['Descripcion'])) ?></p>
                             <p class="fecha"><strong>Fecha de entrega:</strong> <?= htmlspecialchars($tarea['Fecha_Entrega']) ?></p>
 
-                            <!-- Formulario moderno de entrega -->
+                    
                             <form method="POST" enctype="multipart/form-data" class="mb-3">
                                 <input type="hidden" name="idTarea" value="<?= (int)$tarea['Id_Tarea'] ?>">
 
-                                <!-- Input oculto -->
+                         
                                 <input type="file" name="archivo" id="archivo-<?= $tarea['Id_Tarea'] ?>" required>
 
-                                <!-- Botón para seleccionar archivo -->
+                               
                                 <label for="archivo-<?= $tarea['Id_Tarea'] ?>" class="btn-file-select">
                                      Seleccionar Archivo
                                 </label>
 
-                                <!-- Botón de enviar -->
+                           
                                 <button type="submit" name="entregarTarea" class="btn-entregar mt-2" title="Entregar">
                                     <i class="fa-solid fa-paper-plane"></i> Entregar
                                 </button>
                             </form>
 
-                            <!-- Estado de evaluación / comentarios -->
+                          
                             <?php
                             $info = null;
                             $q = $pdo->prepare("SELECT TOP 1 Calificacion, Comentario

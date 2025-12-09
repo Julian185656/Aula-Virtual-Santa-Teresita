@@ -156,7 +156,7 @@ h2 {
     background: rgba(255,255,255,0.35);
 }
 
-/* Tabla de estudiantes */
+
 .table-container {
     background: rgba(255,255,255,0.08);
     padding: 20px;

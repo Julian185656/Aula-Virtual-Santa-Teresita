@@ -12,9 +12,7 @@ class MaterialModel
         $this->pdo = $pdo;
     }
 
-    /**
-     * Guarda un archivo asociado a un curso.
-     */
+
     public function guardarMaterial($cursoId, $usuarioId, $titulo, $descripcion, $rutaArchivo)
     {
         $sql = "INSERT INTO aulavirtual.material_curso 

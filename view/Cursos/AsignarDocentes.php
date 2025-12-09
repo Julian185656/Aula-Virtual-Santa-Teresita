@@ -25,7 +25,7 @@ body{
     font-weight: 300;
     font-size: 15px;
     line-height: 1.7;
-    color: #ffffffff; /* se mantiene */
+    color: #ffffffff; 
     padding: 40px 15px;
     text-align: center;
     background-color: #2a2b38;
@@ -46,10 +46,10 @@ body{
     backdrop-filter: blur(12px);
     box-shadow: 0 8px 25px rgba(0,0,0,0.35);
     text-align: center;
-    color: #fff; /* texto general en blanco */
+    color: #fff; 
 }
 
-/* Dropdown negro */
+
 .card-glass select {
     width: 100%;
     padding: 12px;
@@ -57,14 +57,14 @@ body{
     border-radius: 15px;
     border: none;
     background: rgba(255, 255, 255, 0.12);
-    color: black; /* texto dentro del select en negro */
+    color: black; 
 }
 
 .card-glass select option {
-    color: black; /* opciones del dropdown en negro */
+    color: black; 
 }
 
-/* Botones blancos */
+
 .card-glass button {
     width: 100%;
     padding: 12px;
@@ -72,7 +72,7 @@ body{
     border-radius: 15px;
     border: none;
     background: rgba(255,255,255,0.15);
-    color: #fff; /* texto blanco */
+    color: #fff; 
     font-weight: bold;
     transition: 0.2s ease;
 }

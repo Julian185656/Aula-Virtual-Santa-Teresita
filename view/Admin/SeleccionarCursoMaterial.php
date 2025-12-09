@@ -101,7 +101,7 @@ h1 { margin-bottom: 30px; font-size: 36px; }
 
 <h1><i class="bi bi-journal-bookmark-fill"></i><br>Seleccione un Curso</h1>
 
-<!-- Botón Volver -->
+
 
 <div class="container-cursos">
     <?php if (!empty($cursos)): ?>

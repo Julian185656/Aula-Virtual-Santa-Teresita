@@ -18,7 +18,7 @@ $cursos = CursoModel::obtenerCursosEstudiante($estudianteId);
 <link href="/Aula-Virtual-Santa-Teresita/view/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <style>
-/* ===== Body ===== */
+
 body{
     font-family: 'Poppins', sans-serif;
     font-weight: 300;
@@ -34,7 +34,7 @@ body{
     overflow-x: hidden;
 }
 
-/* ===== Título ===== */
+
 h2 {
     font-weight: 700;
     margin-bottom: 40px;
@@ -42,7 +42,7 @@ h2 {
     text-align: center;
 }
 
-/* ===== Cartas de curso ===== */
+
 .card {
     border-radius: 20px;
     background: rgba(255,255,255,0.05);
@@ -57,7 +57,7 @@ h2 {
     transition: all 0.3s ease;
     width: 100%;
     max-width: 250px;
-    aspect-ratio: 1 / 1; /* Cuadrada */
+    aspect-ratio: 1 / 1; 
 }
 .card:hover {
     transform: translateY(-5px);
@@ -74,7 +74,7 @@ h2 {
     margin-bottom: 15px;
 }
 
-/* ===== Botones dentro de cartas ===== */
+
 .card .botones {
     display: flex;
     justify-content: center;
@@ -91,7 +91,7 @@ h2 {
     transition: 0.3s;
 }
 
-/* Colores de botones */
+
 .btn-tareas { background-color: #0d6efd; color: #fff; }
 .btn-tareas:hover { background-color: #0b5ed7; }
 
@@ -104,10 +104,10 @@ h2 {
 .btn-foro { background-color: #ffc107; color: #212529; }
 .btn-foro:hover { background-color: #e0a800; }
 
-/* Contenedor máximo */
+
 .container { max-width: 1200px; }
 
-/* Botón volver al home */
+
 .btn-home {
     background-color: #343a40;
     color: #fff;
@@ -122,7 +122,39 @@ h2 {
     transform: translateY(-2px);
 }
 
-/* Scrollbar opcional */
+.botones {
+    display: flex;
+    justify-content: center;
+    gap: 12px; 
+    margin-top: 15px;
+}
+
+
+.botones a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    font-size: 22px;
+    color: #fff;
+    text-decoration: none;
+    transition: 0.2s ease-in-out;
+}
+
+
+.btn-tareas      { background: #007bff; }
+.btn-foro        { background: #28a745; }
+.btn-material    { background: #17a2b8; }
+.btn-ranking     { background: #ffc107; color: #000; }
+.btn-encuesta    { background: #6f42c1; }
+
+
+.botones a:hover {
+    transform: scale(1.08);
+    filter: brightness(1.15);
+}
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
 ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
@@ -154,6 +186,15 @@ h2 {
     <a class="btn-ranking" href="/Aula-Virtual-Santa-Teresita/controller/RankingController.php?idCurso=<?= $curso['Id_Curso'] ?>" title="Ranking">
         <i class="fa-solid fa-trophy"></i>
     </a>
+
+
+<a class="btn-encuesta" 
+   href="/Aula-Virtual-Santa-Teresita/view/Estudiante/ResponderEncuesta.php?idCurso=<?= $curso['Id_Curso'] ?>" 
+   title="Encuestas">
+    <i class="fa-solid fa-square-poll-horizontal"></i>
+</a>
+
+
 </div>
 
                     </div>

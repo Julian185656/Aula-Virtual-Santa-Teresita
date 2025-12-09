@@ -209,12 +209,12 @@
 <form method="GET" class="d-flex flex-wrap justify-content-center align-items-center mb-4 p-3"
       style="background: rgba(255,255,255,0.05); border-radius:20px; backdrop-filter: blur(10px); border:1px solid rgba(255,255,255,0.25); gap:20px;">
     
-    <!-- Fecha -->
+
     <input type="date" name="fecha" class="form-control" 
            value="<?= htmlspecialchars($fecha ?? date('Y-m-d')) ?>"
            style="min-width:160px; background: rgba(255,255,255,0.1); color:#fff; border-radius:15px; padding:10px 15px;">
 
-    <!-- Selección de curso -->
+
     <select name="curso" class="form-select" required 
             style="min-width:200px; background: rgba(255,255,255,0.1); color:black; border-radius:15px; padding:10px 15px;">
         <option value="">Seleccione un curso</option>
@@ -225,12 +225,11 @@
         <?php endforeach; ?>
     </select>
 
-    <!-- Botón Cargar lista -->
+   
     <button type="submit" class="btn btn-primary" style="padding:10px 20px; border-radius:15px;">
         <i class="bi bi-filter"></i> Cargar lista
     </button>
 
-    <!-- Botón Restablecer -->
     <a href="RegistrarAsistenciaController.php" class="btn btn-outline-light" 
        style="padding:10px 20px; border-radius:15px;">
        <i class="bi bi-arrow-clockwise"></i> Restablecer
@@ -240,7 +239,6 @@
 
 
 
-    <!-- Tabla -->
     <div class="card mt-4">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -333,7 +331,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // Toggle estado
+   
     $('.estado-toggle .toggle-btn').click(function(){
         var parent = $(this).closest('.estado-toggle');
         parent.find('.toggle-btn').removeClass('active');

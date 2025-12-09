@@ -200,7 +200,7 @@ table.table tbody tr:hover {
             Marcar ausencia justificada
         </h2>
 
-        <!-- Alertas de mensaje -->
+      
         <?php if (!empty($mensaje)): ?>
             <div class="alert alert-<?= htmlspecialchars($tipo ?? 'info') ?> alert-dismissible fade show" role="alert">
                 <?= htmlspecialchars($mensaje) ?>
@@ -208,7 +208,7 @@ table.table tbody tr:hover {
             </div>
         <?php endif; ?>
 
-        <!-- Filtros -->
+ 
         <form method="GET" action="JustificarAusenciaController.php" class="row g-3 align-items-end">
             <div class="col-md-4">
                 <label class="form-label">Curso</label>
@@ -241,7 +241,7 @@ table.table tbody tr:hover {
             </div>
         </form>
 
-        <!-- Tabla de ausencias pendientes -->
+  
         <div class="card shadow-sm">
             <div class="card-body">
                 <h5 class="mb-3">

@@ -59,7 +59,6 @@ public function obtenerAusenciasPendientes(
         $desde = $this->normalizarFechaNullable($fechaDesde);
         $hasta = $this->normalizarFechaNullable($fechaHasta);
 
-        // Consulta corregida con alias 'Correo' para la columna de email
         $stmt = $this->pdo->prepare("
             SELECT 
                 a.Id_Asistencia,
@@ -95,7 +94,7 @@ public function obtenerAusenciasPendientes(
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
         $stmt->closeCursor();
 
-        // Total de registros (para paginación)
+ 
         $totalStmt = $this->pdo->prepare("
             SELECT COUNT(*) AS TotalRegistros
             FROM aulavirtual.asistencia a
@@ -123,9 +122,6 @@ public function obtenerAusenciasPendientes(
     }
 }
 
-    /**
-     * Marca una ausencia como justificada
-     */
     public function marcarAusenciaJustificada(
         int $cursoId,
         int $estudianteId,
@@ -161,9 +157,7 @@ public function obtenerAusenciasPendientes(
         }
     }
 
-    /**
-     * Normaliza fecha a Y-m-d o NULL
-     */
+  
     private function normalizarFechaNullable(?string $fecha): ?string
     {
         if (!$fecha || trim($fecha) === '') return null;
