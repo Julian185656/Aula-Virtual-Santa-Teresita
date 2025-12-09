@@ -25,16 +25,14 @@ body{
     font-weight: 300;
     font-size: 15px;
     line-height: 1.7;
-    color: #c4c3ca;
+    color: #ffffffff; /* se mantiene */
     padding: 40px 15px;
-text-align: center;
+    text-align: center;
     background-color: #2a2b38;
     background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
-    
     background-repeat: repeat;       
     background-size: 600px;         
     background-position: center top;
-
     overflow-x: hidden;
 }
 
@@ -48,25 +46,33 @@ text-align: center;
     backdrop-filter: blur(12px);
     box-shadow: 0 8px 25px rgba(0,0,0,0.35);
     text-align: center;
+    color: #fff; /* texto general en blanco */
 }
 
-.card-glass select,
+/* Dropdown negro */
+.card-glass select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    border: none;
+    background: rgba(255, 255, 255, 0.12);
+    color: black; /* texto dentro del select en negro */
+}
+
+.card-glass select option {
+    color: black; /* opciones del dropdown en negro */
+}
+
+/* Botones blancos */
 .card-glass button {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
     border-radius: 15px;
     border: none;
-    background: rgba(255,255,255,0.12);
-    color: #fff;
-}
-
-.card-glass select option {
-    color: #ffffffff;
-}
-
-.card-glass button {
     background: rgba(255,255,255,0.15);
+    color: #fff; /* texto blanco */
     font-weight: bold;
     transition: 0.2s ease;
 }
@@ -80,10 +86,20 @@ text-align: center;
     background: rgba(255,255,255,0.15);
     padding: 10px 20px;
     border-radius: 15px;
-    color: #fff;
+    color: #fff; 
     text-decoration: none;
     margin-top: 30px;
     transition: 0.2s;
+}
+
+.volver-btn:hover {
+    background: rgba(255,255,255,0.35);
+}
+
+
+.card-glass h1, 
+.card-glass label {
+    color: #fff; 
 }
 
 .volver-btn:hover {
@@ -94,6 +110,7 @@ h1 i {
     font-size: 40px;
     margin-bottom: 10px;
 }
+
 </style>
 </head>
 

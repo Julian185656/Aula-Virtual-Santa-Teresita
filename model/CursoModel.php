@@ -1,68 +1,92 @@
 <?php
 require_once __DIR__ . '/db.php';
-
+$pdo = (new CN_BD())->conectar();
 class CursoModel {
 
-    // Crear curso usando SP
+
     public static function crearCurso($nombre, $descripcion) {
         global $pdo;
-        $stmt = $pdo->prepare("CALL sp_crearCurso(:nombre, :descripcion)");
+        $stmt = $pdo->prepare(" EXEC aulavirtual.sp_crearCurso :nombre, :descripcion");
         return $stmt->execute([
             ':nombre' => $nombre,
             ':descripcion' => $descripcion
         ]);
     }
 
-    // Obtener docentes con nombre real usando SP
-    public static function obtenerDocentes() {
-        global $pdo;
-        $stmt = $pdo->query("CALL sp_obtenerDocentes()");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    
+public static function obtenerDocentes() {
+    global $pdo;
+    $stmt = $pdo->query("
+        SELECT Id_Usuario AS id, Nombre AS nombre 
+        FROM aulavirtual.Usuario
+        WHERE Rol='Docente' AND Estado='Activo'
+    ");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
-    // Obtener cursos usando SP
+
+
     public static function obtenerCursos() {
         global $pdo;
-        $stmt = $pdo->query("CALL sp_obtenerCursos()");
+        $stmt = $pdo->query("EXEC aulavirtual. sp_obtenerCursos");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Asignar docentes a un curso usando SP
-    public static function asignarDocentes($idCurso, $docentes) {
-        global $pdo;
-        $stmt = $pdo->prepare("CALL sp_asignarDocentes(:idCurso, :idDocente)");
-        foreach ($docentes as $idDocente) {
-            $stmt->execute([
+public static function asignarDocentes($idCurso, $docentes) {
+    global $pdo;
+
+    $stmtCheck = $pdo->prepare("SELECT COUNT(*) 
+                                FROM aulavirtual.curso_docente 
+                                WHERE Id_Curso = :idCurso AND Id_Docente = :idDocente");
+
+    $stmtInsert = $pdo->prepare("INSERT INTO aulavirtual.curso_docente (Id_Curso, Id_Docente)
+                                 VALUES (:idCurso, :idDocente)");
+
+    foreach ($docentes as $idDocente) {
+        
+        $stmtCheck->execute([
+            ':idCurso' => (int)$idCurso,
+            ':idDocente' => (int)$idDocente
+        ]);
+
+        if ($stmtCheck->fetchColumn() == 0) {
+            $stmtInsert->execute([
                 ':idCurso' => (int)$idCurso,
                 ':idDocente' => (int)$idDocente
             ]);
         }
-        return true;
+    
     }
 
-    // Eliminar curso usando SP
+    return true;
+}
+
+
+
+
+
     public static function eliminarCurso($idCurso) {
         global $pdo;
-        $stmt = $pdo->prepare("CALL sp_eliminarCurso(:idCurso)");
-        return $stmt->execute([':idCurso' => (int)$idCurso]);
+   $stmt = $pdo->prepare("EXEC aulavirtual.sp_eliminarCurso ?");
+return $stmt->execute([$idCurso]);
+
     }
 
-    // Obtener cursos asignados a un docente usando SP
+
     public static function obtenerCursosDocente($idDocente) {
         global $pdo;
-        $stmt = $pdo->prepare("CALL sp_obtenerCursosDocente(:idDocente)");
+        $stmt = $pdo->prepare("EXEC aulavirtual.sp_obtenerCursosDocente :idDocente");
         $stmt->execute([':idDocente' => (int)$idDocente]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
 
-// ✅ Nuevo método para obtener un curso por ID
-    public static function obtenerCursoPorId($idCurso) {
-        global $pdo;
-        $stmt = $pdo->prepare("SELECT * FROM curso WHERE Id_Curso = :idCurso LIMIT 1");
-        $stmt->execute([':idCurso' => $idCurso]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+public static function obtenerCursoPorId($idCurso) {
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT TOP 1 * FROM aulavirtual.curso WHERE Id_Curso = :idCurso");
+    $stmt->execute([':idCurso' => $idCurso]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
 
 
@@ -70,10 +94,10 @@ class CursoModel {
 public static function matricularEstudiantes($idCurso, $estudiantes) {
     global $pdo;
     $stmt = $pdo->prepare("
-        INSERT INTO matricula (id_curso, id_estudiante)
+        INSERT INTO aulavirtual.matricula (id_curso, id_estudiante)
         SELECT :idCursoInsert, :idEstudianteInsert
         WHERE NOT EXISTS (
-            SELECT 1 FROM matricula 
+            SELECT 1 FROM aulavirtual.matricula 
             WHERE id_curso = :idCursoCheck AND id_estudiante = :idEstudianteCheck
         )
     ");
@@ -93,8 +117,8 @@ public static function matricularEstudiantes($idCurso, $estudiantes) {
 public static function obtenerEstudiantesPorCurso($idCurso, $nombre = '', $limit = 10, $offset = 0) {
     global $pdo;
     $sql = "SELECT u.Id_Usuario, u.Nombre
-            FROM usuario u
-            INNER JOIN matricula m ON u.Id_Usuario = m.id_estudiante
+            FROM  aulavirtual.usuario u
+            INNER JOIN aulavirtual.matricula m ON u.Id_Usuario = m.id_estudiante
             WHERE m.id_curso = :idCurso AND u.Nombre LIKE :nombre
             ORDER BY u.Nombre
             LIMIT :limit OFFSET :offset";
@@ -111,8 +135,8 @@ public static function obtenerEstudiantesPorCurso($idCurso, $nombre = '', $limit
 public static function contarEstudiantesPorCurso($idCurso, $nombre = '') {
     global $pdo;
     $sql = "SELECT COUNT(*)
-            FROM usuario u
-            INNER JOIN matricula m ON u.Id_Usuario = m.id_estudiante
+            FROM aulavirtual.usuario u
+            INNER JOIN aulavirtual.matricula m ON u.Id_Usuario = m.id_estudiante
             WHERE m.id_curso = :idCurso AND u.Nombre LIKE :nombre";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':idCurso', (int)$idCurso, PDO::PARAM_INT);
@@ -128,10 +152,11 @@ public static function obtenerEstudiantes($nombre = '', $limite = 10, $offset = 
     global $pdo;
     $stmt = $pdo->prepare("
         SELECT Id_Usuario, Nombre
-        FROM usuario
+        FROM aulavirtual.usuario
         WHERE Rol = 'Estudiante' AND Nombre LIKE :nombre
         ORDER BY Nombre
-        LIMIT :limite OFFSET :offset
+        OFFSET :offset ROWS
+        FETCH NEXT :limite ROWS ONLY
     ");
     $stmt->bindValue(':nombre', "%$nombre%", PDO::PARAM_STR);
     $stmt->bindValue(':limite', (int)$limite, PDO::PARAM_INT);
@@ -147,7 +172,7 @@ public static function obtenerEstudiantes($nombre = '', $limite = 10, $offset = 
 
 public static function obtenerEstudiantesPaginado($nombre='', $limite=10, $offset=0) {
         global $pdo;
-        $sql = "SELECT * FROM usuario 
+        $sql = "SELECT * FROM aulavirtual.usuario 
                 WHERE Rol='Estudiante' AND Nombre LIKE :nombre 
                 ORDER BY Nombre 
                 LIMIT :limite OFFSET :offset";
@@ -162,7 +187,7 @@ public static function contarEstudiantes($nombre = '') {
     global $pdo;
     $stmt = $pdo->prepare("
         SELECT COUNT(*) 
-        FROM usuario
+        FROM aulavirtual.usuario
         WHERE Rol='Estudiante' AND Nombre LIKE :nombre
     ");
     $stmt->execute([':nombre' => "%$nombre%"]);
@@ -171,12 +196,10 @@ public static function contarEstudiantes($nombre = '') {
 
 
 public static function obtenerCursosAdmin() {
-    require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/config/Conexion.php";
-        global $pdo;
+    global $pdo;
 
-    $sql = "SELECT Id_Curso, Nombre, Descripcion FROM cursos ORDER BY Nombre ASC";
-
-    $stmt = $con->prepare($sql);
+    $sql = "SELECT Id_Curso, Nombre, Descripcion FROM aulavirtual.curso ORDER BY Nombre ASC";
+    $stmt = $pdo->prepare($sql);
     $stmt->execute();
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -185,18 +208,23 @@ public static function obtenerCursosAdmin() {
 
 
 public static function obtenerCursosEstudiante($idEstudiante) {
-        global $pdo;
-        $stmt = $pdo->prepare("CALL sp_obtenerCursosEstudiante(:idEstudiante)");
-        $stmt->execute([':idEstudiante' => $idEstudiante]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    global $pdo;
+
+    // Cambié :idEstudiante por ?
+    $stmt = $pdo->prepare("EXEC aulavirtual.sp_obtenerCursosEstudiante ?");
+    
+    // Pasar el parámetro como array posicional
+    $stmt->execute([$idEstudiante]);
+    
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 public static function obtenerCursosPorEstudiante($idEstudiante) {
     global $pdo;
     $stmt = $pdo->prepare("
         SELECT c.nombre
-        FROM matricula m
-        INNER JOIN curso c ON c.Id_Curso = m.id_curso
+        FROM aulavirtual.matricula m
+        INNER JOIN aulavirtual.curso c ON c.Id_Curso = m.id_curso
         WHERE m.id_estudiante = ?
     ");
     $stmt->execute([$idEstudiante]);
@@ -206,7 +234,7 @@ public static function obtenerCursosPorEstudiante($idEstudiante) {
 }
 public static function obtenerEstudiantesConCurso() {
     global $pdo;
-    $stmt = $pdo->query("CALL sp_estudiantes_con_curso()");
+    $stmt = $pdo->query("EXEC aulavirtual.sp_estudiantes_con_curso");
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
     return $data;
@@ -214,17 +242,30 @@ public static function obtenerEstudiantesConCurso() {
 
 public static function eliminarMatricula($idCurso, $idEstudiante) {
     global $pdo;
-    $stmt = $pdo->prepare("DELETE FROM matricula WHERE id_curso = :idCurso AND id_estudiante = :idEstudiante");
+    $stmt = $pdo->prepare("DELETE FROM aulavirtual.matricula WHERE id_curso = :idCurso AND id_estudiante = :idEstudiante");
     return $stmt->execute([':idCurso' => $idCurso, ':idEstudiante' => $idEstudiante]);
 }
 
 public static function obtenerCursoIdPorNombre($nombreCurso) {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT Id_Curso FROM curso WHERE nombre = :nombre LIMIT 1");
+    $stmt = $pdo->prepare("
+        SELECT TOP 1 Id_Curso 
+        FROM aulavirtual.curso 
+        WHERE nombre = :nombre
+    ");
     $stmt->execute([':nombre' => $nombreCurso]);
     $curso = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt->closeCursor();
     return $curso['Id_Curso'] ?? null;
+}
+
+public static function verificarMatricula(int $idEstudiante, int $idCurso): bool {
+    global $pdo;
+    $sql = $sql = "SELECT COUNT(*) FROM aulavirtual.matricula WHERE Id_Estudiante = ? AND Id_Curso = ?";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$idEstudiante, $idCurso]);
+    return $stmt->fetchColumn() > 0;
 }
 
 

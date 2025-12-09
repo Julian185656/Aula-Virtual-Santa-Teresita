@@ -16,74 +16,95 @@ class RegistrarAsistenciaModel
      * @return array [ [Id_Curso, Curso], ... ]
      */
     public function obtenerCursosDocente(int $docenteId): array
-    {
-        try {
-            $stmt = $this->pdo->prepare("CALL sp_asist_cursos_por_docente(:doc)");
-            $stmt->bindParam(':doc', $docenteId, PDO::PARAM_INT);
-            $stmt->execute();
-            $cursos = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-            $stmt->closeCursor();
-            return $cursos;
-        } catch (\Exception $e) {
-            throw new \Exception("Error al obtener cursos del docente: " . $e->getMessage());
-        }
+{
+    try {
+        // SQL Server: usar EXEC y parámetros con ?
+        $stmt = $this->pdo->prepare("EXEC aulavirtual.sp_asist_cursos_por_docente @docente_id = ?");
+        $stmt->execute([$docenteId]);
+        $cursos = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $stmt->closeCursor();
+        return $cursos;
+    } catch (\Exception $e) {
+        throw new \Exception("Error al obtener cursos del docente: " . $e->getMessage());
     }
+}
 
     /**
      * Obtiene alumnos de un curso con paginación.
      * @return array ['alumnos' => [...], 'total' => int]
      */
-    public function obtenerAlumnosPaginado(int $cursoId, int $pagina = 1, int $limite = 15): array
-    {
-        try {
-            if ($pagina < 1) $pagina = 1;
-            if ($limite < 1) $limite = 15;
+public function obtenerAlumnosPaginado(int $cursoId, int $pagina = 1, int $limite = 15): array
+{
+    try {
+        if ($pagina < 1) $pagina = 1;
+        if ($limite < 1) $limite = 15;
 
-            $sql = "CALL sp_asist_alumnos_por_curso(:curso, :pagina, :limite, @total)";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':curso', $cursoId, PDO::PARAM_INT);
-            $stmt->bindParam(':pagina', $pagina, PDO::PARAM_INT);
-            $stmt->bindParam(':limite', $limite, PDO::PARAM_INT);
-            $stmt->execute();
+        $offset = ($pagina - 1) * $limite;
 
-            $alumnos = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-            $stmt->closeCursor();
+        // 1) Total de alumnos
+        $stmtTotal = $this->pdo->prepare("
+            SELECT COUNT(*) AS Total
+            FROM aulavirtual.matricula m
+            WHERE m.Id_Curso = :curso
+        ");
+        $stmtTotal->execute([':curso' => $cursoId]);
+        $totalRow = $stmtTotal->fetch(PDO::FETCH_ASSOC);
+        $total = isset($totalRow['Total']) ? (int)$totalRow['Total'] : 0;
 
-            $totalRow = $this->pdo->query("SELECT @total AS Total")->fetch(PDO::FETCH_ASSOC);
-            $total = isset($totalRow['Total']) ? (int)$totalRow['Total'] : 0;
+        // 2) Página de alumnos
+        // Usamos la tabla usuario directamente, no estudiante
+        $sql = "
+            SELECT 
+                m.Id_Estudiante,
+                u.Nombre,
+                u.Email,
+                c.Id_Curso,
+                c.Nombre AS Curso
+            FROM aulavirtual.matricula m
+            INNER JOIN aulavirtual.usuario u ON u.Id_Usuario = m.Id_Estudiante
+            INNER JOIN aulavirtual.curso c   ON c.Id_Curso   = m.Id_Curso
+            WHERE m.Id_Curso = :curso
+            ORDER BY u.Nombre
+            OFFSET $offset ROWS FETCH NEXT $limite ROWS ONLY
+        ";
 
-            return ['alumnos' => $alumnos, 'total' => $total];
-        } catch (\Exception $e) {
-            throw new \Exception("Error al obtener alumnos del curso: " . $e->getMessage());
-        }
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':curso', $cursoId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $alumnos = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+        return ['alumnos' => $alumnos, 'total' => $total];
+
+    } catch (\Exception $e) {
+        throw new \Exception("Error al obtener alumnos del curso: " . $e->getMessage());
     }
+}
 
-    /**
-     * Obtiene la asistencia de un día para un curso, como mapa:
-     * [Id_Estudiante => (int)Presente]
-     */
+
+
+
     public function obtenerAsistenciaDia(int $cursoId, string $fecha): array
-    {
-        try {
-            $fecha = $this->normalizarFecha($fecha);
+{
+    try {
+        $fecha = $this->normalizarFecha($fecha);
 
-            $stmt = $this->pdo->prepare("CALL sp_asist_obtener_dia(:curso, :fecha)");
-            $stmt->bindParam(':curso', $cursoId, PDO::PARAM_INT);
-            $stmt->bindParam(':fecha', $fecha, PDO::PARAM_STR);
-            $stmt->execute();
+        $stmt = $this->pdo->prepare("EXEC aulavirtual.sp_asist_obtener_dia @curso_id = ?, @fecha = ?");
+        $stmt->execute([$cursoId, $fecha]);
 
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-            $stmt->closeCursor();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        $stmt->closeCursor();
 
-            $map = [];
-            foreach ($rows as $r) {
-                $map[(int)$r['Id_Estudiante']] = (int)$r['Presente'];
-            }
-            return $map;
-        } catch (\Exception $e) {
-            throw new \Exception("Error al obtener la asistencia del día: " . $e->getMessage());
+        $map = [];
+        foreach ($rows as $r) {
+            $map[(int)$r['Id_Estudiante']] = (int)$r['Presente'];
         }
+        return $map;
+    } catch (\Exception $e) {
+        throw new \Exception("Error al obtener la asistencia del día: " . $e->getMessage());
     }
+}
+
 
     /**
      * Guarda en lote la asistencia de un curso para una fecha.
@@ -97,70 +118,79 @@ class RegistrarAsistenciaModel
      * @param array $items      [ ['Id_Estudiante' => int, 'Presente' => 0|1], ... ]
      * @return array ['ok' => bool, 'procesados' => int]
      */
-    public function guardarLoteAsistencia(int $cursoId, string $fecha, int $docenteId, array $items): array
-    {
-        $fecha = $this->normalizarFecha($fecha);
+public function guardarLoteAsistencia(int $cursoId, string $fecha, int $docenteId, array $items): array
+{
+    $fecha = $this->normalizarFecha($fecha);
 
-        try {
-            $this->pdo->beginTransaction();
+    try {
+        $this->pdo->beginTransaction();
 
-            // 1) Intento de actualización
-            $sqlUpdate = "
-                UPDATE asistencia
-                   SET Presente = :presente
-                 WHERE Id_Estudiante = :estudiante
-                   AND Id_Curso      = :curso
-                   AND Fecha         = :fecha
-            ";
-            $stmtUpdate = $this->pdo->prepare($sqlUpdate);
+        // Verificamos que el curso exista
+        $stmtCurso = $this->pdo->prepare("SELECT 1 FROM aulavirtual.curso WHERE Id_Curso = :curso");
+        $stmtCurso->execute([':curso' => $cursoId]);
+        if (!$stmtCurso->fetch()) {
+            throw new \Exception("El curso no existe.");
+        }
 
-            // 2) Inserción si no existía registro
-            $sqlInsert = "
-                INSERT INTO asistencia (Id_Estudiante, Id_Curso, Fecha, Presente)
-                VALUES (:estudiante, :curso, :fecha, :presente)
-            ";
-            $stmtInsert = $this->pdo->prepare($sqlInsert);
+        // UPDATE primero
+        $stmtUpdate = $this->pdo->prepare("
+            UPDATE aulavirtual.asistencia
+               SET Presente = :presente
+             WHERE Id_Estudiante = :estudiante
+               AND Id_Curso      = :curso
+               AND Fecha         = :fecha
+        ");
 
-            $procesados = 0;
+        // INSERT si no existía registro
+        $stmtInsert = $this->pdo->prepare("
+            INSERT INTO aulavirtual.asistencia (Id_Estudiante, Id_Curso, Fecha, Presente)
+            VALUES (:estudiante, :curso, :fecha, :presente)
+        ");
 
-            foreach ($items as $item) {
-                $est = (int)($item['Id_Estudiante'] ?? 0);
-                $pres = isset($item['Presente']) && (int)$item['Presente'] === 1 ? 1 : 0;
+        // Traemos todos los estudiantes válidos
+        $stmtEst = $this->pdo->query("SELECT Id_Usuario FROM aulavirtual.usuario WHERE Rol = 'Estudiante'");
+        $estudiantesValidos = $stmtEst->fetchAll(PDO::FETCH_COLUMN, 0);
 
-                if ($est <= 0) {
-                    continue; // ignora filas inválidas
-                }
+        $procesados = 0;
 
-                // UPDATE primero
-                $stmtUpdate->execute([
+        foreach ($items as $item) {
+            $est = (int)($item['Id_Estudiante'] ?? 0);
+            $pres = isset($item['Presente']) && (int)$item['Presente'] === 1 ? 1 : 0;
+
+            // Validar FK estudiante
+            if (!in_array($est, $estudiantesValidos)) continue;
+
+            // UPDATE primero
+            $stmtUpdate->execute([
+                ':presente'   => $pres,
+                ':estudiante' => $est,
+                ':curso'      => $cursoId,
+                ':fecha'      => $fecha
+            ]);
+
+            // Si no se actualizó nada, hacemos INSERT
+            if ($stmtUpdate->rowCount() === 0) {
+                $stmtInsert->execute([
                     ':presente'   => $pres,
                     ':estudiante' => $est,
                     ':curso'      => $cursoId,
                     ':fecha'      => $fecha
                 ]);
-
-                // Si no se actualizó nada, hacemos INSERT
-                if ($stmtUpdate->rowCount() === 0) {
-                    $stmtInsert->execute([
-                        ':presente'   => $pres,
-                        ':estudiante' => $est,
-                        ':curso'      => $cursoId,
-                        ':fecha'      => $fecha
-                    ]);
-                }
-
-                $procesados++;
             }
 
-            $this->pdo->commit();
-            return ['ok' => true, 'procesados' => $procesados];
-        } catch (\Exception $e) {
-            if ($this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
-            }
-            throw new \Exception("Error al guardar la asistencia: " . $e->getMessage());
+            $procesados++;
         }
+
+        $this->pdo->commit();
+        return ['ok' => true, 'procesados' => $procesados];
+
+    } catch (\Exception $e) {
+        if ($this->pdo->inTransaction()) $this->pdo->rollBack();
+        throw new \Exception("Error al guardar la asistencia: " . $e->getMessage());
     }
+}
+
+
 
     /** Normaliza fecha a 'Y-m-d'. Si viene vacía, usa hoy. */
     private function normalizarFecha(?string $fecha): string

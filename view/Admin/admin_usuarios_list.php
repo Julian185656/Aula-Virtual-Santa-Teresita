@@ -2,27 +2,40 @@
 require __DIR__ . '/../../controller/auth_admin.php';
 require __DIR__ . '/../../model/db.php';
 
+// Conexión a SQL Server
+$pdo = (new CN_BD())->conectar();
+
+// Parámetros de búsqueda y paginación
 $search = trim($_GET['q'] ?? '');
 $page = max(1, intval($_GET['page'] ?? 1));
 $perPage = 10;
 $offset = ($page - 1) * $perPage;
 
+// Conteo total de registros
 if ($search !== '') {
-    $countStmt = $pdo->prepare("SELECT COUNT(*) FROM vw_usuarios_detalle WHERE Nombre LIKE ? OR Email LIKE ?");
     $like = "%$search%";
+    $countStmt = $pdo->prepare("SELECT COUNT(*) AS total FROM aulavirtual.vw_usuarios_detalle WHERE Nombre LIKE ? OR Email LIKE ?");
     $countStmt->execute([$like, $like]);
     $total = $countStmt->fetchColumn();
 
-    $stmt = $pdo->prepare("SELECT * FROM vw_usuarios_detalle 
-                           WHERE Nombre LIKE ? OR Email LIKE ?
-                           ORDER BY Id_Usuario DESC
-                           LIMIT $perPage OFFSET $offset");
+    $stmt = $pdo->prepare("
+        SELECT *
+        FROM aulavirtual.vw_usuarios_detalle
+        WHERE Nombre LIKE ? OR Email LIKE ?
+        ORDER BY Id_Usuario DESC
+        OFFSET $offset ROWS FETCH NEXT $perPage ROWS ONLY
+    ");
     $stmt->execute([$like, $like]);
 } else {
-    $total = $pdo->query("SELECT COUNT(*) FROM vw_usuarios_detalle")->fetchColumn();
-    $stmt = $pdo->query("SELECT * FROM vw_usuarios_detalle 
-                         ORDER BY Id_Usuario DESC
-                         LIMIT $perPage OFFSET $offset");
+    $total = $pdo->query("SELECT COUNT(*) AS total FROM aulavirtual.vw_usuarios_detalle")->fetchColumn();
+
+    $stmt = $pdo->prepare("
+        SELECT *
+        FROM aulavirtual.vw_usuarios_detalle
+        ORDER BY Id_Usuario DESC
+        OFFSET $offset ROWS FETCH NEXT $perPage ROWS ONLY
+    ");
+    $stmt->execute();
 }
 
 $usuarios = $stmt->fetchAll();
@@ -36,35 +49,36 @@ $totalPages = ceil($total / $perPage);
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Usuarios - Administración</title>
 
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <style>
 body{
-	font-family: 'Poppins', sans-serif;
-	font-weight: 300;
-	font-size: 15px;
-	line-height: 1.7;
-	color: #c4c3ca;
-padding: 40px 15px;
-	
-	background-color: #2a2b38;
-	background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
-	background-position: bottom center;
-	background-repeat: no-repeat;
-	background-size: 300%;
-
-	overflow-x: hidden;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    color: #c4c3ca;
+    padding: 40px 15px;
+    background-color: #2a2b38;
+    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+    background-repeat: repeat;       
+    background-size: 600px;         
+    background-position: center top;
+    overflow-x: hidden;
 }
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
 }
+
 h1 {
     text-align: center;
     margin-bottom: 30px;
+    color: #ffffff;
     text-shadow: 0 2px 8px rgba(0,0,0,0.5);
 }
+
 .search-form {
     display: flex;
     flex-wrap: wrap;
@@ -96,17 +110,32 @@ h1 {
 .search-form button:hover, .search-form a:hover {
     background: rgba(255,255,255,0.35);
 }
-.table-container {
-    overflow-x: auto;
+
+/* Card de tabla */
+.card {
     background: rgba(255, 255, 255, 0.05);
-    padding: 20px;
     border-radius: 20px;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    margin-bottom: 30px;
+}
+
+.card-header {
+    font-weight: 600;
+    color: #ffffff;
+    background: rgba(255,255,255,0.1);
+    border-bottom: none;
+    border-radius: 20px 20px 0 0;
+}
+
+.table-container {
+    overflow-x: auto;
+    border-radius: 20px;
 }
 
 table, table thead th, table tbody td {
-    color: #fff !important;
+    color: #fff;
 }
 
 table {
@@ -116,7 +145,6 @@ table {
 }
 table thead {
     background: rgba(255, 255, 255, 0.1);
-    text-align: left;
     font-weight: bold;
 }
 table th, table td {
@@ -152,15 +180,26 @@ table tr:hover {
 .pagination a:hover {
     background: rgba(255,255,255,0.3);
 }
+
+.badge-ok { background:#22c55e; color:#fff; }
+.badge-no { background:#6b7280; color:#fff; }
+
+.no-actividades {
+    text-align: center;
+    padding: 30px;
+    color: #ffffffbb;
+}
+.no-actividades p {
+    margin-top: 10px;
+    font-weight: 500;
+}
 </style>
 </head>
 <body>
 
 <div class="container">
 
-
-    <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn btn-outline-light mb-3"
-       style="border-radius: 15px; padding: 8px 18px; text-decoration:none;">
+    <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn btn-outline-light mb-3" style="border-radius: 15px; padding: 8px 18px; text-decoration:none;">
         <i class="bi bi-arrow-left-circle-fill"></i> Volver
     </a>
 
@@ -172,66 +211,76 @@ table tr:hover {
         <a href="admin_usuario_new.php">+ Nuevo usuario</a>
     </form>
 
-    <?php if (isset($_SESSION['error_message'])): ?>
-        <div class="alert alert-danger alert-custom"><?= $_SESSION['error_message']; unset($_SESSION['error_message']); ?></div>
-    <?php endif; ?>
-    <?php if (isset($_SESSION['success_message'])): ?>
-        <div class="alert alert-success alert-custom"><?= $_SESSION['success_message']; unset($_SESSION['success_message']); ?></div>
-    <?php endif; ?>
-
-    <div class="table-container">
-        <table class="table table-borderless">
-            <thead>
-                <tr>
-                    <th>ID</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Estado</th><th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($usuarios as $u): ?>
-                <tr>
-                    <td><?= $u['Id_Usuario'] ?></td>
-                    <td><?= htmlspecialchars($u['Nombre']) ?></td>
-                    <td><?= htmlspecialchars($u['Email']) ?></td>
-                    <td><?= htmlspecialchars($u['Rol']) ?></td>
-                    <td><?= htmlspecialchars($u['Estado']) ?></td>
-
-                    <td class="actions">
-
-      
-                        <a href="admin_usuario_edit.php?id=<?= $u['Id_Usuario'] ?>" 
-                           class="btn btn-outline-light btn-sm" 
-                           title="Editar">
-                            <i class="bi bi-pencil-fill"></i>
-                        </a>
-
-         
-                        <form action="admin_usuario_toggle.php" method="post" style="display:inline;">
-                            <input type="hidden" name="Id_Usuario" value="<?= $u['Id_Usuario'] ?>">
-                            <input type="hidden" name="Estado" value="<?= $u['Estado']==='Activo'?'Inactivo':'Activo' ?>">
-                            <button type="submit" class="btn btn-outline-light btn-sm"
-                                    title="<?= $u['Estado']==='Activo'?'Desactivar':'Activar' ?>">
-                                <?php if($u['Estado']==='Activo'): ?>
-                                    <i class="bi bi-x-circle-fill"></i>
-                                <?php else: ?>
-                                    <i class="bi bi-check-circle-fill"></i>
-                                <?php endif; ?>
-                            </button>
-                        </form>
-
-      
-                        <form action="admin_usuario_delete.php" method="post" style="display:inline;" 
-                              onsubmit="return confirm('¿Eliminar este usuario?');">
-                            <input type="hidden" name="Id_Usuario" value="<?= $u['Id_Usuario'] ?>">
-                            <button type="submit" class="btn btn-outline-light btn-sm" title="Eliminar">
-                                <i class="bi bi-trash-fill"></i>
-                            </button>
-                        </form>
-
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+    <div class="card">
+        <div class="card-header">
+            <i class="bi bi-people-fill"></i> Usuarios Registrados
+        </div>
+        <div class="card-body p-0">
+            <div class="table-container">
+                <table class="table table-bordered align-middle text-center mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if(!empty($usuarios)): ?>
+                            <?php foreach($usuarios as $u): ?>
+                            <tr>
+                                <td><?= $u['Id_Usuario'] ?></td>
+                                <td><?= htmlspecialchars($u['Nombre']) ?></td>
+                                <td><?= htmlspecialchars($u['Email']) ?></td>
+                                <td><?= htmlspecialchars($u['Rol']) ?></td>
+                                <td>
+                                    <?php if($u['Estado'] === 'Activo'): ?>
+                                        <span class="badge badge-ok">Activo</span>
+                                    <?php else: ?>
+                                        <span class="badge badge-no">Inactivo</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="actions">
+                                    <a href="admin_usuario_edit.php?id=<?= $u['Id_Usuario'] ?>" class="btn btn-primary btn-sm" title="Editar">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <form action="admin_usuario_toggle.php" method="post" style="display:inline;">
+                                        <input type="hidden" name="Id_Usuario" value="<?= $u['Id_Usuario'] ?>">
+                                        <input type="hidden" name="Estado" value="<?= $u['Estado']==='Activo'?'Inactivo':'Activo' ?>">
+                                        <button type="submit" class="btn btn-warning btn-sm" title="<?= $u['Estado']==='Activo'?'Desactivar':'Activar' ?>">
+                                            <?php if($u['Estado']==='Activo'): ?>
+                                                <i class="bi bi-x-circle-fill"></i>
+                                            <?php else: ?>
+                                                <i class="bi bi-check-circle-fill"></i>
+                                            <?php endif; ?>
+                                        </button>
+                                    </form>
+                                    <form action="admin_usuario_delete.php" method="post" style="display:inline;" onsubmit="return confirm('¿Eliminar este usuario?');">
+                                        <input type="hidden" name="Id_Usuario" value="<?= $u['Id_Usuario'] ?>">
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="6">
+                                    <div class="no-actividades">
+                                        <i class="bi bi-person-x-fill fa-2x"></i>
+                                        <p>No hay usuarios registrados.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <nav>
@@ -254,8 +303,6 @@ table tr:hover {
 
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,17 +1,21 @@
 <?php
 session_start();
 
+require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/db.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/TareaModel.php";
 require_once __DIR__ . "/controller_guard_docente.php";
-require_once $_SERVER['DOCUMENT_ROOT'] . "/Aula-Virtual-Santa-Teresita/model/db.php";
+
+$pdo = (new CN_BD())->conectar(); 
+$modelTarea = new TareaModel($pdo);
 
 $idTarea = (int)($_GET['idTarea'] ?? 0);
 $idCurso = (int)($_GET['idCurso'] ?? 0);
 if ($idTarea <= 0 || $idCurso <= 0) { http_response_code(400); exit("Parámetros inválidos"); }
 
 $sqlT = "SELECT t.Id_Tarea, t.Titulo, t.Fecha_Entrega, c.Id_Curso, c.Nombre AS Curso
-         FROM tarea t
-         JOIN curso c ON c.Id_Curso = t.Id_Curso
-         WHERE t.Id_Tarea = ? AND c.Id_Curso = ?";
+        FROM aulavirtual.tarea t
+        JOIN aulavirtual.curso c ON c.Id_Curso = t.Id_Curso
+        WHERE t.Id_Tarea = ? AND c.Id_Curso = ?";
 $stmt = $pdo->prepare($sqlT);
 $stmt->execute([$idTarea, $idCurso]);
 $tarea = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -27,10 +31,10 @@ $sql = "SELECT
           et.Calificacion,
           et.Comentario,
           et.Puntos_Ranking
-        FROM matricula m
-        JOIN usuario u ON u.Id_Usuario = m.Id_Estudiante
-        LEFT JOIN estudiante e ON e.Id_Estudiante = m.Id_Estudiante
-        LEFT JOIN entrega_tarea et
+        FROM aulavirtual.matricula m
+        JOIN aulavirtual.usuario u ON u.Id_Usuario = m.Id_Estudiante
+        LEFT JOIN aulavirtual.estudiante e ON e.Id_Estudiante = m.Id_Estudiante
+        LEFT JOIN aulavirtual.entrega_tarea et
           ON et.Id_Estudiante = m.Id_Estudiante AND et.Id_Tarea = ?
         WHERE m.Id_Curso = ?
         ORDER BY u.Nombre ASC";
@@ -43,68 +47,140 @@ $filas = $st->fetchAll(PDO::FETCH_ASSOC);
 <head>
   <meta charset="utf-8">
   <title>Evaluar Tarea</title>
-
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
-    body{
-      font-weight: 300;
-      font-size: 15px;
-      color: #c4c3ca;
-      margin: 0;
-      min-height: 100vh;
-      background-color: #2a2b38;
-      background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
-      background-repeat: no-repeat;
-      background-size: 300%;
-      background-position: center; 
-      min-height: 100vh;
-      padding: 30px;
-      font-family: 'Montserrat', sans-serif;
-    }
+body{
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #c4c3ca;
+    padding: 40px 15px;
+    background-color: #2a2b38;
+    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+    background-repeat: repeat;
+    background-size: 600px;
+    background-position: center top;
+    overflow-x: hidden;
+}
 
-    .card-eval {
-      border-left: 6px solid #4f46e5;
-      border-radius: 14px;
-      background: #ffffffcc;
-      backdrop-filter: blur(6px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-    }
+h3.title-main {
+    text-align: center;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
 
-    .card {
-      border-radius: 14px;
-      background: #ffffffcc !important;
-      backdrop-filter: blur(6px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-    }
+p {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #fff;
+}
 
-    .btn-primary {
-      background: #4f46e5 !important;
-      border: none !important;
-      border-radius: 10px;
-    }
+.card-eval, .card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.25);
+    margin-bottom: 20px;
+    color: #fff;
+}
 
-    .btn-primary:hover {
-      background: #4338ca !important;
-    }
+.card-body {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+}
 
-    .badge-pend { background:#fbbf24; }
-    .badge-ok   { background:#22c55e; }
-    .badge-no   { background:#6b7280; }
+.left-side {
+    flex: 1 1 auto;
+    text-align: left;
+}
 
-    textarea, input[type="number"], input[type="text"], input[type="date"] {
-      border-radius: 10px !important;
-    }
+.right-side {
+    flex: 0 0 360px; /* ancho fijo para formulario */
+}
 
-    .title-main {
-      font-weight: 700;
-      color: #ffffffff;
-      text-shadow: 0 1px 2px rgba(248, 248, 248, 0.07);
-    }
+.btn-outline-secondary.back-btn {
+    border-radius: 15px;
+    padding: 8px 18px;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255, 255, 255, 0.1);
+    transition: 0.2s;
+    text-decoration: none;
+}
+.btn-outline-secondary.back-btn:hover {
+    background: rgba(255,255,255,0.35);
+}
 
-    .back-btn {
-      border-radius: 10px;
+.badge {
+    border-radius: 12px;
+    padding: 0.25em 0.6em;
+    font-size: 0.8em;
+}
+.badge-ok { background: #22c55e; color: #fff; }
+.badge-no { background: #6b7280; color: #fff; }
+.badge-pend { background: #fbbf24; color: #fff; }
+.badge.bg-primary { background: #4f46e5; }
+
+input, textarea {
+    border-radius: 15px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    padding: 8px 12px;
+}
+input::placeholder, textarea::placeholder {
+    color: #ddd;
+}
+button.btn-primary {
+    border-radius: 15px;
+    background: #4f46e5;
+    border: none;
+    padding: 8px 18px;
+    transition: 0.2s;
+}
+button.btn-primary:hover {
+    background: #4338ca;
+}
+button.btn-outline-secondary {
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 8px 18px;
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+}
+button.btn-outline-secondary:hover {
+    background: rgba(255,255,255,0.35);
+}
+
+form {
+    margin-top: 10px;
+    background: rgba(0,0,0,0.3);
+    padding: 15px;
+    border-radius: 15px;
+    backdrop-filter: blur(8px);
+}
+
+.d-flex.gap-2 {
+    gap: 10px;
+}
+
+@media (max-width: 768px) {
+    .card-body {
+        flex-direction: column;
+        gap: 15px;
     }
+    .right-side {
+        flex: 1 1 100%;
+    }
+    form {
+        width: 100% !important;
+        max-width: none !important;
+    }
+}
   </style>
 </head>
 
@@ -135,18 +211,14 @@ $filas = $st->fetchAll(PDO::FETCH_ASSOC);
   <div class="card shadow-sm mb-3">
     <div class="card-body">
 
-      <div class="d-flex justify-content-between">
-
-        <div>
+      <div class="left-side">
           <h5 class="mb-1">
             <?= htmlspecialchars($row['Estudiante']) ?>
-
             <?php if ($entregada): ?>
               <span class="badge badge-ok ms-2"> Entregó</span>
             <?php else: ?>
               <span class="badge badge-no ms-2"> Sin entrega</span>
             <?php endif; ?>
-
             <?php if ($evaluada): ?>
               <span class="badge bg-primary ms-2"> Evaluada</span>
             <?php endif; ?>
@@ -156,7 +228,7 @@ $filas = $st->fetchAll(PDO::FETCH_ASSOC);
             <?= htmlspecialchars($row['Grado'] ?: '-') ?>
             <?= htmlspecialchars($row['Seccion'] ?: '') ?>
             <?php if ($row['Fecha_Entrega']): ?>
-              · Recibida: <?= htmlspecialchars($row['Fecha_Entrega']) ?>
+              <span class="text-white">· Recibida: <?= htmlspecialchars($row['Fecha_Entrega']) ?></span>
             <?php endif; ?>
           </div>
 
@@ -165,11 +237,11 @@ $filas = $st->fetchAll(PDO::FETCH_ASSOC);
               <a href="<?= htmlspecialchars($row['Archivo_URL']) ?>" target="_blank">Ver archivo</a>
             </div>
           <?php endif; ?>
-        </div>
+      </div>
 
-        <?php if ($entregada): ?>
-        <form class="ms-3" method="post" action="/Aula-Virtual-Santa-Teresita/view/Docente/GuardarEvaluacion.php" style="min-width:320px;max-width:420px">
-
+      <?php if ($entregada): ?>
+      <div class="right-side">
+        <form method="post" action="/Aula-Virtual-Santa-Teresita/view/Docente/GuardarEvaluacion.php">
           <input type="hidden" name="Id_Tarea" value="<?= $idTarea ?>">
           <input type="hidden" name="Id_Curso" value="<?= $idCurso ?>">
           <input type="hidden" name="Id_Estudiante" value="<?= (int)$row['Id_Estudiante'] ?>">
@@ -184,7 +256,7 @@ $filas = $st->fetchAll(PDO::FETCH_ASSOC);
             <label class="form-label mb-1">Puntos Ranking (1–10)</label>
             <input type="number" class="form-control" name="Puntos_Ranking" min="1" max="10"
                    value="<?= $row['Puntos_Ranking'] !== null ? (int)$row['Puntos_Ranking'] : '' ?>" required>
-            <small class="text-muted">
+            <small class="text-white">
               Estos puntos se suman al ranking que verá el estudiante.
             </small>
           </div>
@@ -194,9 +266,8 @@ $filas = $st->fetchAll(PDO::FETCH_ASSOC);
             <textarea class="form-control" name="Comentario" rows="2"><?= htmlspecialchars((string)$row['Comentario']) ?></textarea>
           </div>
 
-          <div class="d-flex gap-2">
+          <div class="d-flex gap-2 justify-content-end">
             <button class="btn btn-primary"> Guardar</button>
-
             <?php if ($evaluada): ?>
               <a class="btn btn-outline-secondary"
                  onclick="event.preventDefault(); const f=this.closest('form'); 
@@ -209,17 +280,16 @@ $filas = $st->fetchAll(PDO::FETCH_ASSOC);
           </div>
 
         </form>
-
-        <?php else: ?>
-          <div class="ms-3 text-muted">No puedes evaluar porque no hay entrega.</div>
-        <?php endif; ?>
-
       </div>
+      <?php else: ?>
+        <div class="text-white mt-2">No puedes evaluar porque no hay entrega.</div>
+      <?php endif; ?>
 
     </div>
   </div>
   <?php endforeach; ?>
 
 </div>
+
 </body>
 </html>

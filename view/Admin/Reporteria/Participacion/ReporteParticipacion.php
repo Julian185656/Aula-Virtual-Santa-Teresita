@@ -16,7 +16,9 @@ body{
     font-size: 15px;
     line-height: 1.7;
     color: #c4c3ca;
-    padding: 40px 15px;
+   padding: 20px 15px;
+
+   
 
     background-color: #2a2b38;
     background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
@@ -137,7 +139,7 @@ body{
         <i class="fa-solid fa-arrow-left"></i> Volver
     </a>
 
-    <section class="section" style="padding-top: 120px;">
+    <section class="section" style="padding-top: 40px;">
         
 
     

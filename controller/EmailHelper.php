@@ -9,10 +9,9 @@ require_once $_SERVER["DOCUMENT_ROOT"] . '/Aula-Virtual-Santa-Teresita/controlle
 function EnviarCorreo($asunto, $contenido, $destinatario)
 {
     $correoSalida = "grupomoras.a19@gmail.com";
-    $contrasennaSalida = "njdmhpkjalyjsosv"; 
+    $contrasennaSalida = "njdmhpkjalyjsosv"; // contraseña de app de Gmail
 
     $mail = new PHPMailer(true);
-
 
     try {
         $mail->CharSet = 'UTF-8';
@@ -30,15 +29,11 @@ function EnviarCorreo($asunto, $contenido, $destinatario)
         $mail->MsgHTML($contenido);
         $mail->addAddress($destinatario);
 
-        if ($mail->send()) {
-            return true;
-        } else {
-            echo "<div class='alert alert-danger'>Error al enviar el correo: " . $mail->ErrorInfo . "</div>";
-            return false;
-        }
+        return $mail->send();
 
     } catch (Exception $e) {
-        echo "<div class='alert alert-danger'>Excepción al enviar el correo: " . $mail->ErrorInfo . "</div>";
+        echo "Error al enviar el correo: " . $mail->ErrorInfo;
         return false;
     }
 }
+?>

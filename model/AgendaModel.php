@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/db.php';
-
+$pdo = (new CN_BD())->conectar();
 class AgendaModel
 {
     private $pdo;
@@ -14,7 +14,7 @@ class AgendaModel
     public function obtenerActividadesDocente($idDocente)
     {
         $sql = "SELECT Id_Agenda, Titulo, Descripcion, Fecha, Hora, Estado 
-                FROM agenda 
+                FROM aulavirtual.agenda 
                 WHERE Id_Docente = :idDocente
                 ORDER BY Fecha ASC";
         $stmt = $this->pdo->prepare($sql);
@@ -25,7 +25,7 @@ class AgendaModel
 
     public function crearActividad($idDocente, $titulo, $descripcion, $fecha, $hora)
     {
-        $sql = "INSERT INTO agenda (Id_Docente, Titulo, Descripcion, Fecha, Hora, Estado)
+        $sql = "INSERT INTO aulavirtual.agenda (Id_Docente, Titulo, Descripcion, Fecha, Hora, Estado)
                 VALUES (:idDocente, :titulo, :descripcion, :fecha, :hora, 'Pendiente')";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
@@ -40,7 +40,7 @@ class AgendaModel
 
     public function editarActividad($idAgenda, $titulo, $descripcion, $fecha, $hora)
     {
-        $sql = "UPDATE agenda
+        $sql = "UPDATE aulavirtual.agenda
                 SET Titulo = :titulo, Descripcion = :descripcion, Fecha = :fecha, Hora = :hora
                 WHERE Id_Agenda = :idAgenda";
         $stmt = $this->pdo->prepare($sql);
@@ -56,7 +56,7 @@ class AgendaModel
 
     public function eliminarActividad($idAgenda)
     {
-        $stmt = $this->pdo->prepare("DELETE FROM agenda WHERE Id_Agenda = ?");
+        $stmt = $this->pdo->prepare("DELETE FROM aulavirtual.agenda WHERE Id_Agenda = ?");
         return $stmt->execute([$idAgenda]);
     }
 }

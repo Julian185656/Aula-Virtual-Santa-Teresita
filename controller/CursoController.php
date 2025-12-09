@@ -8,7 +8,7 @@ class CursoController {
             $nombre = $_POST['nombre'];
             $descripcion = $_POST['descripcion'];
             CursoModel::crearCurso($nombre, $descripcion);
-            header("Location: CrearCurso.php");
+            header("Location: CrearCursos.php");
             exit;
         }
     }
@@ -18,7 +18,7 @@ class CursoController {
             $idCurso = $_POST['idCurso'];
             $docentes = $_POST['docentes'];
             CursoModel::asignarDocentes($idCurso, $docentes);
-            header("Location: CrearCurso.php");
+            header("Location: AsignarDocentes.php");
             exit;
         }
     }
@@ -27,7 +27,7 @@ class CursoController {
     public static function eliminarCurso($idCurso) {
         if (!empty($idCurso)) {
             CursoModel::eliminarCurso($idCurso);
-            header("Location: CrearCurso.php");
+            header("Location: EliminarCurso.php");
             exit;
         }
     }

@@ -1,12 +1,12 @@
 <?php
 require __DIR__ . '/../../controller/auth_admin.php';
 require __DIR__ . '/../../model/db.php';
-
+$pdo = (new CN_BD())->conectar();
 $id = (int)($_POST['Id_Usuario'] ?? 0);
 if ($id <= 0) { http_response_code(400); exit('ID inválido'); }
 
 try {
-    $stmt = $pdo->prepare("CALL eliminarUsuarioFuerte(?)");
+    $stmt = $pdo->prepare("DELETE FROM aulavirtual.usuario WHERE Id_Usuario = ?");
     $stmt->execute([$id]);
     $stmt->closeCursor();
     header("Location: admin_usuarios_list.php?deleted=1");

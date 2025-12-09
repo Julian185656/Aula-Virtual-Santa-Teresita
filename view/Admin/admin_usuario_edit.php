@@ -2,10 +2,13 @@
 require __DIR__ . '/../../controller/auth_admin.php';
 require __DIR__ . '/../../model/db.php';
 
+
+$pdo = (new CN_BD())->conectar();
+
 $id = (int)($_GET['id'] ?? 0);
 if ($id <= 0) { http_response_code(400); exit('ID inválido'); }
 
-$stmt = $pdo->prepare("CALL obtenerUsuarioDetalle(?)");
+$stmt = $pdo->prepare("EXEC aulavirtual.obtenerUsuarioDetalle ?");
 $stmt->execute([$id]);
 $usuario = $stmt->fetch();
 $stmt->closeCursor();

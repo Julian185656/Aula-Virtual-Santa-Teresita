@@ -1,280 +1,255 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Historial de Asistencia</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>Historial de Asistencia</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600,700" rel="stylesheet">
-    <link href="../../../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../../../assets/css/templatemo-grad-school.css">
-    <link rel="stylesheet" href="../../../assets/css/owl.css">
-    <link rel="stylesheet" href="../../../assets/css/lightbox.css">
-    <!-- Si luego quieres estilos propios:
-    <link rel="stylesheet" href="styles/Historial.css">
-    -->
+<!-- Bootstrap e íconos -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<!-- Fuente -->
+<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+
+<style>
+body{
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #c4c3ca;
+    padding: 40px 15px;
+    background-color: #2a2b38;
+    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+    background-repeat: repeat;
+    background-size: 600px;
+    background-position: center top;
+}
+
+.container { max-width: 1200px; margin: 0 auto; }
+h2 { color: #fff; text-align: center; margin-bottom: 30px; text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
+
+/* Botón volver */
+.btn-outline-light {
+    border-radius: 15px;
+    padding: 8px 20px;
+    transition: 0.2s ease;
+}
+.btn-outline-light:hover { background-color: rgba(255,255,255,0.15); }
+
+/* Filtros */
+form.row.g-3.align-items-end {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    background: rgba(255,255,255,0.05);
+    padding: 20px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.25);
+}
+form select, form input {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border-radius: 15px;
+    border: none;
+    padding: 10px 15px;
+}
+form select option { background-color: #000; color: #fff; }
+form button {
+    border-radius: 15px;
+    padding: 10px 20px;
+}
+
+/* Card */
+.card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+}
+
+/* Tabla */
+.table thead {
+    background: rgba(255,255,255,0.1);
+    font-weight: bold;
+}
+.table td, .table th {
+    color: #fff;
+}
+.table tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+.table tr:hover { background: rgba(255,255,255,0.1); }
+.badge { font-weight: 500; }
+
+/* Botones */
+.btn-primary {
+    background-color: #6a5acd;
+    border: none;
+}
+.btn-primary:hover { background-color: #836fff; }
+.btn-outline-primary {
+    color: #fff;
+    border-color: #fff;
+}
+.btn-outline-primary:hover { background-color: rgba(255,255,255,0.15); }
+
+/* Paginación */
+.pagination a {
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+    margin: 0 3px;
+}
+.pagination a:hover { background: rgba(255,255,255,0.35); }
+.pagination .active a { background: #6a5acd !important; }
+</style>
 </head>
 
 <body>
-    <!-- Header -->
-    <header class="main-header clearfix" role="header">
-        <div class="logo">
-            <a href="#"><em>Santa</em> Teresita</a>
+<div class="container">
+
+    <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn btn-outline-light mb-3">
+        <i class="bi bi-arrow-left-circle-fill"></i> Volver
+    </a>
+
+    <h2>
+        <i class="bi bi-clock-history me-2"></i>
+        Historial de asistencia individual
+    </h2>
+
+    <!-- Filtros -->
+    <form method="GET" class="row g-3 align-items-end mb-4">
+        <div class="col-md-4">
+            <label class="form-label">Curso</label>
+            <select name="curso" class="form-select" required>
+                <option value="">Seleccione un curso</option>
+                <?php foreach($cursos as $c): 
+                    $idC = (int)$c['Id_Curso']; 
+                    $nombreC = $c['Curso'] ?? $c['Nombre'] ?? 'Curso '.$idC;
+                ?>
+                <option value="<?= $idC ?>" <?= ($cursoId===$idC)?'selected':'' ?>>
+                    <?= htmlspecialchars($nombreC) ?>
+                </option>
+                <?php endforeach; ?>
+            </select>
         </div>
-        <a href="#menu" class="menu-link"><i class="fa fa-bars"></i></a>
-        <nav id="menu" class="main-nav" role="navigation">
-            <ul class="main-menu">
-                <li><a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php">🏠 Inicio</a></li>
-                <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/HomeAsistencia.php">↩️ Volver a Asistencias</a></li>
-                <li>
-                    <a href="/Aula-Virtual-Santa-Teresita/view/Login/Logout.php" class="text-danger">
-                        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </header>
 
-    <!-- Breadcrumb -->
-    <nav class="bg-light border-bottom" style="margin-top: 85px;">
-        <div class="container">
-            <ol class="breadcrumb mb-0 py-2">
-                <li class="breadcrumb-item"><a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php">Inicio</a></li>
-                <li class="breadcrumb-item"><a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/HomeAsistencia.php">Asistencias</a></li>
-                <li class="breadcrumb-item active">Historial de asistencia</li>
-            </ol>
+        <div class="col-md-3">
+            <label class="form-label">Desde</label>
+            <input type="date" name="desde" class="form-control" value="<?= htmlspecialchars($fechaDesde ?? '') ?>">
         </div>
-    </nav>
 
-    <!-- Contenido principal -->
-    <section class="section" role="main">
-        <div class="container mt-4">
+        <div class="col-md-3">
+            <label class="form-label">Hasta</label>
+            <input type="date" name="hasta" class="form-control" value="<?= htmlspecialchars($fechaHasta ?? '') ?>">
+        </div>
 
-            <h2 class="mb-3 text-primary">
-                <i class="fa-solid fa-clock-rotate-left me-2"></i>
-                Historial de asistencia individual
-            </h2>
+        <div class="col-md-2 d-flex justify-content-start align-items-end">
+            <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel-fill me-1"></i> Filtrar</button>
+        </div>
+    </form>
 
-            <!-- Filtros: curso + rango fechas -->
-            <form method="GET" action="HistorialAsistenciaController.php"
-                class="row g-3 align-items-end bg-light p-3 rounded shadow-sm mb-4">
+    <div class="row">
 
-                <div class="col-md-4">
-                    <label class="form-label">Curso</label>
-                    <select name="curso" class="form-select" required>
-                        <option value="">Seleccione un curso</option>
-                        <?php if (!empty($cursos)): ?>
-                            <?php foreach ($cursos as $c): ?>
-                                <?php
-                                $idC = (int)$c['Id_Curso'];
-                                $nombreC = $c['Curso'] ?? ($c['Nombre'] ?? ('Curso ' . $idC));
-                                ?>
-                                <option value="<?= $idC ?>" <?= ($cursoId === $idC) ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($nombreC) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </select>
-                </div>
-
-                <div class="col-md-3">
-                    <label class="form-label">Desde</label>
-                    <input type="date" name="desde" class="form-control"
-                        value="<?= htmlspecialchars($fechaDesde ?? '') ?>">
-                </div>
-
-                <div class="col-md-3">
-                    <label class="form-label">Hasta</label>
-                    <input type="date" name="hasta" class="form-control"
-                        value="<?= htmlspecialchars($fechaHasta ?? '') ?>">
-                </div>
-
-                <!-- Mantener alumno seleccionado si ya estaba -->
-                <input type="hidden" name="alumno" value="<?= (int)($alumnoId ?? 0) ?>">
-
-                <div class="col-md-2 d-flex justify-content-start align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fa-solid fa-filter me-1"></i> Filtrar
-                    </button>
-                </div>
-            </form>
-
-            <div class="row">
-                <!-- Columna izquierda: lista de alumnos -->
-                <div class="col-lg-5 mb-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-body">
-                            <h5 class="card-title mb-3">
-                                <i class="fa-solid fa-users me-2"></i> Estudiantes del curso
-                            </h5>
-
-                            <?php if ($cursoId <= 0): ?>
-                                <p class="text-muted">
-                                    Selecciona un curso para ver la lista de estudiantes.
-                                </p>
-                            <?php elseif (empty($alumnos)): ?>
-                                <p class="text-muted">
-                                    No hay estudiantes matriculados en este curso.
-                                </p>
-                            <?php else: ?>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-sm mb-0">
-                                        <thead class="table-dark">
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Nombre</th>
-                                                <th>Correo</th>
-                                                <th>Historial</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($alumnos as $al): ?>
-                                                <?php
-                                                $idEst = (int)$al['Id_Estudiante'];
-                                                $params = [
-                                                    'curso'  => $cursoId,
-                                                    'alumno' => $idEst,
-                                                    'desde'  => $fechaDesde,
-                                                    'hasta'  => $fechaHasta,
-                                                    'pagina' => 1
-                                                ];
-                                                $urlHist = 'HistorialAsistenciaController.php?' . http_build_query($params);
-                                                ?>
-                                                <tr>
-                                                    <td class="align-middle"><?= $idEst ?></td>
-                                                    <td class="align-middle"><?= htmlspecialchars($al['Nombre']) ?></td>
-                                                    <td class="align-middle"><?= htmlspecialchars($al['Email']) ?></td>
-                                                    <td class="align-middle text-center">
-                                                        <a href="<?= $urlHist ?>" class="btn btn-sm btn-outline-primary">
-                                                            <i class="fa-solid fa-list-ul me-1"></i> Ver
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            <?php endif; ?>
-                        </div>
+        <!-- Lista de alumnos -->
+        <div class="col-lg-5 mb-4">
+            <div class="card shadow-sm h-100 p-3">
+                <h5 class="mb-3"><i class="bi bi-people-fill me-2"></i> Estudiantes del curso</h5>
+                <?php if($cursoId<=0): ?>
+                    <p class="text-muted">Selecciona un curso para ver la lista de estudiantes.</p>
+                <?php elseif(empty($alumnos)): ?>
+                    <p class="text-muted">No hay estudiantes matriculados en este curso.</p>
+                <?php else: ?>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-sm mb-0">
+                            <thead class="table-dark">
+                                <tr><th>Nombre</th><th>Correo</th><th>Historial</th></tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach($alumnos as $al): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($al['Nombre']) ?></td>
+                                        <td><?= htmlspecialchars($al['Email']) ?></td>
+                                        <td class="text-center">
+                                            <a href="?curso=<?= $cursoId ?>&alumno=<?= $al['Id'] ?>&desde=<?= $fechaDesde ?>&hasta=<?= $fechaHasta ?>" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-list-ul me-1"></i> Ver
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-
-                <!-- Columna derecha: historial del alumno seleccionado -->
-                <div class="col-lg-7 mb-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-body">
-                            <h5 class="card-title mb-3">
-                                <i class="fa-solid fa-clipboard-list me-2"></i>
-                                Historial del alumno
-                            </h5>
-
-                            <?php if ($cursoId <= 0 || $alumnoId <= 0): ?>
-                                <p class="text-muted">
-                                    Selecciona un curso y luego un estudiante para ver su historial de asistencia.
-                                </p>
-                            <?php else: ?>
-                                <div class="mb-2">
-                                    <strong>Alumno:</strong>
-                                    <?= htmlspecialchars($alumnoNombre ?? ('ID ' . $alumnoId)) ?><br>
-                                    <strong>Curso:</strong>
-                                    <?= htmlspecialchars($cursoNombre ?? ('ID ' . $cursoId)) ?><br>
-                                </div>
-
-                                <div class="mb-2">
-                                    <?php
-                                    $pres = $resumen['presentes'] ?? 0;
-                                    $aus  = $resumen['ausentes'] ?? 0;
-                                    $tot  = $pres + $aus;
-                                    ?>
-                                    <span class="badge bg-success me-1">
-                                        Presentes: <?= $pres ?>
-                                    </span>
-                                    <span class="badge bg-danger me-1">
-                                        Ausentes: <?= $aus ?>
-                                    </span>
-                                    <span class="badge bg-secondary">
-                                        Total en rango: <?= $tot ?>
-                                    </span>
-                                </div>
-
-                                <?php if (empty($historial)): ?>
-                                    <p class="text-muted mt-3">
-                                        No hay registros de asistencia para este alumno en el rango seleccionado.
-                                    </p>
-                                <?php else: ?>
-                                    <div class="table-responsive mt-3">
-                                        <table class="table table-bordered table-striped mb-0">
-                                            <thead class="table-dark">
-                                                <tr>
-                                                    <th>Fecha</th>
-                                                    <th>Estado</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php foreach ($historial as $h): ?>
-                                                    <?php
-                                                    $esPresente = (int)$h['Presente'] === 1;
-                                                    ?>
-                                                    <tr>
-                                                        <td class="align-middle">
-                                                            <?= htmlspecialchars($h['Fecha']) ?>
-                                                        </td>
-                                                        <td class="align-middle">
-                                                            <?php if ($esPresente): ?>
-                                                                <span class="badge bg-success">Presente</span>
-                                                            <?php else: ?>
-                                                                <span class="badge bg-danger">Ausente</span>
-                                                            <?php endif; ?>
-                                                        </td>
-                                                    </tr>
-                                                <?php endforeach; ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                    <?php if (($totalPaginas ?? 1) > 1): ?>
-                                        <nav class="mt-3">
-                                            <ul class="pagination justify-content-center">
-                                                <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
-                                                    <?php
-                                                    $paramsPag = [
-                                                        'curso'  => $cursoId,
-                                                        'alumno' => $alumnoId,
-                                                        'desde'  => $fechaDesde,
-                                                        'hasta'  => $fechaHasta,
-                                                        'pagina' => $i
-                                                    ];
-                                                    $urlPag = 'HistorialAsistenciaController.php?' . http_build_query($paramsPag);
-                                                    ?>
-                                                    <li class="page-item <?= ($i === $pagina) ? 'active' : '' ?>">
-                                                        <a class="page-link" href="<?= $urlPag ?>">
-                                                            <?= $i ?>
-                                                        </a>
-                                                    </li>
-                                                <?php endfor; ?>
-                                            </ul>
-                                        </nav>
-                                    <?php endif; ?>
-                                <?php endif; ?>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
+                <?php endif; ?>
             </div>
-
         </div>
-    </section>
 
-    <footer class="bg-dark text-white text-center py-3 mt-4">
-        <div class="container">
-            <p class="mb-0">© 2025 | Módulo de Asistencia - Santa Teresita</p>
+        <!-- Historial del alumno -->
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow-sm h-100 p-3">
+                <h5 class="mb-3"><i class="bi bi-card-checklist me-2"></i> Historial del alumno</h5>
+
+                <?php if($cursoId<=0 || $usuarioId<=0): ?>
+                    <p class="text-muted">Selecciona un curso y luego un estudiante para ver su historial.</p>
+                <?php else: ?>
+                    <div class="mb-2">
+                        <strong>Alumno:</strong> <?= htmlspecialchars($alumnoNombre) ?><br>
+                        <strong>Curso:</strong> <?= htmlspecialchars($cursoNombre) ?>
+                    </div>
+                    <div class="mb-2">
+                        <span class="badge bg-success me-1">Presentes: <?= $resumen['presentes'] ?></span>
+                        <span class="badge bg-danger me-1">Ausentes: <?= $resumen['ausentes'] ?></span>
+                        <span class="badge bg-secondary">Total: <?= $resumen['presentes']+$resumen['ausentes'] ?></span>
+                    </div>
+
+                    <?php if(empty($historial)): ?>
+                        <p class="text-muted mt-3">No hay registros en el rango seleccionado.</p>
+                    <?php else: ?>
+                        <div class="table-responsive mt-3">
+                            <table class="table table-bordered table-striped mb-0">
+                                <thead class="table-dark">
+                                    <tr><th>Fecha</th><th>Estado</th></tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($historial as $h): ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($h['Fecha']) ?></td>
+                                            <td>
+                                                <?php if((int)$h['Presente']===1): ?>
+                                                    <span class="badge bg-success">Presente</span>
+                                                <?php else: ?>
+                                                    <span class="badge bg-danger">Ausente</span>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <?php if($totalPaginas>1): ?>
+                            <nav class="mt-3">
+                                <ul class="pagination justify-content-center">
+                                    <?php for($i=1;$i<=$totalPaginas;$i++): ?>
+                                        <li class="page-item <?= ($pagina==$i)?'active':'' ?>">
+                                            <a class="page-link" href="?curso=<?= $cursoId ?>&alumno=<?= $usuarioId ?>&desde=<?= $fechaDesde ?>&hasta=<?= $fechaHasta ?>&pagina=<?= $i ?>"><?= $i ?></a>
+                                        </li>
+                                    <?php endfor; ?>
+                                </ul>
+                            </nav>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                <?php endif; ?>
+            </div>
         </div>
-    </footer>
 
-    <script src="../../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../../../assets/js/custom.js"></script>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

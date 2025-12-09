@@ -1,13 +1,13 @@
 <?php
 require __DIR__ . '/../../controller/auth_admin.php';
 require __DIR__ . '/../../model/db.php';
-
+$pdo = (new CN_BD())->conectar();
 $id     = (int)($_POST['Id_Usuario'] ?? 0);
 $estado = $_POST['Estado'] ?? 'Inactivo';
 if ($id <= 0) { http_response_code(400); exit('ID inválido'); }
 
 try {
-    $stmt = $pdo->prepare("CALL desactivarUsuario(?, ?)");
+    $stmt = $pdo->prepare("EXEC aulavirtual.desactivarUsuario ?, ?");
     $stmt->execute([$id, $estado]);
     $stmt->closeCursor();
     header("Location: admin_usuarios_list.php?toggled=1");

@@ -44,56 +44,98 @@ $posts = ForoModel::listarPublicacionesPorCurso($idCurso);
     <title>Foro — <?= htmlspecialchars($nombre !== '' ? $nombre : ('Curso #'.$idCurso)) ?></title>
     <link href="/Aula-Virtual-Santa-Teresita/view/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-    body{
+<style>
+body{
     font-family: Montserrat, system-ui, Segoe UI, Roboto, Helvetica, Arial;
     font-weight: 300;
     font-size: 15px;
     line-height: 1.7;
-    color: #c4c3ca;
+    color: #ffffff;
     padding: 40px 15px;
-text-align: center;
-    background-color: #2a2b38;
+    text-align: center;
+    background-color: #1e1f2a; /* fondo general oscuro */
     background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
-    
     background-repeat: repeat;       
     background-size: 600px;         
     background-position: center top;
-
     overflow-x: hidden;
 }
-        .page {
-            max-width: 1100px;
-            margin: 24px auto;
-        }
-        .card {
-            border: 0;
-            border-radius: 14px;
-            box-shadow: 0 10px 20px rgba(0,0,0,.06);
-        }
-        .comment {
-            border-left: 3px solid #e5e7eb;
-            padding-left: 12px;
-            margin-left: 6px;
-        }
-        textarea {
-            border-radius: 10px !important;
-        }
-        .btn-primary {
-            background: #3b82f6;
-            border: none;
-        }
-        .btn-primary:hover {
-            background: #2563eb;
-        }
-        .header-title {
-            font-weight: 700;
-            color: #ffffffff;
-        }
-        .volver-btn {
-            border-radius: 10px;
-        }
-    </style>
+
+/* Contenedor general */
+.page {
+    max-width: 1100px;
+    margin: 24px auto;
+}
+
+/* Tarjetas de publicaciones */
+.card {
+    border: 0;
+    border-radius: 14px;
+    box-shadow: 0 10px 20px rgba(0,0,0,.6);
+    background: rgba(30,30,40,0.9); /* fondo oscuro para la tarjeta */
+    color: #ffffff;
+    text-align: center; /* títulos y contenido centrado */
+}
+
+/* Comentarios */
+.bg-light {
+    background: rgba(0,0,0,0.4) !important; /* fondo oscuro glass */
+    color: #ffffff !important;
+    text-align: left; /* comentarios alineados a la izquierda */
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.comment {
+    border-left: 3px solid rgba(255,255,255,0.3);
+    padding-left: 12px;
+    margin-left: 0px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+/* Botones */
+.btn-primary {
+    background: #3b82f6;
+    border: none;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+}
+
+.btn-secondary {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: #ffffffff;
+}
+
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.35);
+}
+
+/* Inputs y textarea */
+textarea,
+input {
+    background: rgba(255,255,255,0.1);
+    color: #ffffffff;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 10px;
+}
+
+textarea::placeholder,
+input::placeholder {
+    color: #ffffffff;
+    opacity: 0.7;
+}
+
+/* Títulos */
+.header-title {
+    font-weight: 700;
+    color: #ffffff;
+}
+</style>
 </head>
 <body>
 
@@ -104,9 +146,7 @@ text-align: center;
         <a class="btn btn-secondary volver-btn" href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php">⬅ Volver</a>
     </div>
 
-    <div class="alert alert-info">
-        Aquí puedes <strong>responder</strong> a las publicaciones de los estudiantes del curso <strong>#<?= (int)$idCurso ?></strong>.
-    </div>
+    
 
     <?php if ($flashOk): ?>
         <div class="alert alert-success"><?= htmlspecialchars($flashOk) ?></div>

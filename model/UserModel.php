@@ -1,33 +1,36 @@
 <?php
 
 require_once __DIR__ . '/CN_BD.php';
+$pdo = (new CN_BD())->conectar();
+class CN_BD {
+    public function conectar() {
+        $server   = "tcp:serverab.database.windows.net,1433";
+        $database = "aulavirtual";
+        $user     = "Julianab@serverab";
+        $pass     = "tuguis2004A@";
 
-
-if (!class_exists('CN_BD')) {
-
-    class CN_BD {
-        public function conectar() {
-            return new mysqli('127.0.0.1', 'root', '', 'aulavirtual', 3307);
+        try {
+            $pdo = new PDO(
+                "sqlsrv:server=$server;Database=$database",
+                $user,
+                $pass,
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+                ]
+            );
+            return $pdo;
+        } catch (PDOException $e) {
+            die("ERROR CONECTANDO AZURE SQL: " . $e->getMessage());
         }
     }
 }
 
 class UserModel
 {
-    private static function conn(): mysqli
+    private static function conn(): PDO
     {
-        if (class_exists('CN_BD')) {
-            $cn = new CN_BD();
-            if (method_exists($cn, 'conectar')) {
-                $cx = $cn->conectar();
-                if ($cx instanceof mysqli) return $cx;
-            }
-        }
-        $cx = @new mysqli('127.0.0.1', 'root', '', 'aulavirtual', 3307);
-        if ($cx->connect_errno) {
-            $cx = new mysqli('127.0.0.1', 'root', '', 'aulavirtual'); // intenta 3306
-        }
-        return $cx;
+        return (new CN_BD())->conectar();
     }
 
     private static function cleanEmail(string $email): string
@@ -35,46 +38,37 @@ class UserModel
         return strtolower(trim($email));
     }
 
-
+    // LOGIN
     public static function iniciarSesion(string $correo, string $contrasenna): ?array
     {
         $correo = self::cleanEmail($correo);
-        $cx = self::conn();
-        if ($cx->connect_errno) {
-            throw new Exception('Error de conexión a BD: ' . $cx->connect_error);
-        }
+        $pdo = self::conn();
 
-        $sql = "SELECT Id_Usuario, Nombre, Email, Contrasena, Rol, Estado, Telefono
-                FROM usuario
-                WHERE Email = ?
-                LIMIT 1";
-        $stmt = $cx->prepare($sql);
-        if (!$stmt) {
-            throw new Exception('Error preparando consulta: ' . $cx->error);
-        }
-        $stmt->bind_param('s', $correo);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $row = $res ? $res->fetch_assoc() : null;
-        $stmt->close();
-        $cx->close();
+        // OJO: usar dbo.usuario o el schema correcto
+        $sql = "SELECT TOP 1 Id_Usuario, Nombre, Email, Contrasena, Rol, Estado, Telefono
+FROM aulavirtual.usuario
+WHERE Email = ?";
 
-        if (!$row) {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$correo]);
+        $row = $stmt->fetch();
+
+        if (!$row) return null;
+
+        // Verifica contraseña en texto plano
+        if ($contrasenna !== $row['Contrasena']) {
             return null;
         }
-        if (!password_verify($contrasenna, $row['Contrasena'])) {
-            return null;
-        }
-        if (isset($row['Estado']) && $row['Estado'] === 'Inactivo') {
+
+        if ($row['Estado'] === 'Inactivo') {
             throw new Exception('La cuenta está inactiva.');
         }
-
 
         unset($row['Contrasena']);
         return $row;
     }
 
-
+    // REGISTRO
     public static function registrarUsuario(
         string $nombre,
         string $correo,
@@ -82,34 +76,15 @@ class UserModel
         string $contrasenna,
         string $rol
     ): bool {
+
         $correo = self::cleanEmail($correo);
-        $hash = password_hash($contrasenna, PASSWORD_BCRYPT);
-
-        $cx = self::conn();
-        if ($cx->connect_errno) {
-            throw new Exception('Error de conexión a BD: ' . $cx->connect_error);
-        }
+        $pdo = self::conn();
 
 
-        $stmt = $cx->prepare("CALL registroUsuario(?, ?, ?, ?, ?)");
-        if (!$stmt) {
-            throw new Exception('Error preparando SP: ' . $cx->error);
-        }
-        $stmt->bind_param('sssss', $nombre, $correo, $telefono, $hash, $rol);
+        $sql = "INSERT INTO aulavirtual.usuario (Nombre, Email, Telefono, Contrasena, Rol, Estado)
+                VALUES (?, ?, ?, ?, ?, 'Activo')";
+        $stmt = $pdo->prepare($sql);
 
-        $ok = $stmt->execute();
-        if (!$ok) {
-            $msg = $cx->error ?: $stmt->error;
-            $stmt->close();
-            $cx->close();
-            throw new Exception($msg);
-        }
-
-        
-        while ($stmt->more_results() && $stmt->next_result()) {  }
-
-        $stmt->close();
-        $cx->close();
-        return true;
+        return $stmt->execute([$nombre, $correo, $telefono, $contrasenna, $rol]);
     }
 }

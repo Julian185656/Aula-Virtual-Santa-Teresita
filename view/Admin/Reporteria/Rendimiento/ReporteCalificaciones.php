@@ -1,260 +1,267 @@
-<?php 
-session_start();
-?>
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <title>Reporte de Calificaciones</title>
 
     <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600,700" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-body{
-    font-family: 'Poppins', sans-serif;
-    font-weight: 300;
-    font-size: 15px;
-    line-height: 1.7;
-    color: #c4c3ca;
-    padding: 40px 15px;
+        body {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #c4c3ca;
+            padding: 40px 15px;
 
-    background-color: #2a2b38;
-    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
-    
-    background-repeat: repeat;       
-    background-size: 600px;         
-    background-position: center top;
+            background-color: #2a2b38;
+            background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+            background-repeat: repeat;
+            background-size: 600px;
+            background-position: center top;
+            overflow-x: hidden;
+        }
 
-    overflow-x: hidden;
-}
+        h1, h2, label, th, td, p, a, span {
+            color: #fff !important;
+        }
+
         .container {
             max-width: 1200px;
-            width: 100%;
+            margin: auto;
         }
 
         h2 {
             text-align: center;
-            margin-bottom: 25px;
-            text-shadow: 0 2px 8px rgba(0,0,0,.5);
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-size: 2rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
         }
 
-        .btn-volver {
+        .filter-form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .filter-form select.form-select {
+            padding: 10px 15px;
             border-radius: 15px;
-            padding: 8px 18px;
+            border: none;
+            min-width: 200px;
+            font-weight: 600;
+        }
+
+        .filter-form button, .filter-form a {
+            padding: 10px 20px;
+            border-radius: 15px;
+            border: none;
+            cursor: pointer;
             text-decoration: none;
-            margin-bottom: 15px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s ease;
         }
 
-        /* Evitar que los botones se tornen blancos */
-        .btn,
-        .btn:focus,
-        .btn:active {
-            background-color: inherit !important;
-            box-shadow: none !important;
-            color: white !important;
+        .filter-form button.btn-primary {
+            background-color: #ff9f43;
         }
 
-        /* Quitar efecto blanco al hacer hover */
-        .btn:hover {
-            filter: brightness(0.9);
-            color: white !important;
+        .filter-form button.btn-primary:hover {
+            background-color: #e88f32;
         }
 
-        .btn-primary { background-color: #ff9f43 !important; }
-        .btn-secondary { background-color: #6c757d !important; }
-        .btn-success { background-color: #28c76f !important; }
+        .filter-form a.btn-success {
+            background-color: #28c76f;
+        }
 
-        /* Glass boxes */
+        .filter-form a.btn-success:hover {
+            background-color: #20b85a;
+        }
+
+        .filter-form a.btn-secondary {
+            background-color: #6c757d;
+        }
+
+        .filter-form a.btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
         .glass-box {
-            background: rgba(255,255,255,0.05);
-            padding: 20px;
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.25);
-            margin-bottom: 25px;
-        }
-
-        select.form-select {
-            background: #ffffff !important;
-            color: #000 !important;
-        }
-
-        option { color: #000 !important; }
-
-        /* Tabla */
-        .table-container {
-            overflow-x: auto;
-            background: rgba(255,255,255,0.05);
-            padding: 20px;
             border-radius: 20px;
-            backdrop-filter: blur(10px);
+            padding: 20px;
+            margin-bottom: 20px;
             border: 1px solid rgba(255,255,255,0.25);
         }
 
         table, table thead th, table tbody td {
-            color: #ffffff !important;
-            background: transparent !important;
+            color: #fff !important;
         }
 
-        .table thead tr {
-            background-color: #2e353b !important;
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
         }
 
-        .table thead th {
-            font-weight: 600;
+        thead {
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: bold;
+        }
+
+        table th, table td {
             padding: 12px 15px;
-            border-bottom: 2px solid #3a4148 !important;
+            vertical-align: middle;
         }
 
-        .table tbody tr:nth-child(odd) { background-color: #242c31 !important; }
-        .table tbody tr:nth-child(even) { background-color: #2b3338 !important; }
-        .table tbody tr:hover { background-color: #3a4148 !important; }
+        tbody tr:nth-child(even) {
+            background: rgba(255,255,255,0.02);
+        }
 
-        /* Paginación */
-        .pagination .page-link {
-            background-color: #273036;
-            color: white;
+        tbody tr:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .pagination a {
+            color: #fff;
+            background: rgba(255,255,255,0.1);
             border: none;
-            border-radius: 10px;
-            margin: 0 4px;
+            margin: 0 3px;
         }
-        .pagination .page-item.active .page-link {
-            background-color: #ff9f43 !important;
-            color: black !important;
+
+        .pagination a:hover {
+            background: rgba(255,255,255,0.3);
         }
-        .pagination .page-link:hover {
-            background-color: #ffb65c;
-            color: black;
+
+        .pagination .active .page-link {
+            background: #fff !important;
+            color: #1f272b !important;
         }
+
+        .btn-back {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: #ff9f43;
+            border: none;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white !important;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .btn-back:hover {
+            transform: scale(1.05);
+            opacity: .85;
+        }
+
     </style>
 </head>
-
 <body>
 
-
-
-
-<div class="container">
-
-    <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" 
-       class="btn btn-outline-light btn-volver">
-        <i class="fa-solid fa-arrow-left"></i> Volver
+     <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn btn-outline-light mb-3"
+       style="border-radius: 15px; padding: 8px 18px; text-decoration:none;">
+        <i class="bi bi-arrow-left-circle-fill"></i> Volver
     </a>
 
-    <h2>
-        <i class="fa-solid fa-graduation-cap me-2"></i>
-        Reporte de Calificaciones
-    </h2>
 
-    <!-- FILTROS -->
-    <div class="glass-box">
+    <div class="container">
+        <h2><i class="fa-solid fa-graduation-cap me-2"></i> Reporte de Calificaciones</h2>
 
-        <form method="GET" action="RendimientoController.php"
-            class="d-flex justify-content-center align-items-center flex-wrap gap-3">
-
-            <select name="curso" class="form-select w-auto">
-                <option value="">Todas las materias</option>
-
-                <?php
-                $cursosDisponibles = [];
-                if (!empty($resumen)) {
-                    foreach ($resumen as $r) $cursosDisponibles[$r['Id_Curso']] = $r['Curso'];
-                } elseif (!empty($reporte)) {
-                    foreach ($reporte as $r) $cursosDisponibles[$r['Id_Curso']] = $r['Curso'];
-                }
-
-                foreach ($cursosDisponibles as $id => $nombre): ?>
-                    <option value="<?= $id ?>" <?= (isset($_GET['curso']) && $_GET['curso'] == $id) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($nombre) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-
-            <button type="submit" class="btn btn-primary">
-                <i class="fa-solid fa-filter me-1"></i> Filtrar
-            </button>
-
-            <a href="RendimientoController.php" class="btn btn-secondary">
-                <i class="fa-solid fa-rotate-right me-1"></i> Restablecer
-            </a>
-
-            <a href="RendimientoController.php?verResumen=1" class="btn btn-success">
-                <i class="fa-solid fa-chart-line me-1"></i> Ver Resumen
-            </a>
-        </form>
-
-    </div>
-
-    <!-- TABLA -->
-    <div class="table-container">
-        <table class="table table-borderless">
-            <thead>
-                <tr>
-                    <th>ID Estudiante</th>
-                    <th>Estudiante</th>
-                    <th>Curso</th>
-                    <th>Docente</th>
-                    <th>Calificación</th>
-                    <th>Comentario</th>
-                    <th>Fecha de Entrega</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (!empty($reporte)): ?>
-                    <?php foreach ($reporte as $fila): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($fila['IdEstudiante']) ?></td>
-                            <td><?= htmlspecialchars($fila['Estudiante']) ?></td>
-                            <td><?= htmlspecialchars($fila['Curso']) ?></td>
-                            <td><?= htmlspecialchars($fila['Docente']) ?></td>
-                            <td><?= htmlspecialchars(number_format($fila['Calificacion'], 2)) ?></td>
-                            <td><?= htmlspecialchars($fila['Comentario']) ?></td>
-                            <td><?= htmlspecialchars($fila['Fecha_Entrega']) ?></td>
-                        </tr>
+        <!-- FILTRO -->
+        <div class="glass-box">
+            <form method="GET" class="filter-form">
+                <select name="curso" class="form-select">
+                    <option value="">Todos los cursos</option>
+                    <?php foreach ($cursos as $c): ?>
+                        <option value="<?= $c['Id_Curso'] ?>" <?= ($idCurso == $c['Id_Curso']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($c['Nombre']) ?>
+                        </option>
                     <?php endforeach; ?>
-                <?php else: ?>
-                    <tr><td colspan="7" class="text-center">No hay registros disponibles</td></tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                </select>
+
+                <button class="btn btn-primary"><i class="fa-solid fa-filter"></i> Filtrar</button>
+                <a href="RendimientoController.php?export=1<?= $idCurso ? "&curso=$idCurso" : '' ?>" class="btn btn-success">
+                    <i class="fa-solid fa-download"></i> Exportar Excel
+                </a>
+                <a href="RendimientoController.php?verResumen=1" class="btn btn-secondary">
+                    <i class="fa-solid fa-chart-pie"></i> Ver Resumen
+                </a>
+            </form>
+        </div>
+
+        <!-- TABLA -->
+        <div class="glass-box table-responsive">
+            <table class="table table-borderless">
+                <thead>
+                    <tr>
+                        <th>Estudiante</th>
+                        <th>Curso</th>
+                        <th>Docente</th>
+                        <th>Calificación</th>
+                        <th>Comentario</th>
+                        <th>Fecha de Entrega</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($reporte)): ?>
+                        <?php foreach ($reporte as $fila): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($fila['Estudiante']) ?></td>
+                                <td><?= htmlspecialchars($fila['Curso']) ?></td>
+                                <td><?= htmlspecialchars($fila['Docente']) ?></td>
+                                <td><?= htmlspecialchars(number_format($fila['Calificacion'], 2)) ?></td>
+                                <td><?= htmlspecialchars($fila['Comentario']) ?></td>
+                                <td><?= htmlspecialchars($fila['Fecha_Entrega']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr><td colspan="6" class="text-center">No hay registros</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PAGINACION -->
+        <?php if (isset($totalPaginas) && $totalPaginas > 1): ?>
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item <?= $paginaActual <= 1 ? 'disabled' : '' ?>">
+                        <a class="page-link" href="?pagina=<?= $paginaActual - 1 ?>&curso=<?= $idCurso ?>">«</a>
+                    </li>
+                    <?php for ($i=1; $i<=$totalPaginas; $i++): ?>
+                        <li class="page-item <?= $paginaActual==$i?'active':'' ?>">
+                            <a class="page-link" href="?pagina=<?= $i ?>&curso=<?= $idCurso ?>"><?= $i ?></a>
+                        </li>
+                    <?php endfor; ?>
+                    <li class="page-item <?= $paginaActual >= $totalPaginas ? 'disabled' : '' ?>">
+                        <a class="page-link" href="?pagina=<?= $paginaActual + 1 ?>&curso=<?= $idCurso ?>">»</a>
+                    </li>
+                </ul>
+            </nav>
+        <?php endif; ?>
+
     </div>
 
-    <!-- PAGINACIÓN -->
-    <?php if (isset($totalPaginas) && $totalPaginas > 1): ?>
-        <nav class="d-flex justify-content-center mt-3">
-            <ul class="pagination">
-
-                <!-- Anterior -->
-                <li class="page-item <?= $paginaActual <= 1 ? 'disabled' : '' ?>">
-                    <a class="page-link" href="?pagina=<?= $paginaActual - 1 ?>&curso=<?= $_GET['curso'] ?? '' ?>">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </a>
-                </li>
-
-                <!-- Números -->
-                <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
-                    <li class="page-item <?= $paginaActual == $i ? 'active' : '' ?>">
-                        <a class="page-link" href="?pagina=<?= $i ?>&curso=<?= $_GET['curso'] ?? '' ?>">
-                            <?= $i ?>
-                        </a>
-                    </li>
-                <?php endfor; ?>
-
-                <!-- Siguiente -->
-                <li class="page-item <?= $paginaActual >= $totalPaginas ? 'disabled' : '' ?>">
-                    <a class="page-link" href="?pagina=<?= $paginaActual + 1 ?>&curso=<?= $_GET['curso'] ?? '' ?>">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </a>
-                </li>
-
-            </ul>
-        </nav>
-    <?php endif; ?>
-
-</div>
-
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

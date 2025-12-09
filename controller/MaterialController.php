@@ -20,7 +20,7 @@ elseif (isset($_SESSION['rol'])) {
     $rol = strtolower($_SESSION['rol']);
 }
 
-if (!isset($_SESSION['id_usuario']) || !in_array($rol, ['administrador', 'docente'])) {
+if (!isset($_SESSION['id_usuario']) || !in_array($rol, ['administrador', 'docente','estudiante'])) {
     header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php?error=NoAutorizado");
     exit();
 }

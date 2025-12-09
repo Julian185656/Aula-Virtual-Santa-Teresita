@@ -31,11 +31,9 @@
 .btn-group .btn { min-width: 86px; }
 .card .card-body > .d-flex .btn { white-space: nowrap; }
 
-
 /* ============================
    Botones de estado (Presente / Ausente)
    ============================ */
-
 .estado-toggle {
     display: flex;
     gap: 8px;
@@ -82,15 +80,9 @@
     opacity: 0.85;
 }
 
-
 /* ============================
    Toasts (compactos y bonitos)
    ============================ */
-
-/* ============================
-   Toasts (compactos y bonitos)
-   ============================ */
-
 #toast-container {
     position: fixed !important;
     top: 20px !important;
@@ -108,27 +100,20 @@
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-
     box-sizing: border-box !important;
-
     width: auto !important;
     min-width: 220px !important;
     max-width: 260px !important;
-
     height: auto !important;
     min-height: 0 !important;
     max-height: 80px !important;
     overflow: hidden !important;
-
     padding: 8px 12px !important;
-
     border-radius: 8px !important;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
-
     color: #fff !important;
     font-size: 0.85rem !important;
     font-weight: 500 !important;
-
     opacity: 0;
     transform: translateX(20px);
 }
@@ -188,4 +173,25 @@
 
 #toast-container .toast .btn-close:hover {
     opacity: 1 !important;
+}
+
+/* ============================
+   BODY PERSONALIZADO
+   ============================ */
+body {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #c4c3ca;
+    padding: 40px 15px;
+
+    background-color: #2a2b38;
+    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+    
+    background-repeat: repeat;       
+    background-size: 600px;         
+    background-position: center top;
+
+    overflow-x: hidden;
 }

@@ -1,7 +1,7 @@
 <?php
 require __DIR__ . '/../../controller/auth_admin.php';
 require __DIR__ . '/../../model/db.php';
-
+$pdo = (new CN_BD())->conectar();
 $nombre      = trim($_POST['Nombre'] ?? '');
 $email       = trim($_POST['Email'] ?? '');
 $telefono    = trim($_POST['Telefono'] ?? '');
@@ -18,7 +18,7 @@ if (empty($_POST['Contrasena'])) {
 $contrasenaHasheada = password_hash($_POST['Contrasena'], PASSWORD_BCRYPT);
 
 try {
-    $stmt = $pdo->prepare("CALL crearUsuarioAdmin(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $pdo->prepare("EXEC aulavirtual.crearUsuarioAdmin ?, ?, ?, ?, ?, ?, ?, ?, ?");
     $stmt->execute([
         $nombre, $email, $telefono, $contrasenaHasheada, $rol, $estado, $grado, $seccion, $especialidad
     ]);

@@ -25,7 +25,7 @@ if (
 }
 
 // Verifica que el estudiante pertenece al curso
-$chk = $pdo->prepare("SELECT 1 FROM matricula WHERE Id_Estudiante=? AND Id_Curso=?");
+$chk = $pdo->prepare("SELECT 1 FROM aulavirtual.matricula WHERE Id_Estudiante=? AND Id_Curso=?");
 $chk->execute([$idEstudiante, $idCurso]);
 if (!$chk->fetch()) {
     http_response_code(403);
@@ -33,7 +33,7 @@ if (!$chk->fetch()) {
 }
 
 // Verifica que exista la entrega (solo se evalúan entregas)
-$sel = $pdo->prepare("SELECT Id_Entrega FROM entrega_tarea WHERE Id_Tarea=? AND Id_Estudiante=?");
+$sel = $pdo->prepare("SELECT Id_Entrega FROM aulavirtual.entrega_tarea WHERE Id_Tarea=? AND Id_Estudiante=?");
 $sel->execute([$idTarea, $idEstudiante]);
 $entrega = $sel->fetch(PDO::FETCH_ASSOC);
 if (!$entrega) {
@@ -43,7 +43,7 @@ if (!$entrega) {
 
 // Actualiza calificación, comentario y puntos de ranking
 $upd = $pdo->prepare("
-    UPDATE entrega_tarea
+    UPDATE aulavirtual.entrega_tarea
     SET Calificacion = ?, Comentario = ?, Puntos_Ranking = ?
     WHERE Id_Entrega = ?
 ");

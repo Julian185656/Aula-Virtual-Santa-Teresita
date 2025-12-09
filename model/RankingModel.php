@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . "/Aula-Virtual-Santa-Teresita/model/db.php";
-
+$pdo = (new CN_BD())->conectar();
 class RankingModel {
 
     public static function obtenerRankingCurso($idCurso) {
@@ -13,14 +13,14 @@ class RankingModel {
                 e.Grado,
                 e.Seccion,
                 COALESCE(SUM(et.Puntos_Ranking), 0) AS puntos_total
-            FROM matricula m
-            JOIN usuario u 
+            FROM aulavirtual.matricula m
+            JOIN aulavirtual.usuario u 
                 ON u.Id_Usuario = m.Id_Estudiante
-            LEFT JOIN estudiante e 
+            LEFT JOIN aulavirtual.estudiante e 
                 ON e.Id_Estudiante = m.Id_Estudiante
-            LEFT JOIN tarea t 
+            LEFT JOIN aulavirtual.tarea t 
                 ON t.Id_Curso = m.Id_Curso
-            LEFT JOIN entrega_tarea et  
+            LEFT JOIN aulavirtual.entrega_tarea et  
                 ON et.Id_Tarea = t.Id_Tarea 
                AND et.Id_Estudiante = m.Id_Estudiante
             WHERE m.Id_Curso = ?

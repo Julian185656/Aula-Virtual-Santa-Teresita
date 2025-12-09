@@ -29,7 +29,7 @@ $contrasenaHasheada = !empty($_POST['Contrasena'])
 try {
     if ($contrasenaHasheada) {
         $stmt = $pdo->prepare("
-            UPDATE usuario 
+            UPDATE aulavirtual.usuario 
             SET Nombre = ?, 
                 Email = ?, 
                 Telefono = ?, 
@@ -41,7 +41,7 @@ try {
         $stmt->execute([$nombre, $email, $telefono, $contrasenaHasheada, $rol, $estado, $id]);
     } else {
         $stmt = $pdo->prepare("
-            UPDATE usuario 
+            UPDATE aulavirtual.usuario 
             SET Nombre = ?, 
                 Email = ?, 
                 Telefono = ?, 

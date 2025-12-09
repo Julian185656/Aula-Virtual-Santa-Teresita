@@ -11,70 +11,92 @@ class RendimientoModel
         $this->pdo = $pdo;
     }
 
-    /**
-     * Obtiene el reporte de calificaciones con paginación y filtro por curso.
-     * Utiliza el procedimiento almacenado: sp_ObtenerReporteCalificaciones
-     */
+    // Obtener reporte de calificaciones con paginación
     public function obtenerReporte($idCurso = null, $pagina = 1, $limite = 15)
     {
         try {
-            $sql = "CALL sp_ObtenerReporteCalificaciones(:idCurso, :pagina, :limite, @total)";
+            $offset = ($pagina - 1) * $limite;
+
+            $sql = "SELECT 
+                        e.Id_Entrega,
+                        u.Nombre AS Estudiante,
+                        c.Nombre AS Curso,
+                        d.Nombre AS Docente,
+                        e.Calificacion,
+                        e.Comentario,
+                        e.Fecha_Entrega
+                    FROM aulavirtual.entrega_tarea e
+                    INNER JOIN aulavirtual.usuario u ON u.Id_Usuario = e.Id_Estudiante
+                    INNER JOIN aulavirtual.tarea t ON t.Id_Tarea = e.Id_Tarea
+                    INNER JOIN aulavirtual.curso c ON c.Id_Curso = t.Id_Curso
+                    INNER JOIN aulavirtual.curso_docente cd ON cd.Id_Curso = c.Id_Curso
+                    INNER JOIN aulavirtual.usuario d ON d.Id_Usuario = cd.Id_Docente
+                    " . ($idCurso ? "WHERE c.Id_Curso = :idCurso" : "") . "
+                    ORDER BY e.Fecha_Entrega DESC
+                    OFFSET :offset ROWS FETCH NEXT :limite ROWS ONLY";
+
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':idCurso', $idCurso, PDO::PARAM_INT);
-            $stmt->bindParam(':pagina', $pagina, PDO::PARAM_INT);
+
+            if ($idCurso) {
+                $stmt->bindParam(':idCurso', $idCurso, PDO::PARAM_INT);
+            }
+            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
             $stmt->bindParam(':limite', $limite, PDO::PARAM_INT);
+
             $stmt->execute();
-
             $reporte = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
 
-            $totalResult = $this->pdo->query("SELECT @total AS TotalRegistros")->fetch(PDO::FETCH_ASSOC);
-            $totalRegistros = $totalResult['TotalRegistros'] ?? 0;
+            // Total de registros
+            $countSql = "SELECT COUNT(*) AS total
+                         FROM aulavirtual.entrega_tarea e
+                         INNER JOIN aulavirtual.tarea t ON t.Id_Tarea = e.Id_Tarea
+                         INNER JOIN aulavirtual.curso c ON c.Id_Curso = t.Id_Curso
+                         " . ($idCurso ? "WHERE c.Id_Curso = :idCurso" : "");
+            $countStmt = $this->pdo->prepare($countSql);
+            if ($idCurso) {
+                $countStmt->bindParam(':idCurso', $idCurso, PDO::PARAM_INT);
+            }
+            $countStmt->execute();
+            $totalRegistros = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
 
             return [
                 'reporte' => $reporte ?: [],
                 'total' => (int)$totalRegistros
             ];
+
         } catch (Exception $e) {
             throw new Exception("Error al obtener el reporte de calificaciones: " . $e->getMessage());
         }
     }
 
-    /**
-     * Obtiene el resumen de promedios por curso.
-     * Utiliza el procedimiento almacenado: sp_VerResumenCalificaciones
-     */
+    // Obtener resumen de calificaciones
     public function obtenerResumen()
     {
         try {
-            $stmt = $this->pdo->query("CALL sp_VerResumenCalificaciones()");
+            $sql = "SELECT c.Nombre AS Curso, AVG(e.Calificacion) AS Promedio
+                    FROM aulavirtual.entrega_tarea e
+                    INNER JOIN aulavirtual.tarea t ON t.Id_Tarea = e.Id_Tarea
+                    INNER JOIN aulavirtual.curso c ON c.Id_Curso = t.Id_Curso
+                    INNER JOIN aulavirtual.curso_docente cd ON cd.Id_Curso = c.Id_Curso
+                    INNER JOIN aulavirtual.usuario d ON d.Id_Usuario = cd.Id_Docente
+                    GROUP BY c.Nombre";
+            $stmt = $this->pdo->query($sql);
             $resumen = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-
             return $resumen ?: [];
         } catch (Exception $e) {
             throw new Exception("Error al obtener el resumen de rendimiento: " . $e->getMessage());
         }
     }
 
-    /**
-     * Obtiene el promedio por estudiante de un curso.
-     * Utiliza el procedimiento almacenado: sp_VerPromedioPorEstudiante
-     */
-    public function obtenerPromedioPorEstudiante($idCurso)
+    // Obtener cursos disponibles
+    public function obtenerCursos()
     {
-        try {
-            $sql = "CALL sp_VerPromedioPorEstudiante(:idCurso)";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':idCurso', $idCurso, PDO::PARAM_INT);
-            $stmt->execute();
-
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
-
-            return $result ?: [];
-        } catch (Exception $e) {
-            throw new Exception("Error al obtener promedio por estudiante: " . $e->getMessage());
-        }
+        $stmt = $this->pdo->query("
+            SELECT DISTINCT c.Id_Curso, c.Nombre 
+            FROM aulavirtual.curso c
+            INNER JOIN aulavirtual.curso_docente cd ON cd.Id_Curso = c.Id_Curso
+            ORDER BY c.Nombre
+        ");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

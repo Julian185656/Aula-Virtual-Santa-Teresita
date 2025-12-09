@@ -18,15 +18,43 @@ session_start();
     <link rel="stylesheet" href="../assets/css/lightbox.css">
 
     <style>
-        #bg-video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-        }
+
+
+
+   #bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+
+.video-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+
+.home-overlay {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    color: #fff;
+    text-align: center;
+    padding-top: 120px;
+}
 
         .main-banner {
             position: relative;
@@ -34,15 +62,7 @@ session_start();
             overflow: hidden;
         }
 
-        .video-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(31, 39, 43, 0.7);
-            z-index: 1;
-        }
+   
 
         .header-text,
         .caption,
@@ -154,13 +174,9 @@ session_start();
                 <?php if ($rolActual === 'Administrador'): ?>
 
                 <?php elseif ($rolActual === 'Docente'): ?>
-                    <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/ListaDocente.php">Ver Perfiles Alumnos</a></li>
-                    <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php">Mis Cursos</a></li>
-                    <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/Agenda.php">Mi Agenda</a></li>
-                    <li><a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/HomeAsistencia.php">Asistencias</a></li>
+         
                 <?php elseif ($rolActual === 'Estudiante'): ?>
-                    <li><a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php">Mis Cursos</a></li>
-                    <li><a href="https://wa.me/50622222222" style="color: #25D366;">Soporte Técnico</a></li>
+                    
                 <?php endif; ?>
 
                 <li><a href="#" style="color: #ffffff;"><?php echo htmlspecialchars($_SESSION['nombre']); ?></a></li>
@@ -177,12 +193,12 @@ session_start();
 
 
 
-<section class="section main-banner" id="top" data-section="section1">
-
+<section class="section main-banner" id="top">
     <video autoplay muted loop playsinline id="bg-video">
         <source src="../assets/images/course-video.mp4" type="video/mp4">
     </video>
 
+    <div class="video-overlay"></div>
     <div class="home-overlay">
         <h2 class="home-title">Herramientas</h2>
 
@@ -226,6 +242,20 @@ session_start();
                 </div>
 
             <?php elseif ($rolActual === 'Docente'): ?>
+
+
+
+
+
+                  <div class="role-card">
+                    <i class="fa fa-graduation-cap"></i>
+                    <h4>Ver Perfiles Alumnos</h4>
+                    <p>Ver Perfiles Alumnos</p>
+                    <a href="/Aula-Virtual-Santa-Teresita/view/Docente/ListaDocente.php">Ir</a>
+                </div>
+
+
+
                 <div class="role-card">
                     <i class="fa fa-graduation-cap"></i>
                     <h4>Mis Cursos</h4>
@@ -243,7 +273,8 @@ session_start();
                     <i class="fa fa-clipboard-list"></i>
                     <h4>Asistencias</h4>
                     <p>Control de asistencia.</p>
-                    <a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/HomeAsistencia.php">Ir</a>
+                   <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modalAsistencias">Ir</a>
+
                 </div>
 
             <?php elseif ($rolActual === 'Estudiante'): ?>
@@ -255,6 +286,13 @@ session_start();
                     <a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php">Ir</a>
                 </div>
 
+
+
+
+
+
+
+                
                 <div class="role-card">
                     <i class="fa fa-headset"></i>
                     <h4>Soporte Técnico</h4>
@@ -270,10 +308,59 @@ session_start();
 </section>
 
 
+<div class="modal fade" id="modalAsistencias" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content"
+             style="background: rgba(255,255,255,0.12); backdrop-filter: blur(12px);
+             border-radius: 20px; border: 1px solid rgba(255,255,255,0.25); color:white;">
+
+            <div class="modal-header">
+                <h3 class="modal-title">Gestión de Asistencias</h3>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row justify-content-center g-4">
+
+                    <div class="col-md-6 col-lg-3">
+                        <div class="role-card">
+                            <i class="fa fa-plus-circle"></i>
+                            <h4>Registrar Asistencia</h4>
+                            <p>Agregar asistencia para los estudiantes.</p>
+                            <a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/Registrar/RegistrarAsistenciaController.php">Ir</a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3">
+                        <div class="role-card">
+                            <i class="fa fa-eye"></i>
+                            <h4>Historial de asistencia</h4>
+                            <p>Consulta el historial de asistencia individual de los estudiantes.</p>
+                            <a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/Historial/HistorialAsistenciaController.php">Ir</a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3">
+                        <div class="role-card">
+                            <i class="fa fa-download"></i>
+                            <h4>Justificacion de Ausencias</h4>
+                            <p>Registra como justificada la ausencias de los estudiantes, con justificacion Valida</p>
+                            <a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/Justificacion/JustificarAusenciaController.php">Ir</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 
-
-<!-- MODAL GESTIÓN DE CURSOS -->
 <div class="modal fade" id="modalGestionCursos" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content"
@@ -325,7 +412,7 @@ session_start();
                         </div>
                     </div>
 
-                    <!-- NUEVO: Material del Curso -->
+       
                     <div class="col-md-6 col-lg-3">
                         <div class="role-card">
                             <i class="fa-solid fa-folder-open"></i>
@@ -349,10 +436,6 @@ session_start();
 
 
 
-
-
-
-<!-- MODAL REPORTES -->
 <div class="modal fade" id="modalReporteria" tabindex="-1">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content"
@@ -386,13 +469,7 @@ session_start();
                         </div>
                     </div>
 
-                    <div class="col-md-6 col-lg-3">
-                        <div class="role-card">
-                            <i class="fa-solid fa-users"></i>
-                            <h4>Participación</h4>
-                            <p>Resumen de actividad del estudiante.</p>
-                            <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/Participacion/ParticipacionController.php">Ir</a>
-                        </div>
+            
                     </div>
 
                 </div>
