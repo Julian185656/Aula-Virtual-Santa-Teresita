@@ -26,3 +26,5 @@ class CN_BD {
 
 $cn = new CN_BD();
 $pdo = $cn->conectar();
+
+
