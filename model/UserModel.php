@@ -5,7 +5,7 @@ $pdo = (new CN_BD())->conectar();
 class CN_BD {
     public function conectar() {
         $server   = "tcp:serverab.database.windows.net,1433";
-        $database = "aulavirtual";
+        $database = "SantaTereS";
         $user     = "Julianab@serverab";
         $pass     = "tuguis2004A@";
 
