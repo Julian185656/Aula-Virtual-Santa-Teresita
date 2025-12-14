@@ -2,7 +2,6 @@
 session_start();
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/CursoModel.php";
 
-
 if (!isset($_SESSION['id_usuario']) || strtolower($_SESSION['rol']) !== 'docente') {
     header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php?error=NoAutorizado");
     exit();
@@ -85,6 +84,7 @@ h1 {
 .btn-tareas-asignadas { background-color: #FFC107; color: #212529; }
 .btn-foro { background-color: #6f42c1; }
 .btn-encuesta { background-color: #ff5722; } 
+.btn-rendimiento { background-color: #9c27b0; } /* NUEVO */
 .btn-container {
     text-align: center;
     margin-top: 10px;
@@ -123,6 +123,7 @@ h1 {
                             <h5 class="card-title"><?= htmlspecialchars($curso['nombre'] ?? 'Sin nombre') ?></h5>
                             <p class="card-text"><?= htmlspecialchars($curso['descripcion'] ?? 'Sin descripción') ?></p>
                             <div class="btn-container">
+
                                 <a class="icon-btn btn-tarea"
                                    href="/Aula-Virtual-Santa-Teresita/view/Docente/AsignarTarea.php?id=<?= htmlspecialchars($curso['id']) ?>"
                                    title="Añadir Tarea">
@@ -141,12 +142,19 @@ h1 {
                                     <i class="fa-solid fa-comments"></i>
                                 </a>
 
-                           
                                 <a class="icon-btn btn-encuesta"
                                    href="/Aula-Virtual-Santa-Teresita/view/Docente/EncuestasCurso.php?idCurso=<?= htmlspecialchars($curso['id']) ?>"
                                    title="Encuestas del Curso">
                                     <i class="fa-solid fa-poll"></i>
                                 </a>
+
+                                <!-- BOTÓN NUEVO: MI RENDIMIENTO -->
+                                <a class="icon-btn btn-rendimiento"
+                                   href="/Aula-Virtual-Santa-Teresita/view/Docente/MiRendimiento.php?idCurso=<?= htmlspecialchars($curso['id']) ?>"
+                                   title="Mi rendimiento">
+                                    <i class="fa-solid fa-chart-line"></i>
+                                </a>
+
                             </div>
                         </div>
                     </div>
