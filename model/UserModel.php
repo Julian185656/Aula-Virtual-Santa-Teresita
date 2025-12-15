@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/CN_BD.php';
-$pdo = (new CN_BD())->conectar();
+/*$pdo = (new CN_BD())->conectar();
 class CN_BD
 {
     public function conectar()
@@ -26,7 +26,7 @@ class CN_BD
             die("ERROR CONECTANDO AZURE SQL: " . $e->getMessage());
         }
     }
-}
+}*/
 
 class UserModel
 {

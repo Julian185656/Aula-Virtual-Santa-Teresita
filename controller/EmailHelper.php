@@ -30,7 +30,6 @@ function EnviarCorreo($asunto, $contenido, $destinatario)
         $mail->addAddress($destinatario);
 
         return $mail->send();
-
     } catch (Exception $e) {
         echo "Error al enviar el correo: " . $mail->ErrorInfo;
         return false;
