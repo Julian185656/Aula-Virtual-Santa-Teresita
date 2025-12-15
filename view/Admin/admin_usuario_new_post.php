@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/../../controller/auth_admin.php';
-
+require_once __DIR__ . '/../../controller/AuditoriaHelper.php';
 
 $pdo = (new CN_BD())->conectar();
 
@@ -48,7 +48,16 @@ if (!preg_match($regexPassword, $contrasena)) {
 }
 
 /* ===============================
-   VALIDACIÓN 4: EMAIL DUPLICADO
+   VALIDACIÓN 4: TELÉFONO (si existe)
+=============================== */
+if ($telefono !== '' && !preg_match('/^\d{8}$/', $telefono)) {
+    $_SESSION['error_message'] = 'El teléfono debe tener exactamente 8 números.';
+    header("Location: admin_usuario_new.php");
+    exit;
+}
+
+/* ===============================
+   VALIDACIÓN 5: EMAIL DUPLICADO
 =============================== */
 $stmt = $pdo->prepare("
     SELECT 1
@@ -91,16 +100,28 @@ try {
 
     $stmt->closeCursor();
 
+    /* ===============================
+       📌 AUDITORÍA: CREAR_USUARIO
+    =============================== */
+    registrarAuditoria(
+        'CREAR_USUARIO',
+        'Usuarios',
+        'Se creó un nuevo usuario en el sistema'
+    );
+
     $_SESSION['success_message'] = 'Usuario creado correctamente.';
     header("Location: admin_usuarios_list.php");
     exit;
 } catch (PDOException $e) {
+
+    registrarAuditoria(
+        'CREAR_USUARIO',
+        'Usuarios',
+        'Error al crear un usuario',
+        'Error'
+    );
+
     $_SESSION['error_message'] = 'Error al crear el usuario.';
-    header("Location: admin_usuario_new.php");
-    exit;
-}
-if ($telefono !== '' && !preg_match('/^\d{8}$/', $telefono)) {
-    $_SESSION['error_message'] = 'El teléfono debe tener exactamente 8 números.';
     header("Location: admin_usuario_new.php");
     exit;
 }

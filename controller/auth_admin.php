@@ -9,7 +9,8 @@ if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'Administrad
 }
 
 /* 🔐 VALIDACIÓN ADICIONAL CONTRA BASE DE DATOS */
-require_once __DIR__ . '/../model/db.php';
+require_once __DIR__ . '/../model/CN_BD.php';
+
 
 $pdo = (new CN_BD())->conectar();
 
