@@ -2,9 +2,10 @@
 session_start();
 
 require_once __DIR__ . "/../model/UserModel.php";
+require_once __DIR__ . '/AuditoriaHelper.php';
 
-
-function esCorreoSantateresita(string $correo): bool {
+function esCorreoSantateresita(string $correo): bool
+{
     $correo = trim($correo);
     if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) return false;
     $partes = explode('@', $correo, 2);
@@ -56,11 +57,11 @@ if (isset($_POST["btn-login"]) || isset($_POST["btn-ingresar"])) {
     }
 
     try {
-   
+
         $usuario = UserModel::iniciarSesion($correo, $contrasenna);
 
         if ($usuario && isset($usuario['Id_Usuario'])) {
-    
+
             $_SESSION['usuario'] = [
                 'id_usuario' => (int)$usuario['Id_Usuario'],
                 'nombre'     => $usuario['Nombre'],
@@ -68,12 +69,18 @@ if (isset($_POST["btn-login"]) || isset($_POST["btn-ingresar"])) {
                 'rol'        => $usuario['Rol'],
             ];
 
-    
+
             $_SESSION['id_usuario'] = (int)$usuario['Id_Usuario'];
             $_SESSION['nombre']     = $usuario['Nombre'];
             $_SESSION['rol']        = $usuario['Rol'];
 
-        
+            // ✅ AUDITORÍA LOGIN EXITOSO
+            registrarAuditoria(
+                'LOGIN_EXITOSO',
+                'Autenticación',
+                'Inicio de sesión correcto'
+            );
+
             if ($usuario['Rol'] === 'Docente') {
                 header("Location: /Aula-Virtual-Santa-Teresita/view/Home/Home.php");
             } else if ($usuario['Rol'] === 'Estudiante') {
@@ -83,7 +90,16 @@ if (isset($_POST["btn-login"]) || isset($_POST["btn-ingresar"])) {
             }
             exit();
         } else {
+
+            // ❌ AUDITORÍA LOGIN FALLIDO
+            registrarAuditoria(
+                'LOGIN_FALLIDO',
+                'Autenticación',
+                'Correo o contraseña incorrectos',
+                'Fallido'
+            );
             $_SESSION['error_message'] = "Correo o contraseña incorrectos.";
+
             header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php");
             exit();
         }
@@ -93,6 +109,13 @@ if (isset($_POST["btn-login"]) || isset($_POST["btn-ingresar"])) {
         exit();
     }
 }
+
+registrarAuditoria(
+    'LOGIN_FALLIDO',
+    'Autenticación',
+    'Credenciales incorrectas',
+    'Fallido'
+);
 
 header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php");
 exit();

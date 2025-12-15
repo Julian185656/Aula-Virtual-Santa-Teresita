@@ -1,11 +1,13 @@
 <?php
 
 require_once __DIR__ . '/CN_BD.php';
-$pdo = (new CN_BD())->conectar();
-class CN_BD {
-    public function conectar() {
+/*$pdo = (new CN_BD())->conectar();
+class CN_BD
+{
+    public function conectar()
+    {
         $server   = "tcp:serverab.database.windows.net,1433";
-        $database = "aulavirtual";
+        $database = "SantaTereS";
         $user     = "Julianab@serverab";
         $pass     = "tuguis2004A@";
 
@@ -24,10 +26,13 @@ class CN_BD {
             die("ERROR CONECTANDO AZURE SQL: " . $e->getMessage());
         }
     }
-}
+}*/
 
 class UserModel
 {
+    /* ===============================
+       CONEXIÓN
+    =============================== */
     private static function conn(): PDO
     {
         return (new CN_BD())->conectar();
@@ -38,53 +43,102 @@ class UserModel
         return strtolower(trim($email));
     }
 
-
+    /* ===============================
+       LOGIN
+    =============================== */
     public static function iniciarSesion(string $correo, string $contrasenna): ?array
     {
         $correo = self::cleanEmail($correo);
         $pdo = self::conn();
 
-       
-        $sql = "SELECT TOP 1 Id_Usuario, Nombre, Email, Contrasena, Rol, Estado, Telefono
-FROM aulavirtual.usuario
-WHERE Email = ?";
+        $sql = "
+            SELECT TOP 1
+                Id_Usuario,
+                Nombre,
+                Email,
+                Contrasena,
+                Rol,
+                Estado,
+                Telefono
+            FROM aulavirtual.usuario
+            WHERE Email = ?
+        ";
 
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$correo]);
         $row = $stmt->fetch();
 
-        if (!$row) return null;
-
- 
-        if ($contrasenna !== $row['Contrasena']) {
+        if (!$row) {
             return null;
         }
 
-        if ($row['Estado'] === 'Inactivo') {
+        /* Usuario inactivo */
+        if ($row['Estado'] !== 'Activo') {
             throw new Exception('La cuenta está inactiva.');
         }
 
+        /*  Verificación segura de contraseña */
+        if (!password_verify($contrasenna, $row['Contrasena'])) {
+            return null;
+        }
+
+        /* Nunca devolver la contraseña */
         unset($row['Contrasena']);
         return $row;
     }
 
-
+    /* ===============================
+       REGISTRO / CREACIÓN DE USUARIO
+    =============================== */
     public static function registrarUsuario(
         string $nombre,
         string $correo,
         string $telefono,
         string $contrasenna,
-        string $rol
+        string $rol,
+        string $estado = 'Activo'
     ): bool {
 
         $correo = self::cleanEmail($correo);
         $pdo = self::conn();
 
+        /* 🔐 HASH DE CONTRASEÑA */
+        $hash = password_hash($contrasenna, PASSWORD_BCRYPT);
 
-        $sql = "INSERT INTO aulavirtual.usuario (Nombre, Email, Telefono, Contrasena, Rol, Estado)
-                VALUES (?, ?, ?, ?, ?, 'Activo')";
+        $sql = "
+            INSERT INTO aulavirtual.usuario
+                (Nombre, Email, Telefono, Contrasena, Rol, Estado)
+            VALUES
+                (?, ?, ?, ?, ?, ?)
+        ";
+
         $stmt = $pdo->prepare($sql);
+        return $stmt->execute([
+            $nombre,
+            $correo,
+            $telefono,
+            $hash,
+            $rol,
+            $estado
+        ]);
+    }
 
-        return $stmt->execute([$nombre, $correo, $telefono, $contrasenna, $rol]);
+    /* ===============================
+       CAMBIO / RECUPERACIÓN DE CONTRASEÑA
+    =============================== */
+    public static function cambiarContrasenna(string $correo, string $nuevaContrasenna): bool
+    {
+        $correo = self::cleanEmail($correo);
+        $pdo = self::conn();
+
+        $hash = password_hash($nuevaContrasenna, PASSWORD_BCRYPT);
+
+        $stmt = $pdo->prepare("
+            UPDATE aulavirtual.usuario
+            SET Contrasena = ?, CodigoRecuperacion = NULL, ExpiracionRecuperacion = NULL
+            WHERE Email = ?
+        ");
+
+        return $stmt->execute([$hash, $correo]);
     }
 }

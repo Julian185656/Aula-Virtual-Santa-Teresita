@@ -64,13 +64,61 @@ public static function asignarDocentes($idCurso, $docentes) {
 
 
 
+public static function eliminarCurso($idCurso) {
+    global $pdo;
 
-    public static function eliminarCurso($idCurso) {
-        global $pdo;
-   $stmt = $pdo->prepare("EXEC aulavirtual.sp_eliminarCurso ?");
-return $stmt->execute([$idCurso]);
+    try {
+        $pdo->beginTransaction();
 
+     
+        $pdo->prepare("
+            DELETE c
+            FROM aulavirtual.comentarios c
+            INNER JOIN aulavirtual.foro f ON c.Id_Foro = f.Id_Foro
+            WHERE f.Id_Curso = ?
+        ")->execute([$idCurso]);
+
+   
+        $pdo->prepare("DELETE FROM aulavirtual.foro WHERE Id_Curso = ?")->execute([$idCurso]);
+
+       
+        $pdo->prepare("
+            DELETE et
+            FROM aulavirtual.entrega_tarea et
+            INNER JOIN aulavirtual.tarea t ON et.Id_Tarea = t.Id_Tarea
+            WHERE t.Id_Curso = ?
+        ")->execute([$idCurso]);
+
+
+        $pdo->prepare("DELETE FROM aulavirtual.tarea WHERE Id_Curso = ?")->execute([$idCurso]);
+
+  
+        $pdo->prepare("DELETE FROM aulavirtual.asistencia WHERE Id_Curso = ?")->execute([$idCurso]);
+
+   
+        $pdo->prepare("DELETE FROM aulavirtual.curso_docente WHERE Id_Curso = ?")->execute([$idCurso]);
+
+
+        $pdo->prepare("DELETE FROM aulavirtual.matricula WHERE id_curso = ?")->execute([$idCurso]);
+
+
+        $pdo->prepare("DELETE FROM aulavirtual.Encuestas WHERE Id_Curso = ?")->execute([$idCurso]);
+
+        $stmt = $pdo->prepare("EXEC aulavirtual.sp_eliminarCurso ?");
+        $stmt->execute([$idCurso]);
+
+        $pdo->commit();
+        return true;
+
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        throw $e;
     }
+}
+
+
+
+
 
 
     public static function obtenerCursosDocente($idDocente) {
@@ -267,6 +315,24 @@ public static function verificarMatricula(int $idEstudiante, int $idCurso): bool
     $stmt->execute([$idEstudiante, $idCurso]);
     return $stmt->fetchColumn() > 0;
 }
+
+
+
+public static function obtenerAsignaciones() {
+    global $pdo;
+
+    $stmt = $pdo->query("SELECT Id_Curso, Id_Docente FROM aulavirtual.curso_docente");
+    $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $asignaciones = [];
+    foreach ($resultados as $r) {
+        $asignaciones[$r['Id_Curso']][] = $r['Id_Docente'];
+    }
+
+    return $asignaciones;
+}
+
+
 
 
 

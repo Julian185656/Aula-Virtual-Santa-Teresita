@@ -93,9 +93,11 @@ h1 {
 .btn-tarea { background-color: #007BFF; }
 .btn-tareas-asignadas { background-color: #FFC107; color: #212529; }
 .btn-foro { background-color: #6f42c1; }
-.btn-ver { background-color: #17a2b8; } /* Material */
-.btn-encuesta { background-color: #ff5722; }
 
+=======
+.btn-encuesta { background-color: #ff5722; } 
+.btn-rendimiento { background-color: #9c27b0; } /* NUEVO */
+>>>>>>> d9b17f0d433ab52b9ae367912430f78b6ae44f6b
 .btn-container {
     text-align: center;
     margin-top: 10px;
@@ -139,7 +141,6 @@ h1 {
 
                             <div class="btn-container">
 
-                                <!-- Asignar Tarea -->
                                 <a class="icon-btn btn-tarea"
                                    href="/Aula-Virtual-Santa-Teresita/view/Docente/AsignarTarea.php?id=<?= htmlspecialchars($curso['id']) ?>"
                                    title="Añadir Tarea">
@@ -160,20 +161,12 @@ h1 {
                                     <i class="fa-solid fa-comments"></i>
                                 </a>
 
-                                <!-- ⭐ Botón NUEVO de Material -->
-                                <a class="icon-btn btn-ver"
-                                   href="/Aula-Virtual-Santa-Teresita/view/Docente/Material.php?curso=<?= htmlspecialchars($curso['id']) ?>"
-                                   title="Material del Curso">
-                                    <i class="fa-solid fa-folder-open"></i>
-                                </a>
-
-                                <!-- Encuestas -->
                                 <a class="icon-btn btn-encuesta"
                                    href="/Aula-Virtual-Santa-Teresita/view/Docente/EncuestasCurso.php?idCurso=<?= htmlspecialchars($curso['id']) ?>"
                                    title="Encuestas del Curso">
                                     <i class="fa-solid fa-poll"></i>
                                 </a>
-
+                                
                             </div>
 
                         </div>

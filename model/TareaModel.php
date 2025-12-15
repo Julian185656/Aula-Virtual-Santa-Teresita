@@ -70,11 +70,20 @@ public function editarTarea($idTarea, $titulo, $descripcion, $fechaEntrega) {
 
 
 public function eliminarTarea($idTarea) {
-    $stmt = $this->pdo->prepare(
-        "EXEC aulavirtual.sp_eliminarTarea @idTarea = :idTarea"
+
+    $stmtEntrega = $this->pdo->prepare(
+        "DELETE FROM aulavirtual.entrega_tarea WHERE Id_Tarea = :idTarea"
     );
-    return $stmt->execute([':idTarea' => $idTarea]);
+    $stmtEntrega->execute([':idTarea' => $idTarea]);
+
+    
+    $stmtTarea = $this->pdo->prepare(
+        "DELETE FROM aulavirtual.tarea WHERE Id_Tarea = :idTarea"
+    );
+    return $stmtTarea->execute([':idTarea' => $idTarea]);
 }
+
+
 
 
 

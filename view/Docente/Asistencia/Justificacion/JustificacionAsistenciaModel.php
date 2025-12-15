@@ -11,9 +11,7 @@ class JustificacionAsistenciaModel
         $this->pdo = $pdo;
     }
 
-    /**
-     * Obtiene los cursos asignados al docente
-     */
+
     public function obtenerCursosDocente(int $docenteId): array
     {
         try {

@@ -16,51 +16,46 @@ class RegistrarAsistenciaController
     }
 
     
-    public function mostrarFormulario(string $mensaje = null, string $tipo = 'info')
-    {
-        try {
-         
-            $cursoId = isset($_GET['curso']) ? (int)$_GET['curso'] : 0;
-            $fecha   = isset($_GET['fecha']) ? trim($_GET['fecha']) : date('Y-m-d');
-            $pagina  = isset($_GET['pagina']) ? max(1, (int)$_GET['pagina']) : 1;
-            $limite  = 15;
+   public function mostrarFormulario(?string $mensaje = null, string $tipo = 'info')
+{
+    try {
+        $cursoId = isset($_GET['curso']) ? (int)$_GET['curso'] : 0;
+        $fecha   = isset($_GET['fecha']) ? trim($_GET['fecha']) : date('Y-m-d');
+        $pagina  = isset($_GET['pagina']) ? max(1, (int)$_GET['pagina']) : 1;
+        $limite  = 15;
 
-         
-            $cursos = $this->docenteId ? $this->model->obtenerCursosDocente($this->docenteId) : [];
+        $cursos = $this->docenteId ? $this->model->obtenerCursosDocente($this->docenteId) : [];
 
-        
-            $alumnos = [];
-            $totalRegistros = 0;
-            $asistenciaMap = [];
+        $alumnos = [];
+        $totalRegistros = 0;
+        $asistenciaMap = [];
 
-            if ($cursoId > 0) {
-                $resultado    = $this->model->obtenerAlumnosPaginado($cursoId, $pagina, $limite);
-                $alumnos      = $resultado['alumnos'] ?? [];
-                $totalRegistros = $resultado['total'] ?? 0;
+        if ($cursoId > 0) {
+            $resultado = $this->model->obtenerAlumnosPaginado($cursoId, $pagina, $limite);
+            $alumnos = $resultado['alumnos'] ?? [];
+            $totalRegistros = $resultado['total'] ?? 0;
 
-           
-                $asistenciaMap = $this->model->obtenerAsistenciaDia($cursoId, $fecha);
-            }
-
-          
-            $totalPaginas = $totalRegistros > 0 ? (int)ceil($totalRegistros / $limite) : 1;
-        } catch (\Exception $e) {
-            $mensaje = "❌ Error al cargar la asistencia: " . $e->getMessage();
-            $tipo = "danger";
-         
-            $cursos = $cursos ?? [];
-            $alumnos = [];
-            $asistenciaMap = [];
-            $cursoId = $cursoId ?? 0;
-            $fecha = $fecha ?? date('Y-m-d');
-            $pagina = $pagina ?? 1;
-            $totalRegistros = 0;
-            $totalPaginas = 1;
+            $asistenciaMap = $this->model->obtenerAsistenciaDia($cursoId, $fecha);
         }
 
-     
-        include "RegistrarAsistencia.php";
+        $totalPaginas = $totalRegistros > 0 ? (int)ceil($totalRegistros / $limite) : 1;
+    } catch (\Exception $e) {
+        $mensaje = " Error al cargar la asistencia: " . $e->getMessage();
+        $tipo = "danger";
+
+        $cursos = $cursos ?? [];
+        $alumnos = [];
+        $asistenciaMap = [];
+        $cursoId = $cursoId ?? 0;
+        $fecha = $fecha ?? date('Y-m-d');
+        $pagina = $pagina ?? 1;
+        $totalRegistros = 0;
+        $totalPaginas = 1;
     }
+
+    include "RegistrarAsistencia.php";
+}
+
 
     
     public function guardar()
@@ -129,17 +124,23 @@ class RegistrarAsistenciaController
     }
 
    
-    private function obtenerDocenteIdDeSesion(): ?int
-    {
-      
-        $rol = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null);
-        $id  = $_SESSION['usuario']['Id_Usuario'] ?? ($_SESSION['id_usuario'] ?? null);
+private function obtenerDocenteIdDeSesion(): ?int
+{
+    // Verifica si existe sesión de usuario
+    $usuario = $_SESSION['usuario'] ?? null;
+    if (!$usuario) return null;
 
-        if (!$id || $rol !== 'Docente') {
-            return null; 
-        }
-        return (int)$id;
+    $rol = $usuario['Rol'] ?? $usuario['rol'] ?? '';
+    $id  = $usuario['Id_Usuario'] ?? $_SESSION['id_usuario'] ?? null;
+
+    // Compara el rol en minúsculas para evitar problemas de mayúsculas
+    if (!$id || strtolower(trim($rol)) !== 'docente') {
+        return null;
     }
+
+    return (int)$id;
+}
+
 }
 
 
