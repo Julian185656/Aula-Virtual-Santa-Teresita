@@ -196,6 +196,7 @@ $estados = ['Activo', 'Inactivo'];
     </div>
 
     <script>
+        //EMAIL
         const emailInput = document.getElementById('email');
         const emailFeedback = document.getElementById('emailFeedback');
 
@@ -237,9 +238,7 @@ $estados = ['Activo', 'Inactivo'];
             }, 400);
         });
 
-        /* ===============================
-           CONTRASEÑA FUERTE
-        =============================== */
+        //CONTRASEÑA
         const passwordInput = document.getElementById('password');
         const passwordFeedback = document.getElementById('passwordFeedback');
 
@@ -269,9 +268,7 @@ $estados = ['Activo', 'Inactivo'];
                 passwordFeedback.style.color = '#dc3545';
             }
         });
-        /* ===============================
-   TELÉFONO (SOLO NÚMEROS, 8 DÍGITOS)
-=============================== */
+        // TELEFONO 8 DIGITOS
         const telefonoInput = document.getElementById('telefono');
         const telefonoFeedback = document.getElementById('telefonoFeedback');
 
