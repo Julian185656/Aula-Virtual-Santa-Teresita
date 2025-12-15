@@ -18,43 +18,40 @@ session_start();
     <link rel="stylesheet" href="../assets/css/lightbox.css">
 
     <style>
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
 
 
-
-   #bg-video {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: -1;
-}
-
-
-.video-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1;
-}
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
 
 
-.home-overlay {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    min-height: 100vh;
-    color: #fff;
-    text-align: center;
-    padding-top: 120px;
-}
+        .home-overlay {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            color: #fff;
+            text-align: center;
+            padding-top: 120px;
+        }
 
         .main-banner {
             position: relative;
@@ -62,7 +59,7 @@ session_start();
             overflow: hidden;
         }
 
-   
+
 
         .header-text,
         .caption,
@@ -158,278 +155,336 @@ session_start();
 
 <body>
 
-<header class="main-header clearfix" role="header">
-    <div class="logo">
-        <a href="#"><em>Santa</em> Teresita</a>
-    </div>
+    <header class="main-header clearfix" role="header">
+        <div class="logo">
+            <a href="#"><em>Santa</em> Teresita</a>
+        </div>
 
-    <a href="#menu" class="menu-link"><i class="fa fa-bars"></i></a>
+        <a href="#menu" class="menu-link"><i class="fa fa-bars"></i></a>
 
-    <nav id="menu" class="main-nav" role="navigation">
-        <ul class="main-menu">
+        <nav id="menu" class="main-nav" role="navigation">
+            <ul class="main-menu">
 
-            <?php if (isset($_SESSION['nombre'])): ?>
-                <?php $rolActual = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null); ?>
+                <?php if (isset($_SESSION['nombre'])): ?>
+                    <?php $rolActual = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null); ?>
+
+                    <?php if ($rolActual === 'Administrador'): ?>
+
+                    <?php elseif ($rolActual === 'Docente'): ?>
+
+                    <?php elseif ($rolActual === 'Estudiante'): ?>
+
+                    <?php endif; ?>
+
+                    <li><a href="#" style="color: #ffffff;"><?php echo htmlspecialchars($_SESSION['nombre']); ?></a></li>
+                    <li><a href="/Aula-Virtual-Santa-Teresita/view/Login/Logout.php" style="color: red;">Cerrar sesión</a></li>
+
+                <?php else: ?>
+                    <li><a href="/Aula-Virtual-Santa-Teresita/view/Login/Login.php" style="color: #ff0000;">Iniciar sesión</a></li>
+
+                <?php endif; ?>
+
+            </ul>
+        </nav>
+    </header>
+
+
+
+    <section class="section main-banner" id="top">
+        <video autoplay muted loop playsinline id="bg-video">
+            <source src="../assets/images/course-video.mp4" type="video/mp4">
+        </video>
+
+        <div class="video-overlay"></div>
+        <div class="home-overlay">
+            <h2 class="home-title">Herramientas</h2>
+
+            <div class="role-cards">
 
                 <?php if ($rolActual === 'Administrador'): ?>
 
+                    <div class="role-card">
+                        <i class="fa fa-users"></i>
+                        <h4>Gestión de Usuarios</h4>
+                        <p>Agregar, editar y eliminar perfiles.</p>
+                        <a href="/Aula-Virtual-Santa-Teresita/view/Admin/admin_usuarios_list.php">Ir</a>
+                    </div>
+
+                    <div class="role-card">
+                        <i class="fa fa-shield-halved"></i>
+                        <h4>Auditoría</h4>
+                        <p>Registro de eventos y seguridad del sistema.</p>
+                        <a href="/Aula-Virtual-Santa-Teresita/view/Admin/admin_auditoria_list.php">Ir</a>
+                    </div>
+
+
+                    <div class="role-card">
+                        <i class="fa fa-chart-bar"></i>
+                        <h4>Reportes</h4>
+                        <p>Estadísticas y reportes generales.</p>
+                        <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modalReporteria">Ir</a>
+                    </div>
+
+                    <div class="role-card">
+                        <i class="fa fa-book"></i>
+                        <h4>Gestionar Cursos</h4>
+                        <p>Crear, editar y administrar cursos.</p>
+                        <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modalGestionCursos">Ir</a>
+                    </div>
+
+                    <div class="role-card">
+                        <i class="fa fa-bell"></i>
+                        <h4>Notificaciones</h4>
+                        <p>Enviar y consultar avisos.</p>
+                        <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Notificaciones.php">Ir</a>
+                    </div>
+
+                    <div class="role-card">
+                        <i class="fa fa-comments"></i>
+                        <h4>Foros</h4>
+                        <p>Gestionar y moderar foros.</p>
+                        <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Foro/ForoAdmin.php">Ir</a>
+                    </div>
+
+                    <?php if (isset($_SESSION['rol']) && strtolower($_SESSION['rol']) === 'administrador'): ?>
+                        <div class="role-card">
+                            <i class="fa fa-comments"></i>
+                            <h4>Rendimiento General</h4>
+                            <p>Rendimiento General</p>
+                            <a href="/Aula-Virtual-Santa-Teresita/view/Admin/RendimientoGeneral.php">Ir</a>
+                        </div>
+                    <?php endif; ?>
+
+
                 <?php elseif ($rolActual === 'Docente'): ?>
-         
+
+
+
+
+
+                    <div class="role-card">
+                        <i class="fa fa-graduation-cap"></i>
+                        <h4>Ver Perfiles Alumnos</h4>
+                        <p>Ver Perfiles Alumnos</p>
+                        <a href="/Aula-Virtual-Santa-Teresita/view/Docente/ListaDocente.php">Ir</a>
+                    </div>
+
+
+
+                    <div class="role-card">
+                        <i class="fa fa-graduation-cap"></i>
+                        <h4>Mis Cursos</h4>
+                        <p>Administrar contenido y tareas.</p>
+                        <a href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php">Ir</a>
+                    </div>
+                    <div class="role-card">
+                        <i class="fa fa-calendar-alt"></i>
+                        <h4>Mi Agenda</h4>
+                        <p>Planificar actividades.</p>
+                        <a href="/Aula-Virtual-Santa-Teresita/view/Docente/Agenda.php">Ir</a>
+                    </div>
+
+                    <div class="role-card">
+                        <i class="fa fa-clipboard-list"></i>
+                        <h4>Asistencias</h4>
+                        <p>Control de asistencia.</p>
+                        <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modalAsistencias">Ir</a>
+
+                    </div>
+
                 <?php elseif ($rolActual === 'Estudiante'): ?>
-                    
+
+                    <div class="role-card">
+                        <i class="fa fa-book-open"></i>
+                        <h4>Mis Cursos</h4>
+                        <p>Accede a contenido y material.</p>
+                        <a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php">Ir</a>
+                    </div>
+
+
+
+
+
+
+
+
+                    <div class="role-card">
+                        <i class="fa fa-headset"></i>
+                        <h4>Soporte Técnico</h4>
+                        <p>Contacto directo.</p>
+                        <a href="https://wa.me/50622222222">Ir</a>
+                    </div>
+
                 <?php endif; ?>
 
-                <li><a href="#" style="color: #ffffff;"><?php echo htmlspecialchars($_SESSION['nombre']); ?></a></li>
-                <li><a href="/Aula-Virtual-Santa-Teresita/view/Login/Logout.php" style="color: red;">Cerrar sesión</a></li>
+            </div>
+        </div>
 
-            <?php else: ?>
-                <li><a href="/Aula-Virtual-Santa-Teresita/view/Login/Login.php" style="color: #ff0000;">Iniciar sesión</a></li>
-
-            <?php endif; ?>
-
-        </ul>
-    </nav>
-</header>
+    </section>
 
 
+    <div class="modal fade" id="modalAsistencias" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content"
+                style="background: rgba(255,255,255,0.12); backdrop-filter: blur(12px);
+             border-radius: 20px; border: 1px solid rgba(255,255,255,0.25); color:white;">
 
-<section class="section main-banner" id="top">
-    <video autoplay muted loop playsinline id="bg-video">
-        <source src="../assets/images/course-video.mp4" type="video/mp4">
-    </video>
-
-    <div class="video-overlay"></div>
-    <div class="home-overlay">
-        <h2 class="home-title">Herramientas</h2>
-
-        <div class="role-cards">
-
-            <?php if ($rolActual === 'Administrador'): ?>
-
-                <div class="role-card">
-                    <i class="fa fa-users"></i>
-                    <h4>Gestión de Usuarios</h4>
-                    <p>Agregar, editar y eliminar perfiles.</p>
-                    <a href="/Aula-Virtual-Santa-Teresita/view/Admin/admin_usuarios_list.php">Ir</a>
+                <div class="modal-header">
+                    <h3 class="modal-title">Gestión de Asistencias</h3>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
-                <div class="role-card">
-                    <i class="fa fa-chart-bar"></i>
-                    <h4>Reportes</h4>
-                    <p>Estadísticas y reportes generales.</p>
-                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modalReporteria">Ir</a>
+                <div class="modal-body">
+                    <div class="row justify-content-center g-4">
+
+                        <div class="col-md-6 col-lg-3">
+                            <div class="role-card">
+                                <i class="fa fa-plus-circle"></i>
+                                <h4>Registrar Asistencia</h4>
+                                <p>Agregar asistencia para los estudiantes.</p>
+                                <a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/Registrar/RegistrarAsistenciaController.php">Ir</a>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-3">
+                            <div class="role-card">
+                                <i class="fa fa-eye"></i>
+                                <h4>Historial de asistencia</h4>
+                                <p>Consulta el historial de asistencia individual de los estudiantes.</p>
+                                <a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/Historial/HistorialAsistenciaController.php">Ir</a>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-3">
+                            <div class="role-card">
+                                <i class="fa fa-download"></i>
+                                <h4>Justificacion de Ausencias</h4>
+                                <p>Registra como justificada la ausencias de los estudiantes, con justificacion Valida</p>
+                                <a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/Justificacion/JustificarAusenciaController.php">Ir</a>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
-                <div class="role-card">
-                    <i class="fa fa-book"></i>
-                    <h4>Gestionar Cursos</h4>
-                    <p>Crear, editar y administrar cursos.</p>
-                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modalGestionCursos">Ir</a>
+                <div class="modal-footer">
+                    <button class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
                 </div>
 
-                <div class="role-card">
-                    <i class="fa fa-bell"></i>
-                    <h4>Notificaciones</h4>
-                    <p>Enviar y consultar avisos.</p>
-                    <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Notificaciones.php">Ir</a>
-                </div>
-
-                <div class="role-card">
-                    <i class="fa fa-comments"></i>
-                    <h4>Foros</h4>
-                    <p>Gestionar y moderar foros.</p>
-                    <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Foro/ForoAdmin.php">Ir</a>
-                </div>
-
-                <?php if (isset($_SESSION['rol']) && strtolower($_SESSION['rol']) === 'administrador'): ?>
-                <div class="role-card">
-                    <i class="fa fa-comments"></i>
-                    <h4>Rendimiento General</h4>
-                    <p>Rendimiento General</p>
-                    <a href="/Aula-Virtual-Santa-Teresita/view/Admin/RendimientoGeneral.php">Ir</a>
-                </div>
-                <?php endif; ?>
-
-
-            <?php elseif ($rolActual === 'Docente'): ?>
-
-
-
-
-
-                  <div class="role-card">
-                    <i class="fa fa-graduation-cap"></i>
-                    <h4>Ver Perfiles Alumnos</h4>
-                    <p>Ver Perfiles Alumnos</p>
-                    <a href="/Aula-Virtual-Santa-Teresita/view/Docente/ListaDocente.php">Ir</a>
-                </div>
-
-
-
-                <div class="role-card">
-                    <i class="fa fa-graduation-cap"></i>
-                    <h4>Mis Cursos</h4>
-                    <p>Administrar contenido y tareas.</p>
-                    <a href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php">Ir</a>
-                </div>
-                <div class="role-card">
-                    <i class="fa fa-calendar-alt"></i>
-                    <h4>Mi Agenda</h4>
-                    <p>Planificar actividades.</p>
-                    <a href="/Aula-Virtual-Santa-Teresita/view/Docente/Agenda.php">Ir</a>
-                </div>
-
-                <div class="role-card">
-                    <i class="fa fa-clipboard-list"></i>
-                    <h4>Asistencias</h4>
-                    <p>Control de asistencia.</p>
-                   <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#modalAsistencias">Ir</a>
-
-                </div>
-
-            <?php elseif ($rolActual === 'Estudiante'): ?>
-
-                <div class="role-card">
-                    <i class="fa fa-book-open"></i>
-                    <h4>Mis Cursos</h4>
-                    <p>Accede a contenido y material.</p>
-                    <a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php">Ir</a>
-                </div>
-
-
-
-
-
-
-
-                
-                <div class="role-card">
-                    <i class="fa fa-headset"></i>
-                    <h4>Soporte Técnico</h4>
-                    <p>Contacto directo.</p>
-                    <a href="https://wa.me/50622222222">Ir</a>
-                </div>
-
-            <?php endif; ?>
-
+            </div>
         </div>
     </div>
 
-</section>
 
-
-<div class="modal fade" id="modalAsistencias" tabindex="-1">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content"
-             style="background: rgba(255,255,255,0.12); backdrop-filter: blur(12px);
+    <div class="modal fade" id="modalGestionCursos" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content"
+                style="background: rgba(255,255,255,0.12); backdrop-filter: blur(12px);
              border-radius: 20px; border: 1px solid rgba(255,255,255,0.25); color:white;">
 
-            <div class="modal-header">
-                <h3 class="modal-title">Gestión de Asistencias</h3>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
+                <div class="modal-header">
+                    <h3 class="modal-title">Gestión de Cursos</h3>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
 
-            <div class="modal-body">
-                <div class="row justify-content-center g-4">
+                <div class="modal-body">
 
-                    <div class="col-md-6 col-lg-3">
-                        <div class="role-card">
-                            <i class="fa fa-plus-circle"></i>
-                            <h4>Registrar Asistencia</h4>
-                            <p>Agregar asistencia para los estudiantes.</p>
-                            <a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/Registrar/RegistrarAsistenciaController.php">Ir</a>
+                    <div class="row justify-content-center g-4">
+
+                        <div class="col-md-6 col-lg-3">
+                            <div class="role-card">
+                                <i class="fa fa-plus-circle"></i>
+                                <h4>Crear Curso</h4>
+                                <p>Agregar nuevos cursos.</p>
+                                <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/CrearCursos.php">Ir</a>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-6 col-lg-3">
-                        <div class="role-card">
-                            <i class="fa fa-eye"></i>
-                            <h4>Historial de asistencia</h4>
-                            <p>Consulta el historial de asistencia individual de los estudiantes.</p>
-                            <a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/Historial/HistorialAsistenciaController.php">Ir</a>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="role-card">
+                                <i class="fa fa-edit"></i>
+                                <h4>Eliminar</h4>
+                                <p>Eliminar cursos existentes.</p>
+                                <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/EliminarCurso.php">Ir</a>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-6 col-lg-3">
-                        <div class="role-card">
-                            <i class="fa fa-download"></i>
-                            <h4>Justificacion de Ausencias</h4>
-                            <p>Registra como justificada la ausencias de los estudiantes, con justificacion Valida</p>
-                            <a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/Justificacion/JustificarAusenciaController.php">Ir</a>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="role-card">
+                                <i class="fa fa-layer-group"></i>
+                                <h4>Asignar Profesores</h4>
+                                <p>Asignar docentes a un curso.</p>
+                                <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/AsignarDocentes.php">Ir</a>
+                            </div>
                         </div>
+
+                        <div class="col-md-6 col-lg-3">
+                            <div class="role-card">
+                                <i class="fa fa-user-graduate"></i>
+                                <h4>Estudiantes</h4>
+                                <p>Gestionar matrícula.</p>
+                                <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/MatricularEstudiantes.php">Ir</a>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 col-lg-3">
+                            <div class="role-card">
+                                <i class="fa-solid fa-folder-open"></i>
+                                <h4>Material del Curso</h4>
+                                <p>Subir, ver y eliminar archivos del curso.</p>
+                                <a href="/Aula-Virtual-Santa-Teresita/view/Admin/SeleccionarCursoMaterial.php">Ir</a>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
-            </div>
 
-            <div class="modal-footer">
-                <button class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
-            </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
+                </div>
 
+            </div>
         </div>
     </div>
-</div>
 
 
-<div class="modal fade" id="modalGestionCursos" tabindex="-1">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content"
-             style="background: rgba(255,255,255,0.12); backdrop-filter: blur(12px);
+
+    <div class="modal fade" id="modalReporteria" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content"
+                style="background: rgba(255,255,255,0.12); backdrop-filter: blur(12px);
              border-radius: 20px; border: 1px solid rgba(255,255,255,0.25); color:white;">
 
-            <div class="modal-header">
-                <h3 class="modal-title">Gestión de Cursos</h3>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
+                <div class="modal-header">
+                    <h3 class="modal-title">Módulo de Reportería</h3>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
 
-            <div class="modal-body">
+                <div class="modal-body">
 
-                <div class="row justify-content-center g-4">
+                    <div class="row g-4 justify-content-center">
 
-                    <div class="col-md-6 col-lg-3">
-                        <div class="role-card">
-                            <i class="fa fa-plus-circle"></i>
-                            <h4>Crear Curso</h4>
-                            <p>Agregar nuevos cursos.</p>
-                            <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/CrearCursos.php">Ir</a>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="role-card">
+                                <i class="fa-solid fa-clipboard-check"></i>
+                                <h4>Asistencia</h4>
+                                <p>Descargar reportes de asistencia.</p>
+                                <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/Asistencia/AsistenciaController.php">Ir</a>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-6 col-lg-3">
-                        <div class="role-card">
-                            <i class="fa fa-edit"></i>
-                            <h4>Eliminar</h4>
-                            <p>Eliminar cursos existentes.</p>
-                            <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/EliminarCurso.php">Ir</a>
+                        <div class="col-md-6 col-lg-3">
+                            <div class="role-card">
+                                <i class="fa-solid fa-chart-line"></i>
+                                <h4>Calificaciones</h4>
+                                <p>Rendimiento general por curso.</p>
+                                <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/Rendimiento/RendimientoController.php">Ir</a>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-6 col-lg-3">
-                        <div class="role-card">
-                            <i class="fa fa-layer-group"></i>
-                            <h4>Asignar Profesores</h4>
-                            <p>Asignar docentes a un curso.</p>
-                            <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/AsignarDocentes.php">Ir</a>
-                        </div>
-                    </div>
 
-                    <div class="col-md-6 col-lg-3">
-                        <div class="role-card">
-                            <i class="fa fa-user-graduate"></i>
-                            <h4>Estudiantes</h4>
-                            <p>Gestionar matrícula.</p>
-                            <a href="/Aula-Virtual-Santa-Teresita/view/Cursos/MatricularEstudiantes.php">Ir</a>
-                        </div>
-                    </div>
-
-       
-                    <div class="col-md-6 col-lg-3">
-                        <div class="role-card">
-                            <i class="fa-solid fa-folder-open"></i>
-                            <h4>Material del Curso</h4>
-                            <p>Subir, ver y eliminar archivos del curso.</p>
-                            <a href="/Aula-Virtual-Santa-Teresita/view/Admin/SeleccionarCursoMaterial.php">Ir</a>
-                        </div>
                     </div>
 
                 </div>
@@ -442,70 +497,21 @@ session_start();
 
         </div>
     </div>
-</div>
-
-
-
-<div class="modal fade" id="modalReporteria" tabindex="-1">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content"
-             style="background: rgba(255,255,255,0.12); backdrop-filter: blur(12px);
-             border-radius: 20px; border: 1px solid rgba(255,255,255,0.25); color:white;">
-
-            <div class="modal-header">
-                <h3 class="modal-title">Módulo de Reportería</h3>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-
-                <div class="row g-4 justify-content-center">
-
-                    <div class="col-md-6 col-lg-3">
-                        <div class="role-card">
-                            <i class="fa-solid fa-clipboard-check"></i>
-                            <h4>Asistencia</h4>
-                            <p>Descargar reportes de asistencia.</p>
-                            <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/Asistencia/AsistenciaController.php">Ir</a>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-lg-3">
-                        <div class="role-card">
-                            <i class="fa-solid fa-chart-line"></i>
-                            <h4>Calificaciones</h4>
-                            <p>Rendimiento general por curso.</p>
-                            <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Reporteria/Rendimiento/RendimientoController.php">Ir</a>
-                        </div>
-                    </div>
-
-            
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
-            </div>
-
-        </div>
     </div>
-</div>
 
 
 
 
-<script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="../assets/js/isotope.min.js"></script>
-<script src="../assets/js/owl-carousel.js"></script>
-<script src="../assets/js/lightbox.js"></script>
-<script src="../assets/js/tabs.js"></script>
-<script src="../assets/js/video.js"></script>
-<script src="../assets/js/slick-slider.js"></script>
-<script src="../assets/js/custom.js"></script>
+    <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/isotope.min.js"></script>
+    <script src="../assets/js/owl-carousel.js"></script>
+    <script src="../assets/js/lightbox.js"></script>
+    <script src="../assets/js/tabs.js"></script>
+    <script src="../assets/js/video.js"></script>
+    <script src="../assets/js/slick-slider.js"></script>
+    <script src="../assets/js/custom.js"></script>
 
 </body>
+
 </html>
