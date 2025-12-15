@@ -1,8 +1,6 @@
 <?php
 require __DIR__ . '/../../controller/auth_admin.php';
 
-
-
 $pdo = (new CN_BD())->conectar();
 
 $id = (int)($_GET['id'] ?? 0);
@@ -15,6 +13,7 @@ $stmt = $pdo->prepare("EXEC aulavirtual.obtenerUsuarioDetalle ?");
 $stmt->execute([$id]);
 $usuario = $stmt->fetch();
 $stmt->closeCursor();
+
 if (!$usuario) {
     exit('Usuario no encontrado');
 }
@@ -42,13 +41,11 @@ $estados = ['Activo', 'Inactivo'];
             line-height: 1.7;
             color: #c4c3ca;
             padding: 40px 15px;
-
             background-color: #2a2b38;
             background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
             background-position: bottom center;
             background-repeat: no-repeat;
             background-size: 300%;
-
             overflow-x: hidden;
         }
 
@@ -130,7 +127,6 @@ $estados = ['Activo', 'Inactivo'];
             background: rgba(255, 255, 255, 0.35);
         }
     </style>
-
 </head>
 
 <body>
@@ -140,13 +136,17 @@ $estados = ['Activo', 'Inactivo'];
         <h1>Editar usuario #<?= $usuario['Id_Usuario'] ?></h1>
 
         <?php if (isset($_SESSION['error_message'])): ?>
-            <div class="alert alert-danger alert-custom"><?= $_SESSION['error_message'];
-                                                            unset($_SESSION['error_message']); ?></div>
+            <div class="alert alert-danger alert-custom">
+                <?= $_SESSION['error_message'];
+                unset($_SESSION['error_message']); ?>
+            </div>
         <?php endif; ?>
 
         <?php if (isset($_SESSION['success_message'])): ?>
-            <div class="alert alert-success alert-custom"><?= $_SESSION['success_message'];
-                                                            unset($_SESSION['success_message']); ?></div>
+            <div class="alert alert-success alert-custom">
+                <?= $_SESSION['success_message'];
+                unset($_SESSION['success_message']); ?>
+            </div>
         <?php endif; ?>
 
         <form action="admin_usuario_update.php" method="post">
@@ -154,31 +154,45 @@ $estados = ['Activo', 'Inactivo'];
             <input type="hidden" name="Id_Usuario" value="<?= $usuario['Id_Usuario'] ?>">
 
             <div class="form-group">
-                <input name="Nombre" class="form-style" placeholder="Nombre completo"
-                    value="<?= htmlspecialchars($usuario['Nombre']) ?>" required>
+                <input name="Nombre" class="form-style"
+                    placeholder="Nombre completo"
+                    value="<?= htmlspecialchars($usuario['Nombre']) ?>"
+                    required>
             </div>
 
             <div class="form-group">
-                <input name="Email" type="email" class="form-style"
+                <input name="Email" id="email" type="email"
+                    class="form-style"
                     placeholder="Email institucional"
                     value="<?= htmlspecialchars($usuario['Email']) ?>"
                     required pattern=".+@santateresita\.ac\.cr">
+                <small id="emailFeedback"></small>
             </div>
 
             <div class="form-group">
-                <input name="Telefono" class="form-style" placeholder="Teléfono"
-                    value="<?= htmlspecialchars($usuario['Telefono'] ?? '') ?>">
+                <input name="Telefono" id="telefono"
+                    class="form-style"
+                    placeholder="Teléfono"
+                    value="<?= htmlspecialchars($usuario['Telefono'] ?? '') ?>"
+                    inputmode="numeric"
+                    pattern="\d{8}">
+                <small id="telefonoFeedback"></small>
             </div>
 
-            <div class="form-group">
-                <input name="Contrasena" type="password" class="form-style"
-                    placeholder="Nueva contraseña">
-            </div>
+            <!-- ===============================
+        <div class="form-group">
+            <input name="Contrasena" type="password"
+                   class="form-style"
+                   placeholder="Nueva contraseña">
+        </div>
+        =============================== -->
 
             <div class="form-group">
-                <select name="Rol" id="rol" class="form-style">
+                <select name="Rol" class="form-style">
                     <?php foreach ($roles as $r): ?>
-                        <option value="<?= $r ?>" <?= $usuario['Rol'] === $r ? 'selected' : '' ?>><?= $r ?></option>
+                        <option value="<?= $r ?>" <?= $usuario['Rol'] === $r ? 'selected' : '' ?>>
+                            <?= $r ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -186,22 +200,92 @@ $estados = ['Activo', 'Inactivo'];
             <div class="form-group">
                 <select name="Estado" class="form-style">
                     <?php foreach ($estados as $e): ?>
-                        <option value="<?= $e ?>" <?= $usuario['Estado'] === $e ? 'selected' : '' ?>><?= $e ?></option>
+                        <option value="<?= $e ?>" <?= $usuario['Estado'] === $e ? 'selected' : '' ?>>
+                            <?= $e ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </div>
 
-            <button type="submit" class="btn-custom">
-                <i class=""></i> Guardar cambios
-            </button>
-
-            <a href="admin_usuarios_list.php" class="btn-back">
-                <i class=""></i> Volver
-            </a>
+            <button type="submit" class="btn-custom">Guardar cambios</button>
+            <a href="admin_usuarios_list.php" class="btn-back">Volver</a>
 
         </form>
-
     </div>
+
+    <script>
+        /* ===============================
+   EMAIL INSTITUCIONAL
+=============================== */
+        const emailInput = document.getElementById('email');
+        const emailFeedback = document.getElementById('emailFeedback');
+
+        emailInput.addEventListener('input', () => {
+            const email = emailInput.value.trim();
+            const regexInstitucional = /^[^@\s]+@santateresita\.ac\.cr$/i;
+
+            if (email === '') {
+                emailFeedback.textContent = '';
+                return;
+            }
+
+            if (regexInstitucional.test(email)) {
+                emailFeedback.textContent = '✔ Correo institucional válido';
+                emailFeedback.style.color = '#28a745';
+            } else {
+                emailFeedback.textContent = '✖ Debe usar @santateresita.ac.cr';
+                emailFeedback.style.color = '#dc3545';
+            }
+        });
+
+        /* ===============================
+           TELÉFONO (8 DÍGITOS)
+        =============================== */
+        const telefonoInput = document.getElementById('telefono');
+        const telefonoFeedback = document.getElementById('telefonoFeedback');
+
+        telefonoInput.addEventListener('input', () => {
+            telefonoInput.value = telefonoInput.value.replace(/\D/g, '');
+            const telefono = telefonoInput.value;
+
+            if (telefono === '') {
+                telefonoFeedback.textContent = '';
+                return;
+            }
+
+            if (/^\d{8}$/.test(telefono)) {
+                telefonoFeedback.textContent = '✔ Teléfono válido';
+                telefonoFeedback.style.color = '#28a745';
+            } else {
+                telefonoFeedback.textContent = '✖ Debe tener exactamente 8 números';
+                telefonoFeedback.style.color = '#dc3545';
+            }
+        });
+
+        /* ===============================
+           PREVENIR ENVÍO (UX)
+        =============================== */
+        document.querySelector('form').addEventListener('submit', (e) => {
+            const emailOK = /^[^@\s]+@santateresita\.ac\.cr$/i.test(emailInput.value);
+            const telOK = telefonoInput.value === '' || /^\d{8}$/.test(telefonoInput.value);
+
+            if (!emailOK || !telOK) {
+                e.preventDefault();
+                alert('Corrige los datos antes de guardar los cambios.');
+                return;
+            }
+
+            /* 🔐 CONFIRMACIÓN ADMIN */
+            const confirmar = confirm(
+                '¿Estás seguro de que deseas guardar los cambios?\n\n' +
+                'Esta acción puede afectar el acceso o rol del usuario.'
+            );
+
+            if (!confirmar) {
+                e.preventDefault();
+            }
+        });
+    </script>
 
 </body>
 
