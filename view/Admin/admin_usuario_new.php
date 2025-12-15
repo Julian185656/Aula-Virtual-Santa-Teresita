@@ -1,7 +1,6 @@
 <?php
 require __DIR__ . '/../../controller/auth_admin.php';
 
-
 $roles = ['Administrador', 'Docente', 'Estudiante'];
 $estados = ['Activo', 'Inactivo'];
 ?>
@@ -25,17 +24,13 @@ $estados = ['Activo', 'Inactivo'];
             line-height: 1.7;
             color: #c4c3ca;
             padding: 40px 15px;
-
             background-color: #2a2b38;
             background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
             background-position: bottom center;
             background-repeat: no-repeat;
             background-size: 300%;
-
             overflow-x: hidden;
         }
-
-
 
         .card-container {
             max-width: 500px;
@@ -81,6 +76,12 @@ $estados = ['Activo', 'Inactivo'];
             color: #fff;
         }
 
+        .feedback {
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: block;
+        }
+
         .btn-custom {
             width: 100%;
             padding: 12px;
@@ -115,7 +116,6 @@ $estados = ['Activo', 'Inactivo'];
             background: rgba(255, 255, 255, 0.35);
         }
     </style>
-
 </head>
 
 <body>
@@ -124,15 +124,13 @@ $estados = ['Activo', 'Inactivo'];
         <h1>Nuevo usuario</h1>
 
         <?php if (isset($_SESSION['error_message'])): ?>
-            <div class="alert alert-danger alert-custom"><?= $_SESSION['error_message'];
-                                                            unset($_SESSION['error_message']); ?></div>
+            <div class="alert alert-danger"><?= $_SESSION['error_message'];
+                                            unset($_SESSION['error_message']); ?></div>
         <?php endif; ?>
 
         <?php if (isset($_SESSION['success_message'])): ?>
-            <div class="alert alert-success alert-custom" style="background:#28a745;">
-                <?= $_SESSION['success_message'];
-                unset($_SESSION['success_message']); ?>
-            </div>
+            <div class="alert alert-success"><?= $_SESSION['success_message'];
+                                                unset($_SESSION['success_message']); ?></div>
         <?php endif; ?>
 
         <form action="admin_usuario_new_post.php" method="post">
@@ -142,15 +140,38 @@ $estados = ['Activo', 'Inactivo'];
             </div>
 
             <div class="form-group">
-                <input name="Email" type="email" class="form-style" placeholder="Email institucional" required pattern=".+@santateresita\.ac\.cr">
+                <input
+                    id="email"
+                    name="Email"
+                    type="email"
+                    class="form-style"
+                    placeholder="Email institucional"
+                    required>
+                <small id="emailFeedback" class="feedback"></small>
             </div>
 
             <div class="form-group">
-                <input name="Telefono" class="form-style" placeholder="Teléfono">
+                <input
+                    id="telefono"
+                    name="Telefono"
+                    class="form-style"
+                    placeholder="Teléfono (8 dígitos)"
+                    maxlength="8"
+                    inputmode="numeric"
+                    autocomplete="off">
+                <small id="telefonoFeedback" class="feedback"></small>
             </div>
 
+
             <div class="form-group">
-                <input name="Contrasena" type="password" class="form-style" placeholder="Contraseña" required>
+                <input
+                    id="password"
+                    name="Contrasena"
+                    type="password"
+                    class="form-style"
+                    placeholder="Contraseña"
+                    required>
+                <small id="passwordFeedback" class="feedback"></small>
             </div>
 
             <div class="form-group">
@@ -169,28 +190,114 @@ $estados = ['Activo', 'Inactivo'];
                 </select>
             </div>
 
-
-            <div id="camposDocente" style="display:none">
-
-            </div>
-
-            <div id="camposEstudiante" style="display:none">
-
-            </div>
-
             <button type="submit" class="btn-custom">Crear</button>
             <a href="admin_usuarios_list.php" class="btn-back">Volver</a>
         </form>
     </div>
 
     <script>
-        const rolSel = document.getElementById('rol');
-        const doc = document.getElementById('camposDocente');
-        const est = document.getElementById('camposEstudiante');
+        const emailInput = document.getElementById('email');
+        const emailFeedback = document.getElementById('emailFeedback');
 
-        rolSel.addEventListener('change', () => {
-            doc.style.display = rolSel.value === 'Docente' ? 'block' : 'none';
-            est.style.display = rolSel.value === 'Estudiante' ? 'block' : 'none';
+        let emailTimeout = null;
+
+        emailInput.addEventListener('input', () => {
+            clearTimeout(emailTimeout);
+
+            const email = emailInput.value.trim().toLowerCase();
+            const regexInstitucional = /^[^@\s]+@santateresita\.ac\.cr$/i;
+
+            if (email === '') {
+                emailFeedback.textContent = '';
+                return;
+            }
+
+            if (!regexInstitucional.test(email)) {
+                emailFeedback.textContent = '✖ Debe usar @santateresita.ac.cr';
+                emailFeedback.style.color = '#dc3545';
+                return;
+            }
+
+            // Espera 400ms antes de consultar (evita demasiadas peticiones)
+            emailTimeout = setTimeout(() => {
+                fetch(`/Aula-Virtual-Santa-Teresita/controller/check_email.php?email=${encodeURIComponent(email)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.exists) {
+                            emailFeedback.textContent = '✖ El correo ya está registrado';
+                            emailFeedback.style.color = '#dc3545';
+                        } else {
+                            emailFeedback.textContent = '✔ Correo disponible';
+                            emailFeedback.style.color = '#28a745';
+                        }
+                    })
+                    .catch(() => {
+                        emailFeedback.textContent = '';
+                    });
+            }, 400);
+        });
+
+        /* ===============================
+           CONTRASEÑA FUERTE
+        =============================== */
+        const passwordInput = document.getElementById('password');
+        const passwordFeedback = document.getElementById('passwordFeedback');
+
+        passwordInput.addEventListener('input', () => {
+            const value = passwordInput.value;
+
+            const lengthOK = value.length >= 8;
+            const upperOK = /[A-Z]/.test(value);
+            const numberOK = /\d/.test(value);
+            const specialOK = /[^A-Za-z0-9]/.test(value);
+
+            if (value === '') {
+                passwordFeedback.textContent = '';
+                return;
+            }
+
+            if (lengthOK && upperOK && numberOK && specialOK) {
+                passwordFeedback.textContent = '✔ Contraseña fuerte';
+                passwordFeedback.style.color = '#28a745';
+            } else {
+                passwordFeedback.innerHTML =
+                    '✖ La contraseña debe tener:<br>' +
+                    (lengthOK ? '✔' : '✖') + ' 8 caracteres<br>' +
+                    (upperOK ? '✔' : '✖') + ' una mayúscula<br>' +
+                    (numberOK ? '✔' : '✖') + ' un número<br>' +
+                    (specialOK ? '✔' : '✖') + ' un carácter especial';
+                passwordFeedback.style.color = '#dc3545';
+            }
+        });
+        /* ===============================
+   TELÉFONO (SOLO NÚMEROS, 8 DÍGITOS)
+=============================== */
+        const telefonoInput = document.getElementById('telefono');
+        const telefonoFeedback = document.getElementById('telefonoFeedback');
+
+        telefonoInput.addEventListener('input', () => {
+            // Eliminar cualquier carácter que no sea número
+            telefonoInput.value = telefonoInput.value.replace(/\D/g, '');
+
+            const telefono = telefonoInput.value;
+
+            if (telefono === '') {
+                telefonoFeedback.textContent = '';
+                return;
+            }
+
+            if (telefono.length === 8) {
+                telefonoFeedback.textContent = '✔ Teléfono válido';
+                telefonoFeedback.style.color = '#28a745';
+            } else {
+                telefonoFeedback.textContent = '✖ Debe contener exactamente 8 números';
+                telefonoFeedback.style.color = '#dc3545';
+            }
+        });
+        telefonoInput.addEventListener('paste', () => {
+            setTimeout(() => {
+                telefonoInput.value = telefonoInput.value.replace(/\D/g, '');
+            }, 0);
         });
     </script>
 

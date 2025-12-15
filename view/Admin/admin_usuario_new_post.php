@@ -8,7 +8,7 @@ $pdo = (new CN_BD())->conectar();
    DATOS DEL FORMULARIO
 =============================== */
 $nombre       = trim($_POST['Nombre'] ?? '');
-$email        = trim($_POST['Email'] ?? '');
+$email        = strtolower(trim($_POST['Email'] ?? ''));
 $telefono     = trim($_POST['Telefono'] ?? '');
 $rol          = $_POST['Rol'] ?? 'Estudiante';
 $estado       = $_POST['Estado'] ?? 'Activo';
@@ -18,23 +18,60 @@ $especialidad = $_POST['Especialidad'] ?? null;
 $contrasena   = $_POST['Contrasena'] ?? '';
 
 /* ===============================
-   VALIDACIONES BÁSICAS
+   VALIDACIÓN 1: CAMPOS OBLIGATORIOS
 =============================== */
 if ($nombre === '' || $email === '' || $contrasena === '') {
-    http_response_code(400);
-    exit('Datos obligatorios faltantes');
+    $_SESSION['error_message'] = 'Todos los campos obligatorios deben completarse.';
+    header("Location: admin_usuario_new.php");
+    exit;
 }
 
 /* ===============================
-    HASH DE CONTRASEÑA (CLAVE)
+   VALIDACIÓN 2: EMAIL INSTITUCIONAL
+=============================== */
+if (!preg_match('/^[^@\s]+@santateresita\.ac\.cr$/i', $email)) {
+    $_SESSION['error_message'] = 'Solo se permiten correos institucionales @santateresita.ac.cr';
+    header("Location: admin_usuario_new.php");
+    exit;
+}
+
+/* ===============================
+   VALIDACIÓN 3: CONTRASEÑA FUERTE
+=============================== */
+$regexPassword = '/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/';
+
+if (!preg_match($regexPassword, $contrasena)) {
+    $_SESSION['error_message'] =
+        'La contraseña debe tener mínimo 8 caracteres, una mayúscula, un número y un carácter especial.';
+    header("Location: admin_usuario_new.php");
+    exit;
+}
+
+/* ===============================
+   VALIDACIÓN 4: EMAIL DUPLICADO
+=============================== */
+$stmt = $pdo->prepare("
+    SELECT 1
+    FROM aulavirtual.usuario
+    WHERE Email = ?
+");
+$stmt->execute([$email]);
+
+if ($stmt->fetch()) {
+    $_SESSION['error_message'] = 'El correo ya se encuentra registrado.';
+    header("Location: admin_usuario_new.php");
+    exit;
+}
+
+/* ===============================
+   🔐 HASH DE CONTRASEÑA
 =============================== */
 $hashContrasena = password_hash($contrasena, PASSWORD_BCRYPT);
 
+/* ===============================
+   CREAR USUARIO (SP)
+=============================== */
 try {
-
-    /* ===============================
-       EJECUTAR PROCEDIMIENTO
-    =============================== */
     $stmt = $pdo->prepare("
         EXEC aulavirtual.crearUsuarioAdmin
             ?, ?, ?, ?, ?, ?, ?, ?, ?
@@ -44,7 +81,7 @@ try {
         $nombre,
         $email,
         $telefono,
-        $hashContrasena, // ✅ HASH, NO TEXTO PLANO
+        $hashContrasena,
         $rol,
         $estado,
         $grado,
@@ -54,9 +91,16 @@ try {
 
     $stmt->closeCursor();
 
-    header("Location: admin_usuarios_list.php?created=1");
+    $_SESSION['success_message'] = 'Usuario creado correctamente.';
+    header("Location: admin_usuarios_list.php");
     exit;
 } catch (PDOException $e) {
-    http_response_code(400);
-    echo "Error al crear usuario: " . htmlspecialchars($e->getMessage());
+    $_SESSION['error_message'] = 'Error al crear el usuario.';
+    header("Location: admin_usuario_new.php");
+    exit;
+}
+if ($telefono !== '' && !preg_match('/^\d{8}$/', $telefono)) {
+    $_SESSION['error_message'] = 'El teléfono debe tener exactamente 8 números.';
+    header("Location: admin_usuario_new.php");
+    exit;
 }
