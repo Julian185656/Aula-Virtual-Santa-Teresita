@@ -4,7 +4,9 @@ require __DIR__ . '/../../controller/auth_admin.php';
 
 $pdo = (new CN_BD())->conectar();
 
-
+/* ===============================
+   DATOS DEL FORMULARIO
+=============================== */
 $nombre       = trim($_POST['Nombre'] ?? '');
 $email        = trim($_POST['Email'] ?? '');
 $telefono     = trim($_POST['Telefono'] ?? '');
@@ -15,20 +17,34 @@ $seccion      = $_POST['Seccion'] ?? null;
 $especialidad = $_POST['Especialidad'] ?? null;
 $contrasena   = $_POST['Contrasena'] ?? '';
 
-
-if (empty($contrasena)) {
+/* ===============================
+   VALIDACIONES BÁSICAS
+=============================== */
+if ($nombre === '' || $email === '' || $contrasena === '') {
     http_response_code(400);
-    exit('Contraseña requerida');
+    exit('Datos obligatorios faltantes');
 }
+
+/* ===============================
+    HASH DE CONTRASEÑA (CLAVE)
+=============================== */
+$hashContrasena = password_hash($contrasena, PASSWORD_BCRYPT);
 
 try {
 
-    $stmt = $pdo->prepare("EXEC aulavirtual.crearUsuarioAdmin ?, ?, ?, ?, ?, ?, ?, ?, ?");
+    /* ===============================
+       EJECUTAR PROCEDIMIENTO
+    =============================== */
+    $stmt = $pdo->prepare("
+        EXEC aulavirtual.crearUsuarioAdmin
+            ?, ?, ?, ?, ?, ?, ?, ?, ?
+    ");
+
     $stmt->execute([
         $nombre,
         $email,
         $telefono,
-        $contrasena,
+        $hashContrasena, // ✅ HASH, NO TEXTO PLANO
         $rol,
         $estado,
         $grado,
@@ -37,7 +53,6 @@ try {
     ]);
 
     $stmt->closeCursor();
-
 
     header("Location: admin_usuarios_list.php?created=1");
     exit;
