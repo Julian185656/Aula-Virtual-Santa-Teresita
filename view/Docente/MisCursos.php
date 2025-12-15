@@ -147,14 +147,7 @@ h1 {
                                    title="Encuestas del Curso">
                                     <i class="fa-solid fa-poll"></i>
                                 </a>
-
-                                <!-- BOTÓN NUEVO: MI RENDIMIENTO -->
-                                <a class="icon-btn btn-rendimiento"
-                                   href="/Aula-Virtual-Santa-Teresita/view/Docente/MiRendimiento.php?idCurso=<?= htmlspecialchars($curso['id']) ?>"
-                                   title="Mi rendimiento">
-                                    <i class="fa-solid fa-chart-line"></i>
-                                </a>
-
+                                
                             </div>
                         </div>
                     </div>

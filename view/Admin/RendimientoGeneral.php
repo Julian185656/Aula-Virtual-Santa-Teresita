@@ -1,23 +1,23 @@
 <?php
 session_start();
 
-/* Seguridad: solo docentes pueden acceder */
-if (!isset($_SESSION['id_usuario']) || strtolower($_SESSION['rol']) !== 'docente') {
+/* Seguridad: solo ADMINISTRADOR puede acceder */
+if (
+    !isset($_SESSION['id_usuario']) || 
+    strtolower($_SESSION['rol']) !== 'administrador'
+) {
     header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php?error=NoAutorizado");
     exit();
 }
-
-/* Capturamos el curso (para uso futuro, no rompe nada ahora) */
-$idCurso = isset($_GET['idCurso']) ? intval($_GET['idCurso']) : null;
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Mi rendimiento académico</title>
+    <title>Rendimiento Académico General</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Bootstrap (opcional, por coherencia visual) -->
+    <!-- Bootstrap -->
     <link href="/Aula-Virtual-Santa-Teresita/view/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
@@ -65,18 +65,18 @@ $idCurso = isset($_GET['idCurso']) ? intval($_GET['idCurso']) : null;
 </head>
 <body>
 
-<a href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php" class="btn-volver">
-    ⬅ Volver a Mis Cursos
+<a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn-volver">
+    ⬅ Volver
 </a>
 
 <div class="contenedor">
-    <h2>📊 Mi rendimiento académico</h2>
+    <h2>📊 Rendimiento Académico General</h2>
 
-    <!-- IFRAME POWER BI -->
+    <!-- POWER BI IFRAME -->
     <iframe
-        title="RendimientoDocente"
-        src="https://app.powerbi.com/reportEmbed?reportId=0437c0b8-2ee6-4ca0-8ddd-d8dbe604c62c&autoAuth=true&ctid=dde2fb8f-d8e0-445e-b851-e69c198c1e59"
-        allowFullScreen="true">
+        title="RendimientoGeneral"
+        src="https://app.powerbi.com/reportEmbed?reportId=8753f588-5463-49e3-aa97-5fe193a1eb42&autoAuth=true&ctid=dde2fb8f-d8e0-445e-b851-e69c198c1e59"
+        allowfullscreen="true">
     </iframe>
 </div>
 

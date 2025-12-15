@@ -241,6 +241,16 @@ session_start();
                     <a href="/Aula-Virtual-Santa-Teresita/view/Admin/Foro/ForoAdmin.php">Ir</a>
                 </div>
 
+                <?php if (isset($_SESSION['rol']) && strtolower($_SESSION['rol']) === 'administrador'): ?>
+                <div class="role-card">
+                    <i class="fa fa-comments"></i>
+                    <h4>Rendimiento General</h4>
+                    <p>Rendimiento General</p>
+                    <a href="/Aula-Virtual-Santa-Teresita/view/Admin/RendimientoGeneral.php">Ir</a>
+                </div>
+                <?php endif; ?>
+
+
             <?php elseif ($rolActual === 'Docente'): ?>
 
 
