@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/../../controller/auth_admin.php';
-require __DIR__ . '/../../model/db.php';
+
 
 
 $id       = (int)($_POST['Id_Usuario'] ?? 0);
@@ -22,7 +22,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 }
 
 
-$contrasenaHasheada = !empty($_POST['Contrasena']) 
+$contrasenaHasheada = !empty($_POST['Contrasena'])
     ? password_hash($_POST['Contrasena'], PASSWORD_BCRYPT)
     : null;
 
@@ -54,9 +54,7 @@ try {
 
     header("Location: admin_usuarios_list.php?ok=1");
     exit;
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo "Error al actualizar: " . htmlspecialchars($e->getMessage());
 }
-?>

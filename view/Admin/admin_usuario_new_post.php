@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/../../controller/auth_admin.php';
-require __DIR__ . '/../../model/db.php';
+
 
 $pdo = (new CN_BD())->conectar();
 
@@ -22,13 +22,13 @@ if (empty($contrasena)) {
 }
 
 try {
-   
+
     $stmt = $pdo->prepare("EXEC aulavirtual.crearUsuarioAdmin ?, ?, ?, ?, ?, ?, ?, ?, ?");
     $stmt->execute([
         $nombre,
         $email,
         $telefono,
-        $contrasena, 
+        $contrasena,
         $rol,
         $estado,
         $grado,
@@ -38,7 +38,7 @@ try {
 
     $stmt->closeCursor();
 
-  
+
     header("Location: admin_usuarios_list.php?created=1");
     exit;
 } catch (PDOException $e) {
