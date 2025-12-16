@@ -75,10 +75,11 @@ if (
     <!-- POWER BI IFRAME -->
     <iframe
         title="RendimientoGeneral"
-        src="https://app.powerbi.com/reportEmbed?reportId=7ef40f02-9923-4e5c-bcdd-99a4ac72e4dd&autoAuth=true&ctid=dde2fb8f-d8e0-445e-b851-e69c198c1e59"
+        src="https://app.powerbi.com/reportEmbed?reportId=363866da-95b1-439b-be91-7b372baa6f8a&autoAuth=true&ctid=dde2fb8f-d8e0-445e-b851-e69c198c1e59"
         allowfullscreen="true">
     </iframe>
 </div>
 
 </body>
 </html>
+<iframe title="Rendimiento General" width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=363866da-95b1-439b-be91-7b372baa6f8a&autoAuth=true&ctid=dde2fb8f-d8e0-445e-b851-e69c198c1e59" frameborder="0" allowFullScreen="true"></iframe>
