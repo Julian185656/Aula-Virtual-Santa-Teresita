@@ -82,4 +82,3 @@ if (
 
 </body>
 </html>
-<iframe title="Rendimiento General" width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=363866da-95b1-439b-be91-7b372baa6f8a&autoAuth=true&ctid=dde2fb8f-d8e0-445e-b851-e69c198c1e59" frameborder="0" allowFullScreen="true"></iframe>
