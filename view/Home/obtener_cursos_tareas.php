@@ -14,7 +14,7 @@ try {
     $cn = new CN_BD();
     $pdo = $cn->conectar();
 
-    // Obtener cursos del docente usando curso_docente
+  
     $sqlCursos = "
         SELECT c.Id_Curso, c.Nombre
         FROM aulavirtual.curso_docente cd
@@ -35,7 +35,7 @@ try {
 
         $tareasConPendientes = [];
         foreach ($tareas as $t) {
-            // Contar estudiantes que no han entregado la tarea
+           
             $sqlPendientes = "
                 SELECT COUNT(*) as pendientes
                 FROM aulavirtual.matricula m

@@ -333,8 +333,8 @@ session_start();
                     <?php if (isset($_SESSION['rol']) && strtolower($_SESSION['rol']) === 'administrador'): ?>
                         <div class="role-card">
                             <i class="fa fa-comments"></i>
-                            <h4>Rendimiento Académico</h4>
-                            <p>Rendimiento en forma de Graficos</p>
+                            <h4>Rendimiento General</h4>
+                            <p>Rendimiento General</p>
                             <a href="/Aula-Virtual-Santa-Teresita/view/Admin/RendimientoGeneral.php">Ir</a>
                         </div>
                     <?php endif; ?>
@@ -585,194 +585,277 @@ session_start();
 
 
 
-<div id="chatbot-btn">
-    <i class="fa-solid fa-comments"></i>
+<!-- BOTÓN FLOTANTE -->
+<div id="chatbot-btn" style="position: fixed; bottom: 20px; right: 20px; background: #007bff; color: #fff; padding: 10px 15px; border-radius: 50%; cursor: pointer; z-index: 1000;">
+    💬
 </div>
 
-<div id="chatbot-window">
-    <div class="chatbot-header">
+<!-- VENTANA CHATBOT -->
+<div id="chatbot-window" style="display: none; position: fixed; bottom: 80px; right: 20px; width: 350px; max-height: 500px; background: #fff; border: 1px solid #ccc; border-radius: 10px; flex-direction: column; overflow: hidden; z-index: 1000;">
+    <div id="chatbot-header" style="background: #007bff; color: #fff; padding: 10px; display: flex; justify-content: space-between; align-items: center;">
         <span>Asistente Virtual</span>
-        <button id="chatbot-close">&times;</button>
+        <button id="chatbot-close" style="background: none; border: none; color: #fff; font-size: 18px; cursor: pointer;">&times;</button>
     </div>
-
-    <div class="chatbot-body" id="chatbot-body">
-        <!-- Mensajes dinámicos -->
-    </div>
-
-    <div class="chatbot-footer">
-        <input type="text" id="chatbot-input" placeholder="Escribe aquí..." />
-        <button id="chatbot-send">
-            <i class="fa-solid fa-paper-plane"></i>
-        </button>
+    <div id="chatbot-body" style="padding: 10px; flex: 1; overflow-y: auto; color: #000; font-family: Arial, sans-serif;"></div>
+    <div id="chatbot-footer" style="padding: 10px; display: flex; gap: 5px; color: #000; font-family: Arial, sans-serif;">
+        <input type="text" id="chatbot-input" placeholder="Escribe tu mensaje..." style="flex:1; padding: 5px; color: #000;">
+        <button id="chatbot-send" style="padding: 5px 10px; color: #000;">Enviar</button>
     </div>
 </div>
 
 <script>
-// Elementos
-const chatBtn = document.getElementById("chatbot-btn");
-const chatWindow = document.getElementById("chatbot-window");
-const chatClose = document.getElementById("chatbot-close");
-const chatBody = document.getElementById("chatbot-body");
-const chatInput = document.getElementById("chatbot-input");
-const chatSend = document.getElementById("chatbot-send");
+document.addEventListener("DOMContentLoaded", function() {
 
-// Mostrar / ocultar chatbot
-chatBtn.onclick = () => chatWindow.style.display = "flex";
-chatClose.onclick = () => chatWindow.style.display = "none";
+    // ELEMENTOS
+    const chatBtn = document.getElementById("chatbot-btn");
+    const chatWindow = document.getElementById("chatbot-window");
+    const chatClose = document.getElementById("chatbot-close");
+    const chatBody = document.getElementById("chatbot-body");
+    const chatInput = document.getElementById("chatbot-input");
+    const chatSend = document.getElementById("chatbot-send");
 
-// Rol y ids desde PHP (sesión)
-const rol = "<?php echo $_SESSION['usuario']['rol'] ?? 'Invitado'; ?>";
-const idCurso = "<?php echo $_SESSION['id_curso_actual'] ?? ''; ?>";
-const idTarea = "<?php echo $_SESSION['id_tarea_actual'] ?? ''; ?>";
+    // Mostrar / ocultar chatbot
+    chatBtn.onclick = () => chatWindow.style.display = "flex";
+    chatClose.onclick = () => chatWindow.style.display = "none";
 
-// Mensaje inicial
-function mensajeInicial() {
-    let msg = "Hola 👋 ";
+    // VARIABLES PHP
+    const rol = "<?php echo $_SESSION['usuario']['rol'] ?? 'Invitado'; ?>";
+    const idUsuario = "<?php echo $_SESSION['id_usuario'] ?? ''; ?>";
+
+
+if (rol === "Administrador") {
+        chatBtn.style.display = "none"; // oculta el botón flotante
+        chatWindow.style.display = "none"; // opcional, oculta la ventana si ya estaba abierta
+        return; // no sigue inicializando nada más
+    }
+
+    // MENSAJE INICIAL
+  function mensajeInicial() {
+    let msg = "Hola 👋, estas son las palabras que puedes usar:<br>";
 
     if (rol === "Docente") {
-        msg += "puedo ayudarte con tus cursos y tareas.";
-        mostrarCursosYTareas(); // Cargar cursos y tareas automáticamente
-    } else if (rol === "Administrador") {
-        msg += "puedo ayudarte con la gestión del sistema.";
+        msg += "lista y ver cursos";
     } else if (rol === "Estudiante") {
-        msg += "puedo ayudarte con tus cursos o soporte.";
-        obtenerTareasPendientes(); // Solo estudiantes
+        msg += "tareas, justificación";
     } else {
-        msg += "inicia sesión para más opciones.";
+        msg += "inicia sesión";
     }
 
     chatBody.innerHTML += `<div><b>Bot:</b> ${msg}</div>`;
     chatBody.scrollTop = chatBody.scrollHeight;
 }
 
-function mostrarCursosYTareas() {
-    fetch('/Aula-Virtual-Santa-Teresita/view/Home/obtener_cursos_tareas.php')
+
+    
+    function manejarJustificacion() {
+    chatBody.innerHTML += `<div><b>Bot:</b> Por favor, selecciona el curso, la fecha y adjunta tu comprobante.</div>`;
+
+    // Traer cursos del estudiante vía fetch
+    fetch(`/Aula-Virtual-Santa-Teresita/view/Home/obtener_cursos.php?id_estudiante=${idUsuario}`)
     .then(res => res.json())
     .then(data => {
-        if (!data.ok) {
-            chatBody.innerHTML += `<div><b>Bot:</b> ❌ ${data.error}</div>`;
+        if(!data.ok) {
+            chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error al cargar cursos</div>`;
             return;
         }
 
-        if (data.cursos.length === 0) {
-            chatBody.innerHTML += `<div><b>Bot:</b> No tienes cursos asignados 😢</div>`;
-        } else {
-            data.cursos.forEach(curso => {
-                let html = `<div><b>Curso:</b> ${curso.nombre}</div>`;
-                curso.tareas.forEach(tarea => {
-                    html += `<div>- Tarea: ${tarea.titulo} `;
-                    if (tarea.pendientes > 0) {
-                        html += `(⏰ ${tarea.pendientes} estudiantes no han entregado) `;
-                        html += `<button onclick="enviarRecordatorio(${tarea.id})">Enviar recordatorio</button>`;
-                    } else {
-                        html += `(🎉 Todos entregaron)`;
-                    }
-                    html += `</div>`;
-                });
-                chatBody.innerHTML += `<div>${html}</div>`;
-            });
-        }
+        let opciones = '<option value="">--Selecciona un curso--</option>';
+        data.cursos.forEach(c => {
+            opciones += `<option value="${c.Id_Curso}">${c.Nombre}</option>`;
+        });
+
+        chatBody.innerHTML += `
+            <form id="justificacion-form" enctype="multipart/form-data">
+                <label>Curso:</label>
+                <select name="id_curso" required>${opciones}</select><br>
+                <label>Fecha de ausencia:</label>
+                <input type="date" name="fecha_ausencia" required><br>
+                <label>Comprobante:</label>
+                <input type="file" name="comprobante" required><br>
+                <button type="submit">Enviar Justificación</button>
+            </form>
+        `;
         chatBody.scrollTop = chatBody.scrollHeight;
     })
-    .catch(err => {
-        chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error al cargar cursos y tareas</div>`;
+    .catch(err=>{
         console.error(err);
+        chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error de conexión al cargar cursos</div>`;
     });
 }
 
-// Enviar recordatorio
-function enviarRecordatorio(idTarea) {
-    fetch(`/Aula-Virtual-Santa-Teresita/view/Home/Enviar.php?id_tarea=${idTarea}`)
+// Manejo del envío de la justificación
+chatBody.addEventListener("submit", function(event) {
+    const form = event.target;
+    if (form.id !== "justificacion-form") return;
+    event.preventDefault();
+
+    const formData = new FormData(form);
+    formData.append("id_estudiante", idUsuario);
+
+    fetch('/Aula-Virtual-Santa-Teresita/view/Home/enviar_justificacion.php', {
+        method: 'POST',
+        body: formData
+    })
     .then(res => res.json())
     .then(data => {
-        if (data.ok) {
-            chatBody.innerHTML += `<div><b>Bot:</b> 📧 ${data.enviados} recordatorios enviados correctamente</div>`;
-        } else {
-            chatBody.innerHTML += `<div><b>Bot:</b> ❌ ${data.error || 'Error al enviar correos'}</div>`;
-        }
+        if (data.ok) chatBody.innerHTML += `<div><b>Bot:</b> ✅ ${data.mensaje}</div>`;
+        else chatBody.innerHTML += `<div><b>Bot:</b> ❌ ${data.error}</div>`;
         chatBody.scrollTop = chatBody.scrollHeight;
+        form.remove();
     })
     .catch(err => {
-        chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error en la conexión</div>`;
         console.error(err);
+        chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error de conexión</div>`;
+        chatBody.scrollTop = chatBody.scrollHeight;
     });
-}
+});
 
-
-// Verificar tareas pendientes de estudiantes (para docentes)
-function verificarPendientes() {
-    if (!idCurso || !idTarea) {
-        chatBody.innerHTML += `<div><b>Bot:</b> ❌ No se ha seleccionado un curso o tarea</div>`;
-        return;
+    function cargarJustificaciones() {
+        fetch('/Aula-Virtual-Santa-Teresita/view/Home/obtener_justificaciones.php')
+        .then(res => res.json())
+        .then(data => {
+            if(!data.ok){ chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error al cargar</div>`; return; }
+            chatBody.innerHTML += `<div style="margin-top:10px;"><b>Justificaciones pendientes:</b></div>`;
+            data.justificaciones.forEach(j=>{
+                chatBody.innerHTML += `
+                    <div style="border:1px solid #ccc; padding:5px; margin:5px 0; border-radius:5px;">
+                        <b>Estudiante:</b> ${j.Nombre}<br>
+                        <b>Fecha:</b> ${j.fecha_ausencia}<br>
+                        <a href="${j.comprobante}" target="_blank">Ver comprobante</a><br>
+                        <b>Estado:</b> ${j.estado}<br>
+                        ${j.estado==='pendiente'?`
+                            <button data-id="${j.id}" data-accion="aprobar">Aprobar</button> 
+                            <button data-id="${j.id}" data-accion="denegar">Denegar</button>
+                        `:''}
+                    </div>
+                `;
+            });
+            chatBody.scrollTop = chatBody.scrollHeight;
+        })
+        .catch(err=>{
+            console.error(err);
+            chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error de conexión</div>`;
+            chatBody.scrollTop = chatBody.scrollHeight;
+        });
     }
 
-    fetch(`/Aula-Virtual-Santa-Teresita/view/Home/Enviar.php?id_curso=${idCurso}&id_tarea=${idTarea}`)
-    .then(res => res.json())
-    .then(data => {
-        if (!data.ok) {
-            chatBody.innerHTML += `<div><b>Bot:</b> ❌ ${data.error}</div>`;
+    // APROBAR / DENEGAR
+    chatBody.addEventListener("click", function(event){
+        const btn = event.target;
+        if(btn.tagName !== "BUTTON") return;
+
+        const id = btn.dataset.id;
+        const accion = btn.dataset.accion;
+        if(!id || !accion) return;
+
+        const formData = new FormData();
+        formData.append('id', id);
+        formData.append('accion', accion);
+
+        fetch('/Aula-Virtual-Santa-Teresita/view/Home/procesar_justificacion.php',{method:'POST',body:formData})
+        .then(res=>res.json())
+        .then(data=>{
+            if(data.ok) chatBody.innerHTML += `<div><b>Bot:</b> ✅ ${data.mensaje}</div>`;
+            else chatBody.innerHTML += `<div><b>Bot:</b> ❌ ${data.error}</div>`;
             chatBody.scrollTop = chatBody.scrollHeight;
-            return;
-        }
-
-        if (data.total_pendientes === 0) {
-            chatBody.innerHTML += `<div><b>Bot:</b> Todos los estudiantes ya entregaron 🎉</div>`;
-        } else {
-            chatBody.innerHTML += `
-                <div><b>Bot:</b> ⏰ ${data.total_pendientes} estudiantes NO han entregado la tarea</div>
-                <div><button onclick="enviarRecordatorios()">Enviar recordatorio</button></div>
-            `;
-        }
-        chatBody.scrollTop = chatBody.scrollHeight;
-    })
-    .catch(err => {
-        chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error en la conexión</div>`;
-        chatBody.scrollTop = chatBody.scrollHeight;
-        console.error(err);
+            cargarJustificaciones();
+        })
+        .catch(err=>{
+            console.error(err);
+            chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error de conexión</div>`;
+            chatBody.scrollTop = chatBody.scrollHeight;
+        });
     });
-}
 
-function obtenerTareasPendientes() {
-    fetch('/Aula-Virtual-Santa-Teresita/view/Home/obtener_tareas.php')
-    .then(res => res.json())
-    .then(tareas => {
-        let msg = "";
-        if (tareas.length > 0) {
-            msg = "<b>Bot:</b> Tienes las siguientes tareas pendientes (próximos 3 días):<br>";
-            tareas.forEach(tarea => {
-                msg += `- <b>${tarea.Titulo}</b> (Curso: ${tarea.Curso}, Entrega: ${tarea.Fecha_Entrega})<br>`;
-            });
-        } else {
-            msg = "<b>Bot:</b> No tienes tareas pendientes por ahora. ¡Sigue así!";
-        }
-        chatBody.innerHTML += `<div>${msg}</div>`;
+    // FUNCIONES DE CURSOS / TAREAS
+    function mostrarCursosYTareas() {
+        fetch('/Aula-Virtual-Santa-Teresita/view/Home/obtener_cursos_tareas.php')
+        .then(res => res.json())
+        .then(data => {
+            if (!data.ok) { chatBody.innerHTML += `<div><b>Bot:</b> ❌ ${data.error}</div>`; return; }
+            if (data.cursos.length === 0) chatBody.innerHTML += `<div><b>Bot:</b> No tienes cursos asignados 😢</div>`;
+            else {
+                data.cursos.forEach(curso => {
+                    let html = `<div><b>Curso:</b> ${curso.nombre}</div>`;
+                    curso.tareas.forEach(tarea => {
+                        html += `<div>- Tarea: ${tarea.titulo} `;
+                        if (tarea.pendientes > 0) html += `(⏰ ${tarea.pendientes} estudiantes no han entregado) <button onclick="enviarRecordatorio(${tarea.id})">Enviar recordatorio</button>`;
+                        else html += `(🎉 Todos entregaron)`;
+                        html += `</div>`;
+                    });
+                    chatBody.innerHTML += `<div>${html}</div>`;
+                });
+            }
+            chatBody.scrollTop = chatBody.scrollHeight;
+        })
+        .catch(err => {
+            chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error al cargar cursos y tareas</div>`;
+            console.error(err);
+        });
+    }
+
+    window.enviarRecordatorio = function(idTarea) {
+        fetch(`/Aula-Virtual-Santa-Teresita/view/Home/Enviar.php?id_tarea=${idTarea}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.ok) chatBody.innerHTML += `<div><b>Bot:</b> 📧 ${data.enviados} recordatorios enviados correctamente</div>`;
+            else chatBody.innerHTML += `<div><b>Bot:</b> ❌ ${data.error || 'Error al enviar correos'}</div>`;
+            chatBody.scrollTop = chatBody.scrollHeight;
+        })
+        .catch(err => {
+            chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error en la conexión</div>`;
+            console.error(err);
+        });
+    };
+
+    function obtenerTareasPendientes() {
+        fetch('/Aula-Virtual-Santa-Teresita/view/Home/obtener_tareas.php')
+        .then(res => res.json())
+        .then(tareas => {
+            let msg = "";
+            if (tareas.length > 0) {
+                msg = "<b>Bot:</b> Tienes las siguientes tareas pendientes (próximos 3 días):<br>";
+                tareas.forEach(tarea => {
+                    msg += `- <b>${tarea.Titulo}</b> (Curso: ${tarea.Curso}, Entrega: ${tarea.Fecha_Entrega})<br>`;
+                });
+            } else {
+                msg = "<b>Bot:</b> No tienes tareas pendientes por ahora. ¡Sigue así!";
+            }
+            chatBody.innerHTML += `<div>${msg}</div>`;
+            chatBody.scrollTop = chatBody.scrollHeight;
+        })
+        .catch(err => {
+            chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error al obtener tareas pendientes</div>`;
+            console.error(err);
+        });
+    }
+
+    // MANEJO DE MENSAJES
+    function manejarPalabraClave(text) {
+        const txt = text.toLowerCase();
+        if (rol === "Estudiante" && (txt.includes("ver tareas") || txt.includes("mis tareas"))) { obtenerTareasPendientes(); return; }
+        if (rol === "Docente" && (txt.includes("ver cursos") || txt.includes("cursos"))) { mostrarCursosYTareas(); return; }
+        if (txt.includes("justificación")) { manejarJustificacion(); return; }
+        if (txt.includes("lista")) { cargarJustificaciones(); return; }
+
+        chatBody.innerHTML += `<div><b>Bot:</b> No entendí tu mensaje, pero pronto aprenderé</div>`;
         chatBody.scrollTop = chatBody.scrollHeight;
-    })
-    .catch(err => {
-        chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error al obtener tareas pendientes</div>`;
-        chatBody.scrollTop = chatBody.scrollHeight;
-        console.error(err);
-    });
-}
+    }
 
-// Enviar mensaje del usuario
-chatSend.onclick = () => {
-    const text = chatInput.value.trim();
-    if (!text) return;
+    chatSend.onclick = () => {
+        const text = chatInput.value.trim();
+        if (!text) return;
+        chatBody.innerHTML += `<div><b>Tú:</b> ${text}</div>`;
+        chatInput.value = "";
+        setTimeout(() => manejarPalabraClave(text), 200);
+    };
 
-    chatBody.innerHTML += `<div><b>Tú:</b> ${text}</div>`;
-    chatInput.value = "";
+    // INICIALIZAR
+    mensajeInicial();
 
-    // Respuesta automática simple
-    setTimeout(() => {
-        chatBody.innerHTML += `<div><b>Bot:</b> Pronto tendré respuestas inteligentes 😉</div>`;
-        chatBody.scrollTop = chatBody.scrollHeight;
-    }, 500);
-};
-
-// Inicializar
-mensajeInicial();
+});
 </script>
+
 
 
 
