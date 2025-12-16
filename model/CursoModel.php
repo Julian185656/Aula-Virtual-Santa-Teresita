@@ -35,31 +35,43 @@ public static function obtenerDocentes() {
 public static function asignarDocentes($idCurso, $docentes) {
     global $pdo;
 
-    $stmtCheck = $pdo->prepare("SELECT COUNT(*) 
-                                FROM aulavirtual.curso_docente 
-                                WHERE Id_Curso = :idCurso AND Id_Docente = :idDocente");
+    // Verificar si el curso ya tiene docente
+    $stmtCheckCurso = $pdo->prepare("
+        SELECT COUNT(*) 
+        FROM aulavirtual.curso_docente 
+        WHERE Id_Curso = :idCurso
+    ");
 
-    $stmtInsert = $pdo->prepare("INSERT INTO aulavirtual.curso_docente (Id_Curso, Id_Docente)
-                                 VALUES (:idCurso, :idDocente)");
+    $stmtCheckCurso->execute([
+        ':idCurso' => (int)$idCurso
+    ]);
 
-    foreach ($docentes as $idDocente) {
+    if ($stmtCheckCurso->fetchColumn() > 0) {
         
-        $stmtCheck->execute([
-            ':idCurso' => (int)$idCurso,
-            ':idDocente' => (int)$idDocente
-        ]);
-
-        if ($stmtCheck->fetchColumn() == 0) {
-            $stmtInsert->execute([
-                ':idCurso' => (int)$idCurso,
-                ':idDocente' => (int)$idDocente
-            ]);
-        }
-    
+        return [
+            'success' => false,
+            'message' => 'Este curso ya tiene un docente asignado.'
+        ];
     }
 
-    return true;
+    
+    $idDocente = (int)$docentes[0];
+
+    $stmtInsert = $pdo->prepare("
+        INSERT INTO aulavirtual.curso_docente (Id_Curso, Id_Docente)
+        VALUES (:idCurso, :idDocente)
+    ");
+
+    $stmtInsert->execute([
+        ':idCurso' => (int)$idCurso,
+        ':idDocente' => $idDocente
+    ]);
+
+    return [
+        'success' => true
+    ];
 }
+
 
 
 
