@@ -14,7 +14,7 @@ if (
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Rendimiento Académico General</title>
+    <title>Rendimiento Académico </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Bootstrap -->
@@ -70,12 +70,12 @@ if (
 </a>
 
 <div class="contenedor">
-    <h2>📊 Rendimiento Académico General</h2>
+    <h2>📊 Rendimiento Académico </h2>
 
     <!-- POWER BI IFRAME -->
     <iframe
         title="RendimientoGeneral"
-        src="https://app.powerbi.com/reportEmbed?reportId=8753f588-5463-49e3-aa97-5fe193a1eb42&autoAuth=true&ctid=dde2fb8f-d8e0-445e-b851-e69c198c1e59"
+        src="https://app.powerbi.com/reportEmbed?reportId=363866da-95b1-439b-be91-7b372baa6f8a&autoAuth=true&ctid=dde2fb8f-d8e0-445e-b851-e69c198c1e59"
         allowfullscreen="true">
     </iframe>
 </div>
