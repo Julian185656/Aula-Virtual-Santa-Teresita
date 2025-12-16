@@ -180,7 +180,7 @@ $totalPages = ceil($total / $perPage);
 
     <div class="container">
 
-        <a href="admin_usuarios_list.php" class="btn btn-outline-light mb-3" style="border-radius:15px;">
+        <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn btn-outline-light mb-3" style="border-radius:15px;">
             <i class="bi bi-arrow-left-circle-fill"></i> Volver
         </a>
 

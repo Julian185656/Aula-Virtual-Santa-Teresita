@@ -48,7 +48,7 @@ if (!$id_estudiante || !$fecha_ausencia || !$id_curso) {
 }
 
 // 2️⃣ Carpeta de comprobantes
-$directorio_comprobantes = __DIR__ . '/../../comprobantes/';
+$directorio_comprobantes = __DIR__ . '/view/Home/comprobantes/';
 if (!is_dir($directorio_comprobantes)) {
     mkdir($directorio_comprobantes, 0777, true);
 }

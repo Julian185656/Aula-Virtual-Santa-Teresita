@@ -274,7 +274,7 @@ table tr:hover {
       <form id="form-medico">
         <div class="modal-body">
           <input type="hidden" id="medico-id" name="idEstudiante">
-          <div class="mb-3"><label>Alergias</label><input type="text" class="form-control" id="alergias" name="alergias"></div>
+          <div class="mb-3"><label>Numero de contacto</label><input type="text" class="form-control" id="alergias" name="alergias"></div>
           <div class="mb-3"><label>Medicamentos</label><input type="text" class="form-control" id="medicamentos" name="medicamentos"></div>
           <div class="mb-3"><label>Enfermedades Crónicas</label><input type="text" class="form-control" id="enfermedades" name="enfermedades"></div>
           <div class="mb-3"><label>Observaciones</label><textarea class="form-control" id="observaciones" name="observaciones"></textarea></div>
