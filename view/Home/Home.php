@@ -249,8 +249,8 @@ session_start();
                     <?php if (isset($_SESSION['rol']) && strtolower($_SESSION['rol']) === 'administrador'): ?>
                         <div class="role-card">
                             <i class="fa fa-comments"></i>
-                            <h4>Rendimiento General</h4>
-                            <p>Rendimiento General</p>
+                            <h4>Rendimiento Académico</h4>
+                            <p>Rendimiento en forma de Graficos</p>
                             <a href="/Aula-Virtual-Santa-Teresita/view/Admin/RendimientoGeneral.php">Ir</a>
                         </div>
                     <?php endif; ?>
