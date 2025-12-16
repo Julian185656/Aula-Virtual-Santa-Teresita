@@ -14,199 +14,179 @@ $cursos = CursoModel::obtenerCursosEstudiante($estudianteId);
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mis Cursos</title>
-<link href="/Aula-Virtual-Santa-Teresita/view/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<style>
 
+<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,600,700" rel="stylesheet">
+<link href="/Aula-Virtual-Santa-Teresita/view/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
 body{
     font-family: 'Poppins', sans-serif;
-    font-weight: 300;
     font-size: 15px;
-    line-height: 1.7;
-    color: #fff;
+    color: #ffffff;
     padding: 40px 15px;
-    background-color: #1e1f2e;
+    background-color: #2a2b38;
     background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
-    background-repeat: repeat;       
-    background-size: 600px;         
+    background-repeat: repeat;
+    background-size: 600px;
     background-position: center top;
     overflow-x: hidden;
 }
 
-
-h2 {
+h1{
+    text-align: center;
+    margin-bottom: 50px;
     font-weight: 700;
-    margin-bottom: 40px;
-    color: #fff;
-    text-align: center;
 }
 
-
-.card {
-    border-radius: 20px;
-    background: rgba(255,255,255,0.05);
+.card{
+    width: 280px;
+    height: 280px;
+    background: rgba(255,255,255,0.06);
     backdrop-filter: blur(10px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    padding: 25px 20px;
     text-align: center;
-    transition: all 0.3s ease;
-    width: 100%;
-    max-width: 250px;
-    aspect-ratio: 1 / 1; 
+    color: #fff;
+    transition: 0.3s;
 }
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+
+.card:hover{
+    transform: translateY(-10px);
+    box-shadow: 0 16px 45px rgba(0,0,0,0.4);
 }
-.card h5 {
+
+.card h5{
     font-weight: 600;
-    color: #ffffffff;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
-.card p {
+
+.card p{
     font-size: 0.95rem;
-    color: #ccc;
-    margin-bottom: 15px;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 18px;
 }
 
-
-.card .botones {
+/* Contenedor de iconos */
+.icon-group{
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 5px;
-}
-.card a {
-    display: inline-block;
-    font-size: 0.9rem;
-    font-weight: 500;
-    padding: 7px 14px;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: 0.3s;
+    gap: 10px;
 }
 
-
-.btn-tareas { background-color: #0d6efd; color: #fff; }
-.btn-tareas:hover { background-color: #0b5ed7; }
-
-.btn-material { background-color: #17a2b8; color: #fff; }
-.btn-material:hover { background-color: #138496; }
-
-.btn-ranking { background-color: #6f42c1; color: #fff; }
-.btn-ranking:hover { background-color: #5936a2; }
-
-.btn-foro { background-color: #ffc107; color: #212529; }
-.btn-foro:hover { background-color: #e0a800; }
-
-
-.container { max-width: 1200px; }
-
-
-.btn-home {
-    background-color: #343a40;
-    color: #fff;
-    border-radius: 12px;
-    padding: 10px 25px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: 0.3s;
-}
-.btn-home:hover {
-    background-color: #495057;
-    transform: translateY(-2px);
-}
-
-.botones {
+/* Botones circulares */
+.icon-btn{
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
     display: flex;
-    justify-content: center;
-    gap: 12px; 
-    margin-top: 15px;
-}
-
-
-.botones a {
-    display: flex;
-    justify-content: center;
     align-items: center;
-    width: 45px;
-    height: 45px;
-    border-radius: 10px;
-    font-size: 22px;
+    justify-content: center;
     color: #fff;
+    font-size: 18px;
     text-decoration: none;
-    transition: 0.2s ease-in-out;
+    transition: 0.2s ease;
 }
 
-
-.btn-tareas      { background: #007bff; }
-.btn-foro        { background: #28a745; }
-.btn-material    { background: #17a2b8; }
-.btn-ranking     { background: #ffc107; color: #000; }
-.btn-encuesta    { background: #6f42c1; }
-
-
-.botones a:hover {
-    transform: scale(1.08);
+.icon-btn:hover{
+    transform: translateY(-3px) scale(1.05);
     filter: brightness(1.15);
 }
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
-::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+
+/* Colores de acciones */
+.btn-tareas   { background:#0d6efd; }
+.btn-foro     { background:#22c55e; }
+.btn-material { background:#0dcaf0; }
+.btn-ranking  { background:#facc15; color:#000; }
+.btn-encuesta { background:#7c3aed; }
+
+/* Botón volver */
+.btn-volver{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 26px;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border-radius: 14px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+.btn-volver:hover{
+    background: rgba(255,255,255,0.35);
+}
 </style>
 </head>
+
 <body>
 
-<h2>Mis Cursos</h2>
+<h1>Mis Cursos</h1>
 
 <div class="container">
-    <div class="row g-4 justify-content-center">
+    <div class="row justify-content-center g-5">
+
         <?php if (!empty($cursos)): ?>
             <?php foreach ($cursos as $curso): ?>
                 <div class="col-lg-4 col-md-6 col-12 d-flex justify-content-center">
                     <div class="card">
+
                         <h5><?= htmlspecialchars($curso['Nombre']) ?></h5>
                         <p><?= htmlspecialchars($curso['Descripcion']) ?></p>
 
-                       <div class="botones">
-    <a class="btn-tareas" href="/Aula-Virtual-Santa-Teresita/view/Estudiante/TareasEstudiante.php?idCurso=<?= $curso['Id_Curso'] ?>" title="Tareas">
-        <i class="fa-solid fa-list-check"></i>
-    </a>
-    <a class="btn-foro" href="/Aula-Virtual-Santa-Teresita/view/Estudiante/ForoCursoEstudiante.php?idCurso=<?= $curso['Id_Curso'] ?>" title="Foro">
-        <i class="fa-solid fa-comments"></i>
-    </a>
-    <a class="btn-material" href="/Aula-Virtual-Santa-Teresita/view/Estudiante/Material.php?curso=<?= $curso['Id_Curso'] ?>" title="Material">
-        <i class="fa-solid fa-book-open"></i>
-    </a>
-    <a class="btn-ranking" href="/Aula-Virtual-Santa-Teresita/controller/RankingController.php?idCurso=<?= $curso['Id_Curso'] ?>" title="Ranking">
-        <i class="fa-solid fa-trophy"></i>
-    </a>
+                        <div class="icon-group">
 
+                            <a class="icon-btn btn-tareas"
+                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/TareasEstudiante.php?idCurso=<?= $curso['Id_Curso'] ?>"
+                               title="Tareas">
+                                <i class="fa-solid fa-list-check"></i>
+                            </a>
 
-<a class="btn-encuesta" 
-   href="/Aula-Virtual-Santa-Teresita/view/Estudiante/ResponderEncuesta.php?idCurso=<?= $curso['Id_Curso'] ?>" 
-   title="Encuestas">
-    <i class="fa-solid fa-square-poll-horizontal"></i>
-</a>
+                            <a class="icon-btn btn-foro"
+                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/ForoCursoEstudiante.php?idCurso=<?= $curso['Id_Curso'] ?>"
+                               title="Foro">
+                                <i class="fa-solid fa-comments"></i>
+                            </a>
 
+                            <a class="icon-btn btn-material"
+                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/Material.php?curso=<?= $curso['Id_Curso'] ?>"
+                               title="Material">
+                                <i class="fa-solid fa-book-open"></i>
+                            </a>
 
-</div>
+                            <a class="icon-btn btn-ranking"
+                               href="/Aula-Virtual-Santa-Teresita/controller/RankingController.php?idCurso=<?= $curso['Id_Curso'] ?>"
+                               title="Ranking">
+                                <i class="fa-solid fa-trophy"></i>
+                            </a>
+
+                            <a class="icon-btn btn-encuesta"
+                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/ResponderEncuesta.php?idCurso=<?= $curso['Id_Curso'] ?>"
+                               title="Encuestas">
+                                <i class="fa-solid fa-square-poll-horizontal"></i>
+                            </a>
+
+                        </div>
 
                     </div>
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
-            <p class="text-center">No estás matriculado en ningún curso.</p>
+            <div class="col-12 text-center">
+                <p>No estás matriculado en ningún curso.</p>
+            </div>
         <?php endif; ?>
+
     </div>
 
     <div class="text-center mt-5">
-        <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn-home btn-lg"><i class="fa-solid fa-house"></i> Volver</a>
+        <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn-volver">
+            <i class="fa-solid fa-house"></i> Volver
+        </a>
     </div>
 </div>
 

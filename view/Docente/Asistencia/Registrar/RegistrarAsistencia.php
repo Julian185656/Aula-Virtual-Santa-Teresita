@@ -1,47 +1,44 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <title>Registrar Asistencia</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap y iconos -->
+    <!-- Bootstrap e iconos -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-    <!-- Fuentes -->
+    <!-- Fuente -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
 
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            font-weight: 300;
             font-size: 15px;
-            color: #c4c3ca;
+            color: #ffffff;
             padding: 40px 15px;
             background-color: #2a2b38;
             background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
             background-repeat: repeat;
             background-size: 600px;
+            overflow-x: hidden;
         }
 
-
-
-        
         h2 {
             text-align: center;
             margin-bottom: 30px;
+            color: #ffffff;
+            font-weight: 700;
             text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-            color: #fff;
         }
 
-        /* Formulario de filtros */
-        form.row.g-3.align-items-end {
+        /* Contenedor filtros */
+        .filtro-box {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 10px;
+            gap: 15px;
             margin-bottom: 25px;
             background: rgba(255,255,255,0.05);
             padding: 20px;
@@ -50,71 +47,72 @@
             border: 1px solid rgba(255,255,255,0.25);
         }
 
-        form input, form select, form button, form a {
+        .filtro-box input,
+        .filtro-box select {
+            min-width: 180px;
+            padding: 10px 15px;
             border-radius: 15px;
+            background: rgba(255,255,255,0.1);
+            color: #ffffff;
             border: none;
         }
 
-        form input[type="text"], form input[type="date"], form select {
-            padding: 10px 15px;
-            background: rgba(255,255,255,0.1);
-            color: #fff;
+        .filtro-box select option {
+            color: #000;
         }
 
-        form input::placeholder {
-            color: #ddd;
-        }
-
-        form button, form a {
+        .filtro-box button,
+        .filtro-box a {
             padding: 10px 20px;
-            cursor: pointer;
-            text-decoration: none;
-            color: #fff;
+            border-radius: 15px;
+            border: none;
             background: rgba(255,255,255,0.15);
-            transition: 0.2s ease;
+            color: #ffffff;
+            text-decoration: none;
+            transition: 0.2s;
         }
 
-        form button:hover, form a:hover {
+        .filtro-box button:hover,
+        .filtro-box a:hover {
             background: rgba(255,255,255,0.35);
         }
 
-        /* Card de la tabla */
+        /* Card */
         .card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.05);
             padding: 20px;
             border-radius: 20px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.25);
         }
 
-        /* Tabla */
-        table, table thead th, table tbody td {
-            color: #fff !important;
+        /* Tabla FIX DEFINITIVO */
+        .table,
+        .table th,
+        .table td,
+        .table thead th,
+        .table tbody td {
+            color: #ffffff !important;
         }
 
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
+        .table thead {
+            background: rgba(255,255,255,0.15);
         }
 
-        table thead {
-            background: rgba(255, 255, 255, 0.1);
-            font-weight: bold;
+        .table tbody tr:nth-child(even) {
+            background: rgba(255,255,255,0.06);
         }
 
-        table th, table td {
-            padding: 12px 15px;
+        .table tbody tr:hover td {
+            background: rgba(255,255,255,0.12);
+            color: #ffffff !important;
         }
 
-        table tr:nth-child(even) {
-            background: rgba(255,255,255,0.02);
+        .table .text-muted {
+            color: rgba(255,255,255,0.7) !important;
         }
 
-        table tr:hover {
-            background: rgba(255,255,255,0.1);
-        }
-
+        /* Estado */
         .estado-toggle {
             display: flex;
             gap: 8px;
@@ -123,241 +121,211 @@
 
         .toggle-btn {
             padding: 6px 14px;
-            border-radius: 6px;
-            border: 2px solid transparent;
-            cursor: pointer;
+            border-radius: 8px;
             font-weight: 600;
-            font-size: 0.9rem;
-            transition: 0.2s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
         }
 
         .btn-presente {
-            background: #e8fff0;
-            border-color: #28a745;
-            color: #28a745;
+            border-color: #22c55e;
+            color: #22c55e;
+            background: rgba(34,197,94,0.15);
         }
 
         .btn-ausente {
-            background: #ffffff;
-            border-color: #dc3545;
-            color: #dc3545;
+            border-color: #ef4444;
+            color: #ef4444;
+            background: rgba(239,68,68,0.15);
         }
 
         .btn-presente.active {
-            background: #28a745;
-            color: white;
+            background: #22c55e;
+            color: #ffffff;
         }
 
         .btn-ausente.active {
-            background: #dc3545;
-            color: white;
+            background: #ef4444;
+            color: #ffffff;
         }
 
+        /* Acciones */
         .sticky-actions {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
-            padding: 10px 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.25);
             margin-top: 15px;
+            padding: 12px 15px;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.25);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .btn-primary {
-            background-color: #6a5acd;
+            background: #6a5acd;
             border: none;
+            border-radius: 15px;
+            padding: 10px 20px;
         }
 
         .btn-primary:hover {
-            background-color: #836fff;
+            background: #836fff;
         }
 
-        .pagination a {
-            color: #fff;
+        .pagination .page-link {
             background: rgba(255,255,255,0.1);
-            margin: 0 3px;
+            color: #ffffff;
+            border: none;
         }
 
-        .pagination a:hover {
-            background: rgba(255,255,255,0.35);
-        }
-
-        .pagination .active a {
-            background: #6a5acd !important;
+        .pagination .active .page-link {
+            background: #6a5acd;
         }
     </style>
 </head>
 
-
-
-
-
-  <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn btn-outline-light mb-3" style="border-radius: 15px; padding: 8px 18px; text-decoration:none;">
-        <i class="bi bi-arrow-left-circle-fill"></i> Volver
-    </a>
-
-
-
 <body>
+
+<a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php"
+   class="btn btn-outline-light mb-3"
+   style="border-radius:15px;padding:8px 18px;text-decoration:none;">
+    <i class="bi bi-arrow-left-circle-fill"></i> Volver
+</a>
+
 <div class="container">
 
-    <h2><i class="bi bi-clipboard2"></i> Registrar Asistencia
+    <h2>
+        <i class="bi bi-clipboard2"></i> Registrar Asistencia
         <?php if (!empty($fecha)): ?>
-            <span class="badge bg-light text-dark ms-2"><?= htmlspecialchars($fecha) ?></span>
+            <span class="badge bg-light text-dark"><?= htmlspecialchars($fecha) ?></span>
         <?php endif; ?>
     </h2>
 
-<form method="GET" class="d-flex flex-wrap justify-content-center align-items-center mb-4 p-3"
-      style="background: rgba(255,255,255,0.05); border-radius:20px; backdrop-filter: blur(10px); border:1px solid rgba(255,255,255,0.25); gap:20px;">
-    
+    <form method="GET" class="filtro-box">
+        <input type="date" name="fecha"
+               value="<?= htmlspecialchars($fecha ?? date('Y-m-d')) ?>">
 
-    <input type="date" name="fecha" class="form-control" 
-           value="<?= htmlspecialchars($fecha ?? date('Y-m-d')) ?>"
-           style="min-width:160px; background: rgba(255,255,255,0.1); color:#fff; border-radius:15px; padding:10px 15px;">
+        <select name="curso" required>
+            <option value="">Seleccione un curso</option>
+            <?php foreach($cursos as $c): ?>
+                <option value="<?= (int)$c['Id_Curso'] ?>"
+                    <?= (!empty($cursoId) && $cursoId == $c['Id_Curso'])?'selected':'' ?>>
+                    <?= htmlspecialchars($c['Curso']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
 
+        <button type="submit">
+            <i class="bi bi-filter"></i> Cargar lista
+        </button>
 
-    <select name="curso" class="form-select" required 
-            style="min-width:200px; background: rgba(255,255,255,0.1); color:black; border-radius:15px; padding:10px 15px;">
-        <option value="">Seleccione un curso</option>
-        <?php foreach($cursos as $c): ?>
-            <option value="<?= (int)$c['Id_Curso'] ?>" <?= (!empty($cursoId) && $cursoId == $c['Id_Curso'])?'selected':'' ?>>
-                <?= htmlspecialchars($c['Curso']) ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
+        <a href="RegistrarAsistenciaController.php">
+            <i class="bi bi-arrow-clockwise"></i> Restablecer
+        </a>
+    </form>
 
-   
-    <button type="submit" class="btn btn-primary" style="padding:10px 20px; border-radius:15px;">
-        <i class="bi bi-filter"></i> Cargar lista
-    </button>
-
-    <a href="RegistrarAsistenciaController.php" class="btn btn-outline-light" 
-       style="padding:10px 20px; border-radius:15px;">
-       <i class="bi bi-arrow-clockwise"></i> Restablecer
-    </a>
-</form>
-
-
-
-
-    <div class="card mt-4">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5>Lista de estudiantes</h5>
-                <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-success btn-sm" id="btnMarcarTodos">
-                        <i class="bi bi-check2-circle"></i> Todos presentes
-                    </button>
-                    <button type="button" class="btn btn-outline-danger btn-sm" id="btnMarcarNadie">
-                        <i class="bi bi-x-circle"></i> Todos ausentes
-                    </button>
-                </div>
+    <div class="card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5>Lista de estudiantes</h5>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-outline-success btn-sm" id="btnMarcarTodos">
+                    Todos presentes
+                </button>
+                <button type="button" class="btn btn-outline-danger btn-sm" id="btnMarcarNadie">
+                    Todos ausentes
+                </button>
             </div>
+        </div>
 
-            <form method="POST" id="formAsistencia">
-                <input type="hidden" name="curso" value="<?= (int)($cursoId ?? 0) ?>">
-                <input type="hidden" name="fecha" value="<?= htmlspecialchars($fecha ?? date('Y-m-d')) ?>">
+        <form method="POST" id="formAsistencia">
+            <input type="hidden" name="curso" value="<?= (int)($cursoId ?? 0) ?>">
+            <input type="hidden" name="fecha" value="<?= htmlspecialchars($fecha ?? date('Y-m-d')) ?>">
 
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped">
-                        <thead class="table-dark">
+            <div class="table-responsive">
+                <table class="table table-borderless text-center">
+                    <thead>
                         <tr>
                             <th>ID</th>
                             <th>Estudiante</th>
                             <th>Correo</th>
                             <th>Curso</th>
-                            <th class="text-center">Estado</th>
+                            <th>Estado</th>
                         </tr>
-                        </thead>
-                        <tbody>
-                        <?php if(!empty($alumnos)): ?>
-                            <?php foreach($alumnos as $al):
-                                $idEst = (int)$al['Id_Estudiante'];
-                                $valorActual = $asistenciaMap[$idEst] ?? 1;
-                                $isPresente = ($valorActual === 1);
-                                ?>
-                                <tr>
-                                    <td><?= $idEst ?><input type="hidden" name="estudiante_id[]" value="<?= $idEst ?>"></td>
-                                    <td><?= htmlspecialchars($al['Nombre']) ?></td>
-                                    <td><?= htmlspecialchars($al['Email']) ?></td>
-                                    <td><?= htmlspecialchars($al['Curso']) ?></td>
-                                    <td class="text-center">
-                                        <div class="estado-toggle" data-id="<?= $idEst ?>">
-                                            <button type="button" class="toggle-btn btn-presente <?= $isPresente?'active':'' ?>">Presente</button>
-                                            <button type="button" class="toggle-btn btn-ausente <?= $isPresente?'':'active' ?>">Ausente</button>
-                                            <input type="hidden" name="estado[<?= $idEst ?>]" id="estado-<?= $idEst ?>" value="<?= $isPresente?1:0 ?>">
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="5" class="text-center text-muted py-4">
-                                    Selecciona un curso y fecha para cargar la lista.
-                                </td>
-                            </tr>
-                        <?php endif; ?>
-                        </tbody>
-                    </table>
+                    </thead>
+                    <tbody>
+                    <?php if(!empty($alumnos)): ?>
+                        <?php foreach($alumnos as $al):
+                            $idEst = (int)$al['Id_Estudiante'];
+                            $valor = $asistenciaMap[$idEst] ?? 1;
+                        ?>
+                        <tr>
+                            <td><?= $idEst ?><input type="hidden" name="estudiante_id[]" value="<?= $idEst ?>"></td>
+                            <td><?= htmlspecialchars($al['Nombre']) ?></td>
+                            <td><?= htmlspecialchars($al['Email']) ?></td>
+                            <td><?= htmlspecialchars($al['Curso']) ?></td>
+                            <td>
+                                <div class="estado-toggle" data-id="<?= $idEst ?>">
+                                    <button type="button" class="toggle-btn btn-presente <?= $valor ? 'active':'' ?>">Presente</button>
+                                    <button type="button" class="toggle-btn btn-ausente <?= !$valor ? 'active':'' ?>">Ausente</button>
+                                    <input type="hidden" name="estado[<?= $idEst ?>]" id="estado-<?= $idEst ?>" value="<?= $valor ?>">
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="5" class="text-muted py-4">
+                                Selecciona un curso y fecha para cargar la lista.
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="sticky-actions">
+                <div class="text-muted">
+                    <?php if(!empty($alumnos)): ?>
+                        Mostrando <?= count($alumnos) ?> estudiantes
+                    <?php endif; ?>
                 </div>
-
-                <div class="sticky-actions d-flex justify-content-between align-items-center">
-                    <div class="text-muted">
-                        <?php if(!empty($alumnos)): ?>
-                            Mostrando <?= count($alumnos) ?> de <?= (int)($totalRegistros ?? 0) ?> estudiantes.
-                        <?php endif; ?>
-                    </div>
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
-                </div>
-            </form>
-
-            <?php if(!empty($alumnos) && ($totalPaginas ?? 1) > 1): ?>
-                <nav class="mt-3">
-                    <ul class="pagination justify-content-center">
-                        <?php for($i=1;$i<=$totalPaginas;$i++): ?>
-                            <li class="page-item <?= (isset($pagina) && $pagina==$i)?'active':'' ?>">
-                                <a class="page-link" href="?curso=<?= (int)$cursoId ?>&fecha=<?= $fecha ?>&pagina=<?= $i ?>"><?= $i ?></a>
-                            </li>
-                        <?php endfor; ?>
-                    </ul>
-                </nav>
-            <?php endif; ?>
-
-        </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Guardar
+                </button>
+            </div>
+        </form>
     </div>
 
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 
 <script>
-   
-    $('.estado-toggle .toggle-btn').click(function(){
-        var parent = $(this).closest('.estado-toggle');
-        parent.find('.toggle-btn').removeClass('active');
-        $(this).addClass('active');
-        var id = parent.data('id');
-        var val = $(this).hasClass('btn-presente') ? 1 : 0;
-        $('#estado-'+id).val(val);
-    });
+$('.estado-toggle .toggle-btn').click(function(){
+    const box = $(this).closest('.estado-toggle');
+    box.find('.toggle-btn').removeClass('active');
+    $(this).addClass('active');
+    const id = box.data('id');
+    $('#estado-'+id).val($(this).hasClass('btn-presente') ? 1 : 0);
+});
 
-    $('#btnMarcarTodos').click(function(){
-        $('.estado-toggle').each(function(){
-            $(this).find('.btn-presente').addClass('active');
-            $(this).find('.btn-ausente').removeClass('active');
-            var id = $(this).data('id');
-            $('#estado-'+id).val(1);
-        });
+$('#btnMarcarTodos').click(function(){
+    $('.estado-toggle').each(function(){
+        const id = $(this).data('id');
+        $(this).find('.btn-presente').addClass('active');
+        $(this).find('.btn-ausente').removeClass('active');
+        $('#estado-'+id).val(1);
     });
+});
 
-    $('#btnMarcarNadie').click(function(){
-        $('.estado-toggle').each(function(){
-            $(this).find('.btn-ausente').addClass('active');
-            $(this).find('.btn-presente').removeClass('active');
-            var id = $(this).data('id');
-            $('#estado-'+id).val(0);
-        });
+$('#btnMarcarNadie').click(function(){
+    $('.estado-toggle').each(function(){
+        const id = $(this).data('id');
+        $(this).find('.btn-ausente').addClass('active');
+        $(this).find('.btn-presente').removeClass('active');
+        $('#estado-'+id).val(0);
     });
+});
 </script>
 
 </body>

@@ -20,9 +20,11 @@ class RendimientoController
         $tipo = $_GET['tipo'] ?? 'info';
 
         try {
-            // EXPORTAR EXCEL
+            // Exportar a Excel
             if (isset($_GET['export']) && $_GET['export'] == 1) {
-                $reporteCompleto = $this->model->obtenerReporte($idCurso, 1, 1000000)['reporte'];
+
+                $reporteCompleto = $this->model
+                    ->obtenerReporte($idCurso, 1, 1000000)['reporte'];
 
                 header("Content-Type: application/vnd.ms-excel");
                 header("Content-Disposition: attachment; filename=reporte_calificaciones.xls");
@@ -49,8 +51,9 @@ class RendimientoController
                         <td>{$fila['Fecha_Entrega']}</td>
                     </tr>";
                 }
+
                 echo "</table>";
-                exit(); // muy importante para que no cargue más HTML
+                exit();
             }
 
             // Reporte paginado
@@ -61,17 +64,17 @@ class RendimientoController
             $totalPaginas = ceil($totalRegistros / $limite);
             $paginaActual = $pagina;
 
-            // Resumen
+            // Resumen general
             if (isset($_GET['verResumen']) && $_GET['verResumen'] == 1) {
                 $resumen = $this->model->obtenerResumen();
-                $mensaje = "✅ Resumen de promedios mostrado correctamente.";
+                $mensaje = "Resumen de promedios mostrado correctamente.";
                 $tipo = "success";
             }
 
             $cursos = $this->model->obtenerCursos();
 
         } catch (Exception $e) {
-            $mensaje = "❌ Error: " . $e->getMessage();
+            $mensaje = "Error: " . $e->getMessage();
             $tipo = "danger";
         }
 
