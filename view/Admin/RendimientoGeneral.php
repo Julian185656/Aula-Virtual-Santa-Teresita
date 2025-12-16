@@ -75,7 +75,7 @@ if (
     <!-- POWER BI IFRAME -->
     <iframe
         title="RendimientoGeneral"
-        src="https://app.powerbi.com/reportEmbed?reportId=363866da-95b1-439b-be91-7b372baa6f8a&autoAuth=true&ctid=dde2fb8f-d8e0-445e-b851-e69c198c1e59"
+        src="https://app.powerbi.com/reportEmbed?reportId=2c783032-f1c8-4b9a-bf5a-6aeabb2f9dbc&autoAuth=true&ctid=dde2fb8f-d8e0-445e-b851-e69c198c1e59"
         allowfullscreen="true">
     </iframe>
 </div>
