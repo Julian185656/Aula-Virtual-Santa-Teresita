@@ -2,21 +2,11 @@
 require_once __DIR__ . '/../../controller/CursoController.php';
 require_once __DIR__ . '/../../model/CursoModel.php';
 
-$mensajeMatricula = '';
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['crearCurso'])) CursoController::crearCurso();
-    elseif (isset($_POST['asignarDocentes'])) CursoController::asignarDocentes();
-    elseif (isset($_POST['eliminarCurso'])) CursoController::eliminarCurso($_POST['idCursoEliminar']);
-    elseif (isset($_POST['matricularEstudiantes'])) {
-        CursoModel::matricularEstudiantes($_POST['idCursoMatricula'], $_POST['estudiantes'] ?? []);
-        $mensajeMatricula = "Estudiantes matriculados correctamente.";
+    if (isset($_POST['crearCurso'])) {
+        CursoController::crearCurso();
     }
 }
-
-$docentes = CursoModel::obtenerDocentes();
-$cursos = CursoModel::obtenerCursos();
-$estudiantes = CursoModel::obtenerEstudiantes();
 ?>
 
 <!DOCTYPE html>
@@ -24,271 +14,154 @@ $estudiantes = CursoModel::obtenerEstudiantes();
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Crear Cursos</title>
+<title>Crear Curso</title>
 
-<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600,700" rel="stylesheet">
-<link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- Iconos -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+<!-- Fuente -->
+<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,600,700" rel="stylesheet">
+
 <style>
+/* =====================================================
+   ESTILO GLOBAL
+===================================================== */
+
 body {
     font-family: 'Poppins', sans-serif;
-    font-weight: 300;
-    font-size: 15px;
-    color: #c4c3ca;
-    padding: 40px 15px;
     background-color: #2a2b38;
     background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
-    background-repeat: repeat;
     background-size: 600px;
-    background-position: center top;
-    overflow-x: hidden;
-}
-
-h2 {
-    text-align: center;
-    margin-bottom: 40px;
-    font-size: 2.2rem;
-    font-weight: 700;
     color: #fff;
+    padding: 40px 20px;
 }
 
-.card-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 30px;
-    margin-bottom: 50px;
+/* Título */
+.page-title {
+    text-align: center;
+    color: #fff;
+    font-size: 2.3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.35);
 }
 
-.card {
+.page-title i {
+    display: block;
+    font-size: 45px;
+    margin-bottom: 8px;
+    opacity: 0.9;
+}
+
+/* =====================================================
+   CARD (MISMO ESTILO QUE LOS DEMÁS MÓDULOS)
+===================================================== */
+
+.card-wrapper {
+    max-width: 650px;
+    margin: 0 auto;
     background: rgba(255,255,255,0.08);
     border-radius: 20px;
-    padding: 30px 20px;
-    width: 320px;
-    text-align: center;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.2);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-    transition: all .3s ease;
+    padding: 35px;
+    border: 1px solid rgba(255,255,255,0.18);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 35px rgba(0,0,0,0.4);
 }
 
-.card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-}
-
-.card i {
-    font-size: 46px;
-    color: #fff;
-    margin-bottom: 15px;
-}
-
-.card h3 {
-    color: #fff;
-    font-weight: 600;
-    margin-bottom: 20px;
-}
-
-.card label {
-    text-align: left;
-    width: 100%;
-    color: #fff;
+.card-wrapper label {
+    display: block;
+    margin-bottom: 6px;
     font-weight: 500;
-}
-
-.card input,
-.card textarea,
-.card select,
-.card button {
-    width: 100%;
-    border-radius: 12px;
-    padding: 10px;
-    border: none;
-    margin-bottom: 12px;
-    background: rgba(255,255,255,0.12);
     color: #fff;
 }
 
-.card textarea {
+.card-wrapper input,
+.card-wrapper textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.10);
+    color: #fff;
+    margin-bottom: 18px;
+}
+
+.card-wrapper textarea {
     resize: vertical;
 }
 
-.card button {
-    background: rgba(255,255,255,0.2);
-    font-weight: 600;
-    transition: .2s;
-}
-
-.card button:hover {
-    background: rgba(255,255,255,0.35);
-}
-
-.table-container {
-    max-width: 1000px;
-    margin: 0 auto 50px auto;
-    padding: 20px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.2);
-}
-
-.table-container h3 {
-    text-align: center;
-    color: #fff;
-    margin-bottom: 20px;
-}
-
-table {
+/* Botón principal */
+.btn-submit {
     width: 100%;
-    color: #fff;
-    border-collapse: collapse;
-}
-
-th {
-    background: rgba(255,255,255,0.15);
     padding: 12px;
-}
-
-td {
-    padding: 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.15);
-}
-
-tr:hover {
-    background: rgba(255,255,255,0.25);
-}
-
-.alert {
-    background: rgba(40,167,69,0.3);
-    padding: 10px;
-    border-radius: 10px;
-    text-align: center;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.20);
+    border: 1px solid rgba(255,255,255,0.32);
     color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s;
 }
 
+.btn-submit:hover {
+    background: rgba(255,255,255,0.32);
+}
+
+/* Botón volver */
 .volver-btn {
-    display: inline-block;
-    margin-top: 30px;
-    padding: 12px 25px;
+    display: block;
+    text-align: center;
+    width: fit-content;
+    margin: 30px auto 0;
+    padding: 10px 22px;
     border-radius: 12px;
     background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
     color: #fff;
     text-decoration: none;
-    transition: .2s;
+    transition: 0.25s;
 }
 
 .volver-btn:hover {
-    background: rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.32);
 }
 </style>
 </head>
 
 <body>
 
-<h2>Crear Cursos</h2>
+<!-- ================================
+     TÍTULO 
+================================ -->
+<h2 class="page-title">
+    <i class="fa fa-plus-circle"></i>
+    Crear Curso
+</h2>
 
-<div class="card-container">
-
-    <div class="card">
-        <i class="fa fa-plus-circle"></i>
-        <h3>Crear Curso</h3>
-        <form method="POST">
-            <label>Nombre</label>
-            <input type="text" name="nombre" required>
-
-            <label>Descripción</label>
-            <textarea name="descripcion" rows="3" required></textarea>
-
-            <button type="submit" name="crearCurso">Crear Curso</button>
-        </form>
-    </div>
-
-    <div class="card">
-        <i class="fa fa-chalkboard-teacher"></i>
-        <h3>Asignar Docentes</h3>
-        <form method="POST">
-            <label>Curso</label>
-            <select name="idCurso" required>
-                <option disabled selected>Seleccione curso</option>
-                <?php foreach ($cursos as $curso): ?>
-                    <option value="<?= $curso['id'] ?>"><?= htmlspecialchars($curso['nombre']) ?></option>
-                <?php endforeach; ?>
-            </select>
-
-            <label>Docentes</label>
-            <select name="docentes[]" multiple size="5" required>
-                <?php foreach ($docentes as $docente): ?>
-                    <option value="<?= $docente['id'] ?>"><?= htmlspecialchars($docente['nombre']) ?></option>
-                <?php endforeach; ?>
-            </select>
-
-            <button type="submit" name="asignarDocentes">Asignar</button>
-        </form>
-    </div>
-
-    <div class="card">
-        <i class="fa fa-trash-alt"></i>
-        <h3>Eliminar Curso</h3>
-        <form method="POST">
-            <label>Curso</label>
-            <select name="idCursoEliminar" required>
-                <option disabled selected>Seleccione curso</option>
-                <?php foreach ($cursos as $curso): ?>
-                    <option value="<?= $curso['id'] ?>"><?= htmlspecialchars($curso['nombre']) ?></option>
-                <?php endforeach; ?>
-            </select>
-
-            <button type="submit" name="eliminarCurso">Eliminar</button>
-        </form>
-    </div>
-
-</div>
-
-<div class="table-container">
-    <h3>Matricular Estudiantes</h3>
-
-    <?php if ($mensajeMatricula): ?>
-        <div class="alert"><?= htmlspecialchars($mensajeMatricula) ?></div>
-    <?php endif; ?>
-
+<!-- ================================
+     CARD FORMULARIO
+================================ -->
+<div class="card-wrapper">
     <form method="POST">
-        <label>Curso</label>
-        <select name="idCursoMatricula" required>
-            <option disabled selected>Seleccione curso</option>
-            <?php foreach ($cursos as $curso): ?>
-                <option value="<?= $curso['id'] ?>"><?= htmlspecialchars($curso['nombre']) ?></option>
-            <?php endforeach; ?>
-        </select>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Seleccionar</th>
-                    <th>Estudiante</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($estudiantes as $estudiante): ?>
-                    <tr>
-                        <td><input type="checkbox" name="estudiantes[]" value="<?= $estudiante['id'] ?>"></td>
-                        <td><?= htmlspecialchars($estudiante['nombre']) ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+        <label>Nombre del curso</label>
+        <input type="text" name="nombre" placeholder="Ingrese el nombre del curso" required>
 
-        <button type="submit" name="matricularEstudiantes">Matricular Seleccionados</button>
+        <label>Descripción del curso</label>
+        <textarea name="descripcion" rows="4" placeholder="Detalle o información del curso" required></textarea>
+
+        <button type="submit" name="crearCurso" class="btn-submit">
+            Crear Curso
+        </button>
     </form>
 </div>
 
-<div style="text-align:center">
-    <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="volver-btn">
-        <i class="fa fa-arrow-left"></i> Volver
-    </a>
-</div>
+<!-- ================================
+     BOTÓN VOLVER
+================================ -->
+<a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="volver-btn">
+    <i class="fa fa-arrow-left"></i> Volver
+</a>
 
-<script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

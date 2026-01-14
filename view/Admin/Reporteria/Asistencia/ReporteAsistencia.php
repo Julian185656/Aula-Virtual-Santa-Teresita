@@ -35,7 +35,7 @@
             font-weight: 700;
             margin-bottom: 30px;
             color: #ffffff;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.4);
         }
 
         /* Botón volver */
@@ -44,34 +44,32 @@
             margin-bottom: 20px;
             padding: 10px 18px;
             border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.4);
+            border: 1px solid rgba(255,255,255,0.35);
             background: rgba(255,255,255,0.1);
             color: #ffffff;
             text-decoration: none;
-            transition: .2s;
+            transition: 0.2s;
         }
 
         .btn-volver:hover {
             background: rgba(255,255,255,0.25);
-            color: #ffffff;
         }
 
-        /* Tarjetas glass */
+        /* Contenedor tipo glass */
         .card-glass {
             background: rgba(255,255,255,0.06);
             backdrop-filter: blur(10px);
             border-radius: 18px;
             border: 1px solid rgba(255,255,255,0.15);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
             padding: 20px;
-            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
 
         /* Filtros */
         .filter-form {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
@@ -81,11 +79,12 @@
             border-radius: 12px;
             color: #ffffff;
             padding: 10px 12px;
+            font-weight: 600;
         }
 
-        /* Botones ghost */
+        /* Botones */
         .btn-ghost {
-            padding: 10px 22px;
+            padding: 10px 20px;
             border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.35);
             background: rgba(255,255,255,0.1);
@@ -97,7 +96,6 @@
 
         .btn-ghost:hover {
             background: rgba(255,255,255,0.25);
-            color: #ffffff;
         }
 
         /* Tabla */
@@ -113,34 +111,27 @@
         }
 
         .table thead th {
-            background: rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.15);
             font-weight: 600;
-            color: #ffffff !important;
         }
 
         .table tbody tr:nth-child(even) {
-            background: rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.04);
         }
 
         .table tbody tr:hover {
             background: rgba(255,255,255,0.15);
         }
 
-        /* Resaltar nombres */
-        .table tbody td:nth-child(2) {
-            font-weight: 600;
-        }
-
         /* Paginación */
         .pagination .page-link {
             background: rgba(255,255,255,0.1);
-            border: none;
             color: #ffffff;
+            border: none;
         }
 
         .pagination .page-item.active .page-link {
             background: rgba(255,255,255,0.35);
-            color: #ffffff;
         }
     </style>
 </head>
@@ -152,16 +143,17 @@
     </a>
 
     <div class="container">
+
         <h2>Reporte de Asistencia</h2>
 
-        <!-- Filtros -->
-        <div class="card-glass">
+        <!-- FILTROS -->
+        <div class="card-glass mb-4">
             <form method="GET" action="AsistenciaController.php" class="filter-form">
 
                 <select name="curso" class="form-select">
                     <option value="">Todos los cursos</option>
                     <?php foreach ($cursos as $c): ?>
-                        <option value="<?= $c['Id_Curso'] ?>" <?= (isset($_GET['curso']) && $_GET['curso'] == $c['Id_Curso']) ? 'selected' : '' ?>>
+                        <option value="<?= $c['Id_Curso'] ?>" <?= ($cursoId == $c['Id_Curso']) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($c['Nombre']) ?>
                         </option>
                     <?php endforeach; ?>
@@ -170,7 +162,7 @@
                 <select name="fecha" class="form-select">
                     <option value="">Todas las fechas</option>
                     <?php foreach ($fechas as $f): ?>
-                        <option value="<?= $f['Fecha'] ?>" <?= (isset($_GET['fecha']) && $_GET['fecha'] == $f['Fecha']) ? 'selected' : '' ?>>
+                        <option value="<?= $f['Fecha'] ?>" <?= ($fecha == $f['Fecha']) ? 'selected' : '' ?>>
                             <?= $f['Fecha'] ?>
                         </option>
                     <?php endforeach; ?>
@@ -180,36 +172,36 @@
                     <i class="fa fa-filter"></i> Filtrar
                 </button>
 
-                <a href="AsistenciaController.php?exportar=1<?= isset($_GET['fecha']) ? '&fecha=' . $_GET['fecha'] : '' ?>" class="btn-ghost">
+                <a href="AsistenciaController.php?exportar=1<?= $fecha ? "&fecha=$fecha" : '' ?><?= $cursoId ? "&curso=$cursoId" : '' ?>" 
+                   class="btn-ghost">
                     <i class="fa fa-file-csv"></i> CSV
                 </a>
 
             </form>
         </div>
 
-        <!-- Tabla -->
+        <!-- TABLA -->
         <div class="card-glass table-responsive">
             <table class="table table-borderless text-center">
                 <thead>
                     <tr>
                         <th>ID Estudiante</th>
-                        <th>Estudiante</th>
+                        <th>Nombre</th>
                         <th>Curso</th>
                         <th>Fecha</th>
-                        <th>Presente</th>
+                        <th>Asistencia</th>
                     </tr>
                 </thead>
                 <tbody>
+
                     <?php if (!empty($reporte)): ?>
                         <?php foreach ($reporte as $fila): ?>
                             <tr>
-                                <td><?= htmlspecialchars($fila['Id_Estudiante']) ?></td>
+                                <td><?= $fila['Id_Estudiante'] ?></td>
                                 <td><?= htmlspecialchars($fila['Estudiante']) ?></td>
                                 <td><?= htmlspecialchars($fila['Curso']) ?></td>
                                 <td><?= htmlspecialchars($fila['Fecha']) ?></td>
-                                <td>
-                                    <?= $fila['Presente'] ? 'Sí' : 'No' ?>
-                                </td>
+                                <td><?= $fila['Presente'] ? "Sí" : "No" ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -217,28 +209,12 @@
                             <td colspan="5">No hay registros disponibles</td>
                         </tr>
                     <?php endif; ?>
+
                 </tbody>
             </table>
         </div>
 
-        <!-- Paginación -->
-        <?php if (isset($totalPaginas) && $totalPaginas > 1): ?>
-            <nav class="mt-4">
-                <ul class="pagination justify-content-center">
-                    <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
-                        <li class="page-item <?= ($paginaActual == $i) ? 'active' : '' ?>">
-                            <a class="page-link" href="?pagina=<?= $i ?>">
-                                <?= $i ?>
-                            </a>
-                        </li>
-                    <?php endfor; ?>
-                </ul>
-            </nav>
-        <?php endif; ?>
-
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

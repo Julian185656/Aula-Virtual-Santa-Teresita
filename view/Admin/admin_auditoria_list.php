@@ -41,6 +41,7 @@ if ($search !== '') {
         OFFSET $offset ROWS FETCH NEXT $perPage ROWS ONLY
     ");
     $stmt->execute([$like, $like, $like]);
+
 } else {
     $total = $pdo->query("SELECT COUNT(*) FROM aulavirtual.auditoria_eventos")->fetchColumn();
 
@@ -74,126 +75,145 @@ $totalPages = ceil($total / $perPage);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auditoría - Administración</title>
+    <title>Auditoría del Sistema</title>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Fuente -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,600,700" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            font-weight: 300;
             font-size: 15px;
-            line-height: 1.7;
-            color: #c4c3ca;
-            padding: 40px 15px;
+            color: #ffffff;
+            padding: 40px 20px;
             background-color: #2a2b38;
             background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
             background-repeat: repeat;
             background-size: 600px;
-            background-position: center top;
-            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+        .container { 
+            max-width: 1300px; 
         }
 
-        h1 {
+        h2 {
             text-align: center;
+            font-weight: 700;
             margin-bottom: 30px;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.4);
         }
 
-        .search-form {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
+        /* Botón volver */
+        .btn-volver {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.35);
+            background: rgba(255,255,255,0.1);
+            color:#fff;
+            text-decoration:none;
+        }
+        .btn-volver:hover {
+            background: rgba(255,255,255,0.25);
+            color:#fff;
+        }
+
+        /* Glass Card */
+        .card-glass {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.20);
+            padding: 20px;
             margin-bottom: 25px;
         }
 
-        .search-form input[type="text"] {
-            padding: 10px 15px;
-            border-radius: 15px;
-            border: none;
-            min-width: 250px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
+        /* Buscador */
+        .search-form {
+            display:flex;
+            justify-content:center;
+            gap:10px;
+            flex-wrap:wrap;
+        }
+        .search-form input {
+            padding:10px 15px;
+            border-radius:12px;
+            background:rgba(255,255,255,0.1);
+            border:1px solid rgba(255,255,255,0.35);
+            color:#fff;
+            min-width: 280px;
+        }
+        .search-form button {
+            padding:10px 20px;
+            border-radius:12px;
+            border:1px solid rgba(255,255,255,0.35);
+            background:rgba(255,255,255,0.15);
+            color:#fff;
+            font-weight:600;
+        }
+        .search-form button:hover {
+            background:rgba(255,255,255,0.3);
         }
 
-        .search-form input::placeholder {
-            color: #ddd;
+        /* Tabla */
+        table { width:100%; font-size:14px; }
+        table th {
+            background:rgba(255,255,255,0.15);
+            font-weight:600;
+            color:#fff !important;
         }
-
-        .search-form button,
-        .search-form a {
-            padding: 10px 20px;
-            border-radius: 15px;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            color: #fff;
-            background: rgba(255, 255, 255, 0.15);
-            transition: 0.2s ease;
+        table td {
+            color:#fff !important;
+            vertical-align: middle;
         }
-
-        .search-form button:hover,
-        .search-form a:hover {
-            background: rgba(255, 255, 255, 0.35);
+        table tr:nth-child(even) {
+            background:rgba(255,255,255,0.06);
         }
-
-        .table-container {
-            overflow-x: auto;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 20px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-        }
-
-        table,
-        th,
-        td {
-            color: #fff !important;
-        }
-
         table tr:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background:rgba(255,255,255,0.12);
         }
 
-        .pagination a {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            margin: 0 3px;
+        /* Paginación */
+        .pagination .page-link {
+            background:rgba(255,255,255,0.1);
+            border:none;
+            color:#fff;
         }
-
-        .pagination a:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .pagination .page-item.active .page-link {
+            background:rgba(255,255,255,0.35);
+            color:#fff;
         }
     </style>
 </head>
 
 <body>
 
+    <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn-volver">
+        <i class="fa fa-arrow-left"></i> Volver
+    </a>
+
     <div class="container">
 
-        <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn btn-outline-light mb-3" style="border-radius:15px;">
-            <i class="bi bi-arrow-left-circle-fill"></i> Volver
-        </a>
+        <h2>Auditoría del Sistema</h2>
 
-        <h1>Auditoría del Sistema</h1>
+        <!-- Buscador -->
+        <div class="card-glass">
+            <form class="search-form" method="get">
+                <input type="text" name="q" placeholder="Buscar evento, correo o módulo" value="<?= htmlspecialchars($search) ?>">
+                <button type="submit"><i class="fa fa-search"></i> Buscar</button>
+            </form>
+        </div>
 
-        <form method="get" class="search-form">
-            <input type="text" name="q" placeholder="Buscar evento, correo o módulo"
-                value="<?= htmlspecialchars($search) ?>">
-            <button type="submit">Buscar</button>
-        </form>
-
-        <div class="table-container">
-            <table class="table table-borderless">
+        <!-- Tabla -->
+        <div class="card-glass table-responsive">
+            <table class="table table-borderless text-center">
                 <thead>
                     <tr>
                         <th>Fecha</th>
@@ -210,21 +230,23 @@ $totalPages = ceil($total / $perPage);
                     <?php foreach ($eventos as $e): ?>
                         <tr>
                             <td><?= $e['FechaLocal'] ?></td>
-                            <td><?= htmlspecialchars($e['Correo'] ?? '—') ?></td>
-                            <td><?= htmlspecialchars($e['Rol']) ?></td>
-                            <td><?= htmlspecialchars($e['Evento']) ?></td>
-                            <td><?= htmlspecialchars($e['Modulo']) ?></td>
-                            <td><?= htmlspecialchars($e['Descripcion']) ?></td>
-                            <td><?= htmlspecialchars($e['Resultado']) ?></td>
-                            <td><?= htmlspecialchars($e['Ip_Origen']) ?></td>
+                            <td><?= $e['Correo'] ?: '—' ?></td>
+                            <td><?= $e['Rol'] ?></td>
+                            <td><?= $e['Evento'] ?></td>
+                            <td><?= $e['Modulo'] ?></td>
+                            <td><?= $e['Descripcion'] ?></td>
+                            <td><?= $e['Resultado'] ?></td>
+                            <td><?= $e['Ip_Origen'] ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
 
+        <!-- Paginación -->
         <nav>
             <ul class="pagination justify-content-center mt-4">
+
                 <?php if ($page > 1): ?>
                     <li class="page-item">
                         <a class="page-link" href="?q=<?= urlencode($search) ?>&page=<?= $page - 1 ?>">Anterior</a>
@@ -242,11 +264,11 @@ $totalPages = ceil($total / $perPage);
                         <a class="page-link" href="?q=<?= urlencode($search) ?>&page=<?= $page + 1 ?>">Siguiente</a>
                     </li>
                 <?php endif; ?>
+
             </ul>
         </nav>
 
     </div>
 
 </body>
-
 </html>

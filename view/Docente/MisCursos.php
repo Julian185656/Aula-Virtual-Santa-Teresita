@@ -1,4 +1,4 @@
-<?php
+<?php 
 session_start();
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/CursoModel.php";
 
@@ -61,7 +61,7 @@ h1 {
 .cards-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 30px;
+    gap: 40px;
     justify-content: center;
 }
 
@@ -71,46 +71,43 @@ h1 {
     border-radius: 20px;
     border: 1px solid rgba(255,255,255,0.15);
     box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-    padding: 25px;
-    width: 320px;
+    padding: 35px;
+    width: 750px;
+    min-height: 250px;   /* REDUCIDO PARA QUITAR ESPACIO VACÍO */
+    
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 30px; /* SEPARACIÓN REAL ENTRE TÍTULO Y BOTONES */
 }
 
 .course-title {
-    font-size: 1.4rem;
+    font-size: 1.8rem;
     font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.course-desc {
-    font-size: 0.95rem;
-    opacity: 0.85;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
 }
 
 .course-actions {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    justify-content: space-between;
+    gap: 15px;
 }
 
 .action-btn {
     flex: 1;
     text-align: center;
-    padding: 10px;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.35);
+    padding: 14px;
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.25);
     background: rgba(255,255,255,0.12);
     color: #ffffff;
     text-decoration: none;
     transition: .2s;
-    font-size: 14px;
+    font-size: 15px;
 }
 
 .action-btn:hover {
-    background: rgba(255,255,255,0.28);
+    background: rgba(255,255,255,0.25);
     color: #ffffff;
 }
 
@@ -137,13 +134,8 @@ h1 {
             <?php foreach ($misCursos as $curso): ?>
                 <div class="course-card">
 
-                    <div>
-                        <div class="course-title">
-                            <?= htmlspecialchars($curso['nombre'] ?? 'Sin nombre') ?>
-                        </div>
-                        <div class="course-desc">
-                            <?= htmlspecialchars($curso['descripcion'] ?? 'Sin descripción') ?>
-                        </div>
+                    <div class="course-title">
+                        <?= htmlspecialchars($curso['nombre'] ?? 'Sin nombre') ?>
                     </div>
 
                     <div class="course-actions">

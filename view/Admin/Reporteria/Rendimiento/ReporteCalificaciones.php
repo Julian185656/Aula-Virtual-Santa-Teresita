@@ -56,7 +56,7 @@
             color: #ffffff;
         }
 
-        /* Tarjetas glass */
+        /* Tarjeta estilo Glass */
         .card-glass {
             background: rgba(255,255,255,0.06);
             backdrop-filter: blur(10px);
@@ -71,7 +71,7 @@
         .filter-form {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
@@ -81,6 +81,11 @@
             border-radius: 12px;
             color: #ffffff;
             padding: 10px 12px;
+            font-weight: 600;
+        }
+
+        .form-select option[value=""] {
+            font-weight: 700 !important;
         }
 
         /* Botones ghost */
@@ -113,20 +118,18 @@
         }
 
         .table thead th {
-            background: rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.15);
             font-weight: 600;
-            color: #ffffff !important;
         }
 
         .table tbody tr:nth-child(even) {
-            background: rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.05);
         }
 
         .table tbody tr:hover {
             background: rgba(255,255,255,0.15);
         }
 
-        /* Resaltar nombres de estudiantes */
         .table tbody td:first-child {
             font-weight: 600;
         }
@@ -156,12 +159,13 @@
 
         <!-- Filtros -->
         <div class="card-glass">
-            <form method="GET" class="filter-form">
+            <form method="GET" action="RendimientoController.php" class="filter-form">
 
                 <select name="curso" class="form-select">
                     <option value="">Todos los cursos</option>
                     <?php foreach ($cursos as $c): ?>
-                        <option value="<?= $c['Id_Curso'] ?>" <?= ($idCurso == $c['Id_Curso']) ? 'selected' : '' ?>>
+                        <option value="<?= $c['Id_Curso'] ?>"
+                                <?= ($idCurso == $c['Id_Curso']) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($c['Nombre']) ?>
                         </option>
                     <?php endforeach; ?>
@@ -195,23 +199,22 @@
                         <th>Fecha de Entrega</th>
                     </tr>
                 </thead>
+
                 <tbody>
-                    <?php if (!empty($reporte)): ?>
-                        <?php foreach ($reporte as $fila): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($fila['Estudiante']) ?></td>
-                                <td><?= htmlspecialchars($fila['Curso']) ?></td>
-                                <td><?= htmlspecialchars($fila['Docente']) ?></td>
-                                <td><?= number_format($fila['Calificacion'], 2) ?></td>
-                                <td><?= htmlspecialchars($fila['Comentario']) ?></td>
-                                <td><?= htmlspecialchars($fila['Fecha_Entrega']) ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
+                <?php if (!empty($reporte)): ?>
+                    <?php foreach ($reporte as $fila): ?>
                         <tr>
-                            <td colspan="6">No hay registros</td>
+                            <td><?= htmlspecialchars($fila['Estudiante']) ?></td>
+                            <td><?= htmlspecialchars($fila['Curso']) ?></td>
+                            <td><?= htmlspecialchars($fila['Docente']) ?></td>
+                            <td><?= number_format($fila['Calificacion'], 2) ?></td>
+                            <td><?= htmlspecialchars($fila['Comentario']) ?></td>
+                            <td><?= htmlspecialchars($fila['Fecha_Entrega']) ?></td>
                         </tr>
-                    <?php endif; ?>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr><td colspan="6">No hay registros</td></tr>
+                <?php endif; ?>
                 </tbody>
             </table>
         </div>
@@ -221,7 +224,7 @@
             <nav class="mt-4">
                 <ul class="pagination justify-content-center">
                     <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
-                        <li class="page-item <?= $paginaActual == $i ? 'active' : '' ?>">
+                        <li class="page-item <?= ($paginaActual == $i) ? 'active' : '' ?>">
                             <a class="page-link" href="?pagina=<?= $i ?>&curso=<?= $idCurso ?>">
                                 <?= $i ?>
                             </a>
