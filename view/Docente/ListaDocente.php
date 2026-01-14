@@ -11,13 +11,13 @@ if (!isset($_SESSION['id_usuario']) || $_SESSION['rol'] !== 'Docente') {
 
 $model = new AlumnoModel($pdo);
 $medModel = new MedicoModel($pdo);
+
 $docenteId = $_SESSION['id_usuario'];
 
 $limit = 10;
 $page = isset($_GET['page']) ? max((int)$_GET['page'], 1) : 1;
 $search = $_GET['search'] ?? '';
 $offset = ($page - 1) * $limit;
-
 
 $alumnos = $model->obtenerAlumnosDeDocentePaginado($docenteId, $limit, $offset, $search);
 $totalAlumnos = $model->contarAlumnos($docenteId, $search);
@@ -28,16 +28,17 @@ $totalPaginas = ceil($totalAlumnos / $limit);
 <head>
 <meta charset="UTF-8">
 <title>Alumnos Asignados</title>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
 <style>
 body{
     font-family: 'Poppins', sans-serif;
     font-weight: 300;
     font-size: 15px;
-    line-height: 1.7;
-    color: #c4c3ca;
+    color: #fff;
     padding: 40px 15px;
     background-color: #2a2b38;
     background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
@@ -47,258 +48,239 @@ body{
     overflow-x: hidden;
 }
 
+/* ==== TÍTULO ==== */
 h1 {
     text-align: center;
     margin-bottom: 30px;
+    font-weight: 600;
+    color: #fff;
     text-shadow: 0 2px 8px rgba(0,0,0,0.5);
 }
 
+/* ==== VOLVER ==== */
 .btn-volver {
     border-radius: 15px;
-    padding: 8px 18px;
+    padding: 10px 22px;
     text-decoration: none;
     color: #fff;
     background: rgba(255,255,255,0.15);
     transition: 0.2s;
+    font-weight: 500;
 }
-.btn-volver:hover {
-    background: rgba(255,255,255,0.35);
-}
+.btn-volver:hover { background: rgba(255,255,255,0.35); }
 
-.search-form {
+/* ==== BUSCADOR ==== */
+.search-wrapper {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
     margin-bottom: 25px;
 }
-.search-form input[type="text"] {
-    padding: 10px 15px;
-    border-radius: 15px;
+
+.search-wrapper input {
+    background: rgba(255,255,255,0.12);
     border: none;
-    min-width: 250px;
-    background: rgba(255,255,255,0.1);
+    padding: 13px;
+    width: 300px;
     color: #fff;
-}
-.search-form input[type="text"]::placeholder {
-    color: #ddd;
-}
-.search-form button {
-    padding: 10px 20px;
-    border-radius: 15px;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    color: #fff;
-    background: rgba(255,255,255,0.15);
-    transition: 0.2s ease;
-}
-.search-form button:hover {
-    background: rgba(255,255,255,0.35);
+    border-radius: 12px;
 }
 
+.search-wrapper input::placeholder { color: #ccc; }
+
+.search-wrapper button {
+    background: rgba(255,255,255,0.20);
+    border: none;
+    padding: 12px 18px;
+    border-radius: 12px;
+    color: #fff;
+    transition: .2s;
+}
+
+.search-wrapper button:hover { background: rgba(255,255,255,0.35); }
+
+/* ==== TABLA ==== */
 .table-container {
-    overflow-x: auto;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 20px;
+    max-width: 1100px;
+    margin: auto;
+    padding: 25px;
+    background: rgba(255,255,255,0.05);
     border-radius: 20px;
-    backdrop-filter: blur(10px);
     border: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(12px);
 }
 
-table, table thead th, table tbody td {
-    color: #fff !important;
-}
 table {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-}
-table thead {
-    background: rgba(255, 255, 255, 0.1);
-    text-align: left;
-    font-weight: bold;
-}
-table th, table td {
-    padding: 12px 15px;
-    vertical-align: middle;
-}
-table tr:nth-child(even) {
-    background: rgba(255,255,255,0.02);
-}
-table tr:hover {
-    background: rgba(255,255,255,0.1);
+    border-collapse: collapse;
+    color: #fff;
+    background: transparent !important;
 }
 
+table thead {
+    background: rgba(255,255,255,0.10);
+}
+
+table thead th {
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+table tbody tr {
+    background: rgba(255,255,255,0.03);
+    transition: .2s;
+}
+
+table tbody tr:nth-child(even) {
+    background: rgba(255,255,255,0.06);
+}
+
+table tbody tr:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+table td {
+    padding: 15px;
+}
+
+/* ==== BOTÓN ACCIONES ==== */
 .btn-info {
     border-radius: 50%;
-    width: 38px;
-    height: 38px;
-    padding: 0;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #6ec8ff;
+    border: none;
+    color: white;
 }
 
-.pagination a {
-    color: #fff;
-    background: rgba(255,255,255,0.1);
-    border: none;
-    margin: 0 3px;
-}
-.pagination a:hover {
-    background: rgba(255,255,255,0.3);
-}
-.pagination .active .page-link {
-    background: rgba(255,255,255,0.25);
+.btn-info:hover { background: #3ab4ff; }
+
+/* ==== PAGINACIÓN ==== */
+.pagination-container {
+    text-align: center;
+    margin-top: 15px;
 }
 
-.modal-header.bg-primary {
-    background-color: #0d6efd !important;
-}
-.modal-header.bg-success {
-    background-color: #198754 !important;
-}
-.modal-content {
-    background: rgba(255,255,255,0.05);
+.pagination a, .pagination span {
+    display: inline-block;
+    padding: 8px 14px;
+    background: rgba(255,255,255,0.2);
     color: #fff;
-    border-radius: 15px;
-    border: 1px solid rgba(255,255,255,0.25);
-    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    margin: 3px;
+    text-decoration: none;
 }
-.modal-body input, .modal-body textarea {
-    background: rgba(255,255,255,0.1);
-    border: none;
-    color: #fff;
-}
-.modal-body input::placeholder, .modal-body textarea::placeholder {
-    color: #ddd;
+
+.pagination .active {
+    background: rgba(255,255,255,0.45);
+    font-weight: bold;
 }
 </style>
-
 </head>
+
 <body>
 
-<div class="container">
-    <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn-volver mb-3">
+<div class="container text-center mb-4">
+    <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn-volver">
         <i class="bi bi-arrow-left-circle-fill"></i> Volver
     </a>
+</div>
 
-    <h1>Alumnos Asignados</h1>
+<h1><i class="fa-solid fa-users"></i> Alumnos Asignados</h1>
 
-
-    <form method="get" class="mb-3">
-        <input type="text" name="search" placeholder="Buscar por nombre" value="<?= htmlspecialchars($search) ?>">
-        <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+<!-- BUSCADOR -->
+<div class="search-wrapper">
+    <form method="get">
+        <input type="text" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Buscar estudiante...">
+        <button type="submit"><i class="bi bi-search"></i></button>
     </form>
+</div>
 
-    <?php if (empty($alumnos)): ?>
-        <div class="alert alert-warning text-center">No hay alumnos que coincidan.</div>
-    <?php else: ?>
-    <div class="table-container">
-        <table class="table table-borderless">
-            <thead>
-                <tr>
-                  
-                    <th>Nombre</th>
-                    <th>Correo</th>
-               
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($alumnos as $alumno): ?>
-                <tr>
-                    
-                    <td><?= htmlspecialchars($alumno['nombre']) ?></td>
-                    <td><?= htmlspecialchars($alumno['correo']) ?></td>
-                 
-                    <td>
-                   
+<!-- TABLA -->
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th style="text-align:center;">Acciones</th>
+            </tr>
+        </thead>
 
-                        <button class="btn btn-sm btn-info"
-                            data-bs-toggle="modal"
-                            data-bs-target="#medicoModal"
-                            data-id="<?= htmlspecialchars($alumno['id']) ?>"
-                            data-nombre="<?= htmlspecialchars($alumno['nombre']) ?>"
-                        ><i class="fas fa-notes-medical"></i></button>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+        <tbody>
+            <?php foreach ($alumnos as $alumno): ?>
+            <tr>
+                <td><?= htmlspecialchars($alumno['nombre']) ?></td>
+                <td><?= htmlspecialchars($alumno['correo']) ?></td>
+                <td style="text-align:center;">
+                    <button class="btn btn-info"
+                        data-bs-toggle="modal"
+                        data-bs-target="#medicoModal"
+                        data-id="<?= $alumno['id'] ?>">
+                        <i class="fas fa-notes-medical"></i>
+                    </button>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <!-- PAGINACIÓN -->
+    <div class="pagination-container">
+        <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+            <a class="<?= $i == $page ? 'active' : '' ?>" 
+               href="?page=<?= $i ?>&search=<?= urlencode($search) ?>">
+                <?= $i ?>
+            </a>
+        <?php endfor; ?>
     </div>
-
-
-    <nav>
-        <ul class="pagination justify-content-center mt-3">
-            <?php for($i=1; $i <= $totalPaginas; $i++): ?>
-                <li class="page-item <?= ($i === $page) ? 'active' : '' ?>">
-                    <a class="page-link" href="?page=<?= $i ?>&search=<?= urlencode($search) ?>"><?= $i ?></a>
-                </li>
-            <?php endfor; ?>
-        </ul>
-    </nav>
-
-    <?php endif; ?>
 </div>
 
 
-<div class="modal fade" id="perfilModal" tabindex="-1" aria-hidden="true">
+<!-- MODAL INFORMACIÓN MÉDICA -->
+<div class="modal fade" id="medicoModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title">Perfil del Estudiante</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <ul class="list-group">
-        
-          <li class="list-group-item"><strong>Nombre:</strong> <span id="modal-nombre"></span></li>
-          <li class="list-group-item"><strong>Correo:</strong> <span id="modal-correo"></span></li>
-        
-        </ul>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div class="modal fade" id="medicoModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header bg-success text-white">
+    <div class="modal-content" style="color:#fff;">
+      <div class="modal-header bg-success">
         <h5 class="modal-title">Información Médica</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
+
       <form id="form-medico">
         <div class="modal-body">
           <input type="hidden" id="medico-id" name="idEstudiante">
-          <div class="mb-3"><label>Numero de contacto</label><input type="text" class="form-control" id="alergias" name="alergias"></div>
-          <div class="mb-3"><label>Medicamentos</label><input type="text" class="form-control" id="medicamentos" name="medicamentos"></div>
-          <div class="mb-3"><label>Enfermedades Crónicas</label><input type="text" class="form-control" id="enfermedades" name="enfermedades"></div>
-          <div class="mb-3"><label>Observaciones</label><textarea class="form-control" id="observaciones" name="observaciones"></textarea></div>
+
+          <label>Contacto</label>
+          <input class="form-control mb-2" id="alergias" name="alergias">
+
+          <label>Medicamentos</label>
+          <input class="form-control mb-2" id="medicamentos" name="medicamentos">
+
+          <label>Enfermedades Crónicas</label>
+          <input class="form-control mb-2" id="enfermedades" name="enfermedades">
+
+          <label>Observaciones</label>
+          <textarea class="form-control" id="observaciones" name="observaciones"></textarea>
         </div>
+
         <div class="modal-footer">
           <button type="submit" class="btn btn-success">Guardar</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
         </div>
       </form>
+
     </div>
   </div>
 </div>
 
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-const perfilModal = document.getElementById('perfilModal');
-perfilModal.addEventListener('show.bs.modal', event => {
-    const b = event.relatedTarget;
-    
-    document.getElementById('modal-nombre').textContent = b.getAttribute('data-nombre');
-    document.getElementById('modal-correo').textContent = b.getAttribute('data-correo');
-    document.getElementById('modal-curso').textContent = b.getAttribute('data-curso');
-});
-
+// Cargar datos médicos en modal
 const medicoModal = document.getElementById('medicoModal');
 medicoModal.addEventListener('show.bs.modal', event => {
     const button = event.relatedTarget;
@@ -315,21 +297,18 @@ medicoModal.addEventListener('show.bs.modal', event => {
         });
 });
 
+// Guardar Info Médica
 document.getElementById('form-medico').addEventListener('submit', e => {
     e.preventDefault();
     const formData = new FormData(e.target);
+
     fetch('/Aula-Virtual-Santa-Teresita/controller/MedicoController.php', {
         method: 'POST',
         body: formData
     })
-    .then(res => res.json())
+    .then(r => r.json())
     .then(resp => {
-        if(resp.success){
-            alert('Información médica guardada.');
-            medicoModal.querySelector('.btn-close').click();
-        } else {
-            alert('Error al guardar: ' + (resp.msg || ''));
-        }
+        alert(resp.success ? "Información guardada." : "Error al guardar.");
     });
 });
 </script>
