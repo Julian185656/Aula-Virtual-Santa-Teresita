@@ -48,99 +48,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <style>
 body{
-    font-family: 'Poppins', sans-serif;
-    font-weight: 300;
-    font-size: 15px;
-    color: #c4c3ca;
-    margin: 0;
-    min-height: 100vh;
-    background-color: #2a2b38;
-    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
-    background-repeat: no-repeat;
-    background-size: 300%;
-    background-position: center;
+    font-family:'Poppins',sans-serif;
+    font-size:15px;
+    color:#c4c3ca;
+    min-height:100vh;
+    background:#2a2b38 url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
 }
 
-.form-box {
-    max-width: 600px;
-    margin: 70px auto;
-    padding: 35px;
-    border-radius: 25px;
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-    text-align: center;
-    color: #fff;
+.form-box{
+    max-width:600px;
+    margin:70px auto;
+    padding:35px;
+    border-radius:25px;
+    background:rgba(255,255,255,.05);
+    backdrop-filter:blur(10px);
+    box-shadow:0 8px 30px rgba(0,0,0,.3);
+    color:#fff;
+    text-align:center;
 }
 
-h3 { font-weight: 600; margin-bottom: 20px; }
-label { color: #e0e0e0; font-weight: 500; }
-.form-control {
-    background: rgba(255,255,255,0.08);
-    border: none;
-    color: white;
-}
-.form-control:focus {
-    background: rgba(255,255,255,0.12);
-    box-shadow: 0 0 10px #6a5acd;
-    color: white;
-}
-.btn-crear {
-    background-color: #d5deffff;
-    border: none;
-    padding: 12px;
-    border-radius: 10px;
-    font-weight: bold;
-}
-.btn-crear:hover {
-    background-color: #59ac44ff;
-}
-.volver-btn { margin-top: 15px; border-radius: 10px; }
+h3{font-weight:600;margin-bottom:20px;}
 
-/* Modal estilo Usuario Lista */
-.modal-backdrop.show {
-    opacity: 0.5 !important; /* igual que Usuario Lista */
+label{color:#e0e0e0;font-weight:500;}
+
+.form-control{
+    background:rgba(255,255,255,.08);
+    border:none;
+    color:#fff;
+}
+.form-control:focus{
+    background:rgba(255,255,255,.12);
+    box-shadow:none;
+    color:#fff;
 }
 
-.modal-content {
-    background: rgba(30,30,40,0.95);
-    color: white;
-    border-radius: 20px;
-    padding: 20px;
+.btn-crear{
+    background:#d5deff;
+    border:none;
+    padding:12px;
+    border-radius:10px;
+    font-weight:600;
+}
+.btn-crear:hover{
+    background:#59ac44;
 }
 
-.modal-header {
-    border-bottom: none;
-    font-weight: 600;
+.volver-btn{
+    margin-top:15px;
+    border-radius:10px;
 }
 
-.modal-footer {
-    border-top: none;
+/* ===== MODAL OSCURO (IGUAL AL DE USUARIOS) ===== */
+.modal-backdrop.show{
+    opacity:.6;
 }
 
-.btn-confirm {
-    border-radius: 12px;
-    padding: 10px 20px;
-    font-weight: 600;
+.modal-dark{
+    background:#343a40;
+    color:#fff;
+    border-radius:8px;
 }
-.btn-confirm.btn-cancel {
-    background: #6c757d;
-    color: white;
-    border: none;
+
+.modal-dark .modal-header{
+    border-bottom:1px solid #495057;
 }
-.btn-confirm.btn-confirmar {
-    background: #28a745;
-    color: white;
-    border: none;
+
+.modal-dark .modal-footer{
+    border-top:1px solid #495057;
 }
-.btn-confirm.btn-cancel:hover {
-    background: #5c636a;
-}
-.btn-confirm.btn-confirmar:hover {
-    background: #218838;
+
+.modal-dark .modal-body{
+    color:#e0e0e0;
 }
 </style>
 </head>
+
 <body>
 
 <div class="form-box">
@@ -152,54 +134,76 @@ label { color: #e0e0e0; font-weight: 500; }
 
     <form id="crearTareaForm" method="POST">
         <div class="mb-3 text-start">
-            <label for="titulo" class="form-label">Título de la Tarea</label>
-            <input type="text" name="titulo" id="titulo" class="form-control" required>
+            <label>Título de la Tarea</label>
+            <input type="text" name="titulo" class="form-control" required>
         </div>
 
         <div class="mb-3 text-start">
-            <label for="descripcion" class="form-label">Descripción</label>
-            <textarea name="descripcion" id="descripcion" class="form-control" rows="4"></textarea>
+            <label>Descripción</label>
+            <textarea name="descripcion" class="form-control" rows="4"></textarea>
         </div>
 
         <div class="mb-3 text-start">
-            <label for="fecha_entrega" class="form-label">Fecha de Entrega</label>
-            <input type="date" name="fecha_entrega" id="fecha_entrega" class="form-control" required>
+            <label>Fecha de Entrega</label>
+            <input type="date" name="fecha_entrega" class="form-control" required>
         </div>
 
-        <button type="button" class="btn btn-crear w-100" data-bs-toggle="modal" data-bs-target="#confirmModal">
+        <button type="button"
+                class="btn btn-crear w-100"
+                onclick="abrirConfirmacion()">
             Crear Tarea
         </button>
     </form>
 
-    <a href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php" class="btn btn-secondary volver-btn w-100">
+    <a href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php"
+       class="btn btn-secondary volver-btn w-100">
         Volver a Mis Cursos
     </a>
 </div>
 
-<!-- Modal de confirmación -->
-<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+<!-- MODAL CONFIRMACIÓN (MISMO QUE USUARIOS) -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
+    <div class="modal-content modal-dark">
+
       <div class="modal-header">
         <h5 class="modal-title">Confirmar acción</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
+
       <div class="modal-body">
-        ¿Estás seguro que quieres crear esta tarea?
+        ¿Estás seguro que deseas crear esta tarea?
       </div>
+
       <div class="modal-footer">
-        <button type="button" class="btn btn-confirm btn-cancel" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-confirm btn-confirmar" id="confirmCreate">Confirmar</button>
+        <button type="button"
+                class="btn btn-outline-light"
+                data-bs-dismiss="modal">
+            Cancelar
+        </button>
+        <button type="button"
+                class="btn btn-danger"
+                onclick="confirmarEnvio()">
+            Confirmar
+        </button>
       </div>
+
     </div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-document.getElementById('confirmCreate').addEventListener('click', function() {
+let modalConfirm;
+
+function abrirConfirmacion(){
+    modalConfirm = new bootstrap.Modal(document.getElementById('confirmModal'));
+    modalConfirm.show();
+}
+
+function confirmarEnvio(){
     document.getElementById('crearTareaForm').submit();
-});
+}
 </script>
 
 </body>
