@@ -12,13 +12,11 @@ if (!isset($_SESSION['id_usuario']) || strtolower($_SESSION['rol']) !== 'docente
 $docenteId = $_SESSION['id_usuario'];
 $cursoId = $_GET['idCurso'] ?? 0;
 
-if (!$cursoId) {
-    die("Curso no válido");
-}
+if (!$cursoId) die("Curso no válido");
 
 // ELIMINAR ENCUESTA
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['eliminarId'])) {
-    $encuestaId = intval($_POST['eliminarId']);
+if (isset($_GET['eliminar'])) {
+    $encuestaId = intval($_GET['eliminar']);
     EncuestaModel::eliminarEncuesta($encuestaId);
     header("Location: EncuestasCurso.php?idCurso=$cursoId");
     exit();
@@ -37,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['titulo'])) {
 // Obtener encuestas del curso
 $encuestas = EncuestaModel::obtenerEncuestasCurso($cursoId);
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -61,9 +60,7 @@ body{
     overflow-x: hidden;
 }
 
-.container {
-    max-width: 900px;
-}
+.container { max-width: 900px; }
 
 /* Tarjeta glass */
 .card {
@@ -90,18 +87,14 @@ body{
     color: white;
     border: none;
 }
-.btn-custom:hover {
-    background: rgba(255,255,255,0.3);
-}
+.btn-custom:hover { background: rgba(255,255,255,0.3); }
 
 .list-group-item {
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.15);
     color: #fff;
 }
-.list-group-item:hover {
-    background: rgba(255,255,255,0.15);
-}
+.list-group-item:hover { background: rgba(255,255,255,0.15); }
 
 .input-custom {
     background: rgba(255,255,255,0.15);
@@ -109,23 +102,18 @@ body{
     border: none;
     color: #fff;
 }
-.input-custom::placeholder {
-    color: #ddd;
-}
+.input-custom::placeholder { color: #ddd; }
 
 .btn-action {
     border-radius: 10px;
     margin-left: 5px;
     border: 1px solid rgba(255,255,255,0.3);
 }
-.btn-action:hover {
-    background: rgba(255,255,255,0.3);
-}
+.btn-action:hover { background: rgba(255,255,255,0.3); }
 </style>
 </head>
 
 <body>
-
 <div class="container">
 
     <a href="/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php"
@@ -135,7 +123,7 @@ body{
 
     <h1 class="text-center text-white mb-4">Encuestas del Curso</h1>
 
-   
+    <!-- Crear nueva encuesta -->
     <div class="card">
         <div class="card-header">
             <i class="bi bi-plus-circle"></i> Crear nueva encuesta
@@ -144,7 +132,6 @@ body{
             <form method="post" class="d-flex gap-3 flex-wrap">
                 <input type="text" name="titulo" class="form-control input-custom"
                        placeholder="Título de la nueva encuesta" required>
-
                 <button type="submit" class="btn btn-custom">
                     <i class="bi bi-plus-circle-fill"></i> Crear
                 </button>
@@ -152,59 +139,78 @@ body{
         </div>
     </div>
 
-  
+    <!-- Lista de encuestas -->
     <div class="card">
         <div class="card-header">
             <i class="bi bi-list-task"></i> Encuestas creadas
         </div>
         <div class="card-body">
-
             <?php if (!empty($encuestas)): ?>
                 <ul class="list-group">
+                    <?php foreach ($encuestas as $encuesta): ?>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <?= htmlspecialchars($encuesta['Titulo']) ?>
+                            <div class="d-flex">
 
-                <?php foreach ($encuestas as $encuesta): ?>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="PreguntasEncuesta.php?idEncuesta=<?= $encuesta['Id_Encuesta'] ?>" 
+                                   class="btn btn-primary btn-sm btn-action">
+                                    <i class="bi bi-pencil-square"></i> Preguntas
+                                </a>
 
-                        <?= htmlspecialchars($encuesta['Titulo']) ?>
+                                <a href="ResultadosEncuesta.php?idEncuesta=<?= $encuesta['Id_Encuesta'] ?>" 
+                                   class="btn btn-info btn-sm btn-action">
+                                    <i class="bi bi-bar-chart-fill"></i> Resultados
+                                </a>
 
-                        <div class="d-flex">
-
-                            <a href="PreguntasEncuesta.php?idEncuesta=<?= $encuesta['Id_Encuesta'] ?>" 
-                               class="btn btn-primary btn-sm btn-action">
-                                <i class="bi bi-pencil-square"></i> Preguntas
-                            </a>
-
-                            <a href="ResultadosEncuesta.php?idEncuesta=<?= $encuesta['Id_Encuesta'] ?>" 
-                               class="btn btn-info btn-sm btn-action">
-                                <i class="bi bi-bar-chart-fill"></i> Resultados
-                            </a>
-
-                            <form method="post" style="display:inline;"
-                                  onsubmit="return confirm('¿Seguro que deseas eliminar esta encuesta?');">
-                                <input type="hidden" name="eliminarId" value="<?= $encuesta['Id_Encuesta'] ?>">
-                                <button type="submit" class="btn btn-danger btn-sm btn-action">
+                                <!-- Botón eliminar que abre modal -->
+                                <button type="button" class="btn btn-danger btn-sm btn-action" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#confirmModal"
+                                        data-id="<?= $encuesta['Id_Encuesta'] ?>">
                                     <i class="bi bi-trash-fill"></i> Eliminar
                                 </button>
-                            </form>
 
-                        </div>
-
-                    </li>
-                <?php endforeach; ?>
-
+                            </div>
+                        </li>
+                    <?php endforeach; ?>
                 </ul>
-
             <?php else: ?>
-
                 <p class="text-center mt-3" style="color:#fff;">No hay encuestas creadas aún.</p>
-
             <?php endif; ?>
-
         </div>
     </div>
+</div>
 
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-white">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmar Eliminación</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro que deseas eliminar esta encuesta?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <a href="#" class="btn btn-danger" id="modalConfirmDelete">Eliminar</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Configurar modal para eliminar encuesta
+var confirmModal = document.getElementById('confirmModal');
+confirmModal.addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget;
+    var encuestaId = button.getAttribute('data-id');
+    var deleteBtn = document.getElementById('modalConfirmDelete');
+    deleteBtn.href = 'EncuestasCurso.php?idCurso=<?= $cursoId ?>&eliminar=' + encuestaId;
+});
+</script>
+
 </body>
 </html>
