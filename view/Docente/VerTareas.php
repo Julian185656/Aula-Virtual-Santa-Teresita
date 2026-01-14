@@ -19,10 +19,11 @@ $cursoNombre = $curso['Nombre'];
 $tareaModel = new TareaModel($pdo);
 $tareas = $tareaModel->obtenerTareasPorCurso($cursoId);
 
-// Eliminar tarea mediante GET como antes
+// Proceso de eliminación
 if (isset($_GET['eliminar'])) {
     $idTarea = (int)$_GET['eliminar'];
     $tareaModel->eliminarTarea($idTarea);
+    // Redirigir para evitar reenvío de GET
     header("Location: VerTareas.php?id=" . $cursoId);
     exit();
 }
@@ -33,8 +34,9 @@ if (isset($_GET['eliminar'])) {
 <head>
 <meta charset="UTF-8">
 <title>Tareas de <?= htmlspecialchars($cursoNombre) ?></title>
-<link href="/Aula-Virtual-Santa-Teresita/view/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
 <style>
 body{
@@ -58,12 +60,16 @@ h2{
     color: white;
 }
 
+.container{
+    padding: 0;
+}
+
 .card-glass{
     background: rgba(255,255,255,0.06);
     backdrop-filter: blur(10px);
     border-radius: 18px;
     padding: 20px;
-    margin-bottom: 25px;
+    margin: 15px 0;
     box-shadow: 0 8px 25px rgba(0,0,0,0.25);
     color: #fff;
 }
@@ -79,6 +85,7 @@ h2{
     margin-left: 8px;
     text-decoration: none;
     border: none;
+    cursor: pointer;
 }
 
 .btn-edit{ background-color: #4a6cf7; }
@@ -112,21 +119,23 @@ h2{
                     <p><?= htmlspecialchars($tarea['Descripcion']) ?></p>
                     <small>Entrega: <?= htmlspecialchars($tarea['Fecha_Entrega']) ?></small>
                 </div>
+
                 <div>
-                    <!-- Editar -->
-                    <a class="btn-icon btn-edit" href="EditarTarea.php?id=<?= (int)$tarea['Id_Tarea'] ?>">
+                    <a class="btn-icon btn-edit"
+                       href="EditarTarea.php?id=<?= (int)$tarea['Id_Tarea'] ?>">
                         <i class="fas fa-edit"></i>
                     </a>
 
-                    <!-- Eliminar con confirm() de JS -->
-                    <a class="btn-icon btn-delete"
-                       href="VerTareas.php?id=<?= (int)$cursoId ?>&eliminar=<?= (int)$tarea['Id_Tarea'] ?>"
-                       onclick="return confirm('¿Eliminar esta tarea?')">
+                    <!-- Botón eliminar que abre modal -->
+                    <button class="btn-icon btn-delete" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#confirmModal" 
+                            data-id="<?= (int)$tarea['Id_Tarea'] ?>">
                         <i class="fas fa-trash"></i>
-                    </a>
+                    </button>
 
-                    <!-- Evaluar -->
-                    <a class="btn-icon btn-eval" href="/Aula-Virtual-Santa-Teresita/view/Docente/EvaluarTarea.php?idTarea=<?= (int)$tarea['Id_Tarea'] ?>&idCurso=<?= (int)$cursoId ?>">
+                    <a class="btn-icon btn-eval"
+                       href="/Aula-Virtual-Santa-Teresita/view/Docente/EvaluarTarea.php?idTarea=<?= (int)$tarea['Id_Tarea'] ?>&idCurso=<?= (int)$cursoId ?>">
                         <i class="fas fa-clipboard-check"></i>
                     </a>
                 </div>
@@ -146,6 +155,36 @@ h2{
 </div>
 </div>
 
-<script src="/Aula-Virtual-Santa-Teresita/view/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark text-white">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmar Eliminación</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro que deseas eliminar esta tarea?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <a href="#" class="btn btn-danger" id="modalConfirmDelete">Eliminar</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Configurar modal para eliminar tarea
+var confirmModal = document.getElementById('confirmModal');
+confirmModal.addEventListener('show.bs.modal', function (event) {
+    var button = event.relatedTarget;
+    var tareaId = button.getAttribute('data-id');
+    var deleteBtn = document.getElementById('modalConfirmDelete');
+    deleteBtn.href = 'VerTareas.php?id=<?= (int)$cursoId ?>&eliminar=' + tareaId;
+});
+</script>
+
 </body>
 </html>
