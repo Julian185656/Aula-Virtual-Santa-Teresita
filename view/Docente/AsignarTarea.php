@@ -55,6 +55,15 @@ body{
     background:#2a2b38 url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
 }
 
+
+
+#confirmModal .modal-header,
+#confirmModal .modal-footer {
+    border: none;
+}
+
+
+
 .form-box{
     max-width:600px;
     margin:70px auto;
@@ -98,7 +107,7 @@ label{color:#e0e0e0;font-weight:500;}
     border-radius:10px;
 }
 
-/* ===== MODAL OSCURO (IGUAL AL DE USUARIOS) ===== */
+
 .modal-backdrop.show{
     opacity:.6;
 }

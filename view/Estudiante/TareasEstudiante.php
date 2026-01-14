@@ -70,6 +70,13 @@ body{
 }
 h2{color:#fff;text-align:center;margin-bottom:30px;}
 
+
+#confirmModal .modal-header,
+#confirmModal .modal-footer {
+    border: none;
+}
+
+
 .card{
     background:rgba(255,255,255,.05);
     backdrop-filter:blur(10px);

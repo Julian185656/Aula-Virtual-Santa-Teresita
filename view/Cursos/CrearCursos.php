@@ -11,121 +11,130 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['crearCurso'])) {
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Crear Curso</title>
 
-
-<link href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <style>
+  body {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 300;
+        font-size: 15px;
+        line-height: 1.7;
+        color: #c4c3ca;
+        padding: 40px 15px;
+        background-color: #2a2b38;
+        background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+    }
 
-
-body{
-    font-family: 'Montserrat', sans-serif !important;
-    font-weight: 300;
-    font-size: 15px;
-    line-height: 1.7;
-    color: #c4c3ca;
-    padding: 40px 15px;
-text-align: center;
-    background-color: #2a2b38;
-    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
-    
-    background-repeat: repeat;       
-    background-size: 600px;         
-    background-position: center top;
-
-    overflow-x: hidden;
+.card-container{
+    max-width:500px;
+    margin:auto;
+    background:rgba(255,255,255,.07);
+    padding:35px;
+    border-radius:20px;
 }
 
-
-
-
-.card-wrapper {
-    max-width: 650px;
-    margin: 0 auto;
-    background: rgba(255,255,255,0.08);
-    border-radius: 20px;
-    padding: 35px;
-    border: 1px solid rgba(255,255,255,0.18);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.35);
-    text-align: center;
+.form-style{
+    width:100%;
+    padding:12px;
+    background:rgba(255,255,255,.12);
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,.25);
+    color:#fff;
+    margin-bottom:15px;
 }
 
-/* Inputs */
-.card-glass input,
-.card-glass textarea {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border-radius: 15px;
-    border: none;
-    background: rgba(255,255,255,0.12);
-    color: #fff;
-}
-.card-glass input::placeholder,
-.card-glass textarea::placeholder {
-    color: #ddd;
+textarea.form-style{
+    resize:none;
 }
 
-
-.card-glass button {
-    width: 100%;
-    padding: 12px;
-    border-radius: 15px;
-    border: none;
-    background: rgba(255,255,255,0.15);
-    color: #fff;
-    font-weight: bold;
-    transition: 0.2s ease;
-}
-.card-glass button:hover {
-    background: rgba(255,255,255,0.35);
+.btn-custom,.btn-back{
+    width:100%;
+    padding:12px;
+    border-radius:12px;
+    background:rgba(255,255,255,.12);
+    color:#fff;
+    border:1px solid rgba(255,255,255,.35);
 }
 
-
-.volver-btn {
-    display: inline-block;
-    background: rgba(255,255,255,0.15);
-    padding: 10px 20px;
-    border-radius: 15px;
-    color: #fff;
-    text-decoration: none;
-    margin-top: 30px;
-    transition: 0.2s;
+.btn-back{
+    display:block;
+    text-align:center;
+    margin-top:10px;
 }
-.volver-btn:hover {
-    background: rgba(255,255,255,0.35);
+
+/* MODAL — MISMO ESTILO QUE ADMIN */
+.modal-content{
+    background:#343a40;
+    color:#fff;
+    border-radius:18px;
+}
+.modal-header,
+.modal-footer{
+    border:none;
 }
 </style>
 </head>
 
 <body>
 
-<h1 style="margin-bottom: 20px;">
-    <i class="bi bi-journal-plus" style="font-size:40px;"></i><br>
-    Crear Curso
+<div class="card-container">
+<h1 class="text-center mb-4">
+<i class="bi bi-journal-plus"></i><br>
+Crear Curso
 </h1>
 
-<div class="card-glass">
+<form id="formCrearCurso" method="POST">
+    <input type="text" name="nombre" class="form-style" placeholder="Nombre del curso" required>
 
-    <form method="POST">
-        <input type="text" name="nombre" placeholder="Nombre del curso" required>
-        <textarea name="descripcion" rows="3" placeholder="Descripción del curso" required></textarea>
+    <textarea name="descripcion" rows="3" class="form-style" placeholder="Descripción del curso" required></textarea>
 
-        <button type="submit" name="crearCurso">
-            Crear Curso
-        </button>
-    </form>
+    <!-- 🔥 BOTÓN FALSO -->
+    <button type="button" class="btn-custom" data-toggle="modal" data-target="#confirmModal">
+        Crear Curso
+    </button>
 
+    <a href="../Home/Home.php" class="btn-back">
+        Volver
+    </a>
+
+    <input type="hidden" name="crearCurso" value="1">
+</form>
 </div>
 
+<!-- 🔥 CAJA DE CONFIRMACIÓN -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content">
 
-<a href="../Home/Home.php" class="volver-btn">
-    <i class="bi bi-arrow-left-circle-fill"></i> Volver
-</a>
+    <div class="modal-header">
+        <h5 class="modal-title">Confirmar acción</h5>
+        <button class="close text-white" data-dismiss="modal">&times;</button>
+    </div>
+
+    <div class="modal-body">
+        ¿Estás seguro de que deseas crear este curso?
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-outline-light" data-dismiss="modal">
+            Cancelar
+        </button>
+
+        <!-- ✅ SUBMIT REAL -->
+        <button class="btn btn-danger" onclick="document.getElementById('formCrearCurso').submit()">
+            Confirmar
+        </button>
+    </div>
+
+</div>
+</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

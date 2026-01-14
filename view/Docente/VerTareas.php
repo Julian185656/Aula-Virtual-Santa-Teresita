@@ -53,6 +53,16 @@ body{
     background-position: center;
 }
 
+
+
+#confirmModal .modal-header,
+#confirmModal .modal-footer {
+    border: none;
+}
+
+
+
+
 h2{
     font-weight: 600;
     text-align: center;
@@ -102,17 +112,6 @@ h2{
     padding: 12px;
     margin-top: 10px;
 }
-
-
-
-
-.modal-content {
-    background: rgba(30, 30, 45, 0.95) !important;
-    backdrop-filter: blur(12px);
-    border-radius: 18px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-}
-
 </style>
 </head>
 <body>

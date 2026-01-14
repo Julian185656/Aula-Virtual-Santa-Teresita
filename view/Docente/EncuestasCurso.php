@@ -60,6 +60,15 @@ body{
     overflow-x: hidden;
 }
 
+
+#confirmModal .modal-header,
+#confirmModal .modal-footer {
+    border: none;
+}
+
+
+
+
 .container { max-width: 900px; }
 
 /* Tarjeta glass */
