@@ -31,12 +31,46 @@ $estados = ['Activo', 'Inactivo'];
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <style>
-body{
-    font-family:'Poppins',sans-serif;
-    background:#2a2b38;
-    color:#fff;
-    padding:40px;
+
+
+
+/* MODAL — MISMO ESTILO QUE ADMIN */
+/* === MODAL IGUAL AL DE USUARIOS === */
+.modal-content {
+    background: rgba(29,30,40,0.95) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    border-radius: 20px !important;
+    box-shadow: none !important;
 }
+
+.modal-header,
+.modal-footer {
+    border: none !important;
+}
+
+.modal-body {
+    font-size: 1rem;
+    opacity: 0.95;
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+.modal-footer .btn {
+    border-radius: 12px;
+}
+
+ body {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 300;
+        font-size: 15px;
+        line-height: 1.7;
+        color: #c4c3ca;
+        padding: 40px 15px;
+        background-color: #2a2b38;
+        background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+    }
 .card-container{
     max-width:500px;
     margin:auto;

@@ -62,6 +62,39 @@ $tareas = TareaModel::obtenerTareasEstudiante($idUsuario, $idCurso);
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
 <style>
+
+
+
+.modal-content {
+    background: rgba(29,30,40,0.95) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    border-radius: 20px !important;
+    box-shadow: none !important;
+}
+
+.modal-header,
+.modal-footer {
+    border: none !important;
+}
+
+.modal-body {
+    font-size: 1rem;
+    opacity: 0.95;
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+.modal-footer .btn {
+    border-radius: 12px;
+}
+
+
+
+
+
+
 body{
     font-family:'Poppins',sans-serif;
     background:#2a2b38 url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg') repeat;

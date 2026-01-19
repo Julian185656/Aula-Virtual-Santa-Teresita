@@ -9,41 +9,43 @@ if (!isset($_SESSION['id_usuario'])) {
 $idUsuario = $_SESSION['id_usuario'];
 $idCurso = $_GET['idCurso'] ?? null;
 
-if (!$idCurso) {
-    die("<h3>Error: No se recibió el curso.</h3>");
-}
-
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/EncuestaModel.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/PreguntaModel.php";
 
-$encuesta = EncuestaModel::obtenerEncuestaPorCurso($idCurso);
-if (!$encuesta) {
-    die("<h3>No hay encuesta disponible para este curso.</h3>");
+/* ===== FLAGS ===== */
+$sinEncuesta = false;
+$mostrarMensajeRespondido = false;
+$yaRespondioAntes = false;
+
+if (!$idCurso) {
+    $sinEncuesta = true;
+} else {
+    $encuesta = EncuestaModel::obtenerEncuestaPorCurso($idCurso);
+
+    if (!$encuesta) {
+        $sinEncuesta = true;
+    } else {
+        $idEncuesta = $encuesta["Id_Encuesta"];
+        $yaRespondioAntes = EncuestaModel::usuarioYaRespondio($idEncuesta, $idUsuario);
+        $preguntas = PreguntaModel::obtenerPreguntasPorEncuesta($idEncuesta);
+    }
 }
 
-$idEncuesta = $encuesta["Id_Encuesta"];
-$yaRespondio = EncuestaModel::usuarioYaRespondio($idEncuesta, $idUsuario);
-
-if ($yaRespondio) {
-    header("Location: /Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php");
-    exit();
-}
-
-$preguntas = PreguntaModel::obtenerPreguntasPorEncuesta($idEncuesta);
-$errors = [];
-
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+/* ===== GUARDAR RESPUESTAS ===== */
+if ($_SERVER["REQUEST_METHOD"] === "POST" && !$sinEncuesta && !$yaRespondioAntes) {
     foreach ($preguntas as $p) {
-        $idPregunta = $p["Id_Pregunta"];
-        $campo = "pregunta_$idPregunta";
+        $campo = "pregunta_" . $p["Id_Pregunta"];
         $respuesta = trim($_POST[$campo] ?? "");
 
         if ($respuesta !== "") {
-            EncuestaModel::guardarRespuesta($idPregunta, $idUsuario, $respuesta);
+            EncuestaModel::guardarRespuesta(
+                $p["Id_Pregunta"],
+                $idUsuario,
+                $respuesta
+            );
         }
     }
-    header("Location: /Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php");
-    exit();
+    $mostrarMensajeRespondido = true;
 }
 ?>
 <!DOCTYPE html>
@@ -56,28 +58,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 
 <style>
-/* ===== TU CSS ORIGINAL (NO TOCADO) ===== */
 :root{
     --bg:#2a2b38;
     --card-bg: rgba(255,255,255,0.06);
     --card-border: rgba(255,255,255,0.18);
     --input-bg: rgba(255,255,255,0.10);
-    --accent: #0d6efd;
 }
-
 body{
     font-family:'Poppins',sans-serif;
-    font-weight:300;
-    font-size:15px;
     color:#c4c3ca;
-    margin:0;
     background-color:var(--bg);
     background-image:url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
     padding:40px 15px;
 }
-
 .page{max-width:760px;margin:auto;}
-
 .card-glass{
     background:var(--card-bg);
     border:1px solid var(--card-border);
@@ -86,33 +80,21 @@ body{
     backdrop-filter:blur(10px);
     box-shadow:0 10px 30px rgba(0,0,0,0.35);
 }
-
-h2.title{
-    color:#fff;
-    text-align:center;
-    font-weight:600;
-}
-
-.subtitulo{text-align:center;color:#dbe3ff;margin-bottom:18px;}
-
-.form-label{color:#ffffffd1;font-weight:500;}
+h2{color:#fff;text-align:center;font-weight:600;}
+p{text-align:center;}
 .form-control{
     background:var(--input-bg);
-    border:1px solid rgba(255,255,255,0.12);
-    color:#fff;
     border-radius:12px;
-}
-
-.btn-enviar{
-    background:rgba(255,255,255,0.16);
     color:#fff;
+}
+.btn-main{
+    background:rgba(255,255,255,0.18);
     border-radius:12px;
     padding:10px;
-    border:1px solid rgba(255,255,255,0.12);
-    font-weight:600;
+    color:#fff;
+    border:none;
+    text-decoration:none;
 }
-
-/* ===== SOLO CONFIRMACIÓN ===== */
 .confirm-overlay{
     position:fixed;
     inset:0;
@@ -129,56 +111,59 @@ h2.title{
     text-align:center;
     color:#fff;
     max-width:420px;
-    width:100%;
-}
-.confirm-actions{
-    display:flex;
-    gap:10px;
-    margin-top:20px;
-}
-.btn-cancelar{
-    flex:1;
-    background:#6c757d;
-    border:none;
-    border-radius:10px;
-    padding:10px;
-    color:#fff;
-}
-.btn-confirmar{
-    flex:1;
-    background:#28a745;
-    border:none;
-    border-radius:10px;
-    padding:10px;
-    color:#fff;
 }
 </style>
 </head>
 
 <body>
-
 <div class="page">
 <div class="card-glass">
 
-<h2 class="title"><?= htmlspecialchars($encuesta["Titulo"]) ?></h2>
-<p class="subtitulo">Responde las preguntas para ayudar a mejorar el curso</p>
+<?php if ($sinEncuesta): ?>
 
-<form method="POST" id="formEncuesta">
-<?php foreach ($preguntas as $p): ?>
-<div class="mb-3">
-    <label class="form-label"><?= htmlspecialchars($p["Pregunta"]) ?></label>
-    <input type="text"
-           name="pregunta_<?= $p["Id_Pregunta"] ?>"
-           class="form-control"
-           required>
-</div>
-<?php endforeach; ?>
+    <h2>No hay encuesta disponible</h2>
+    <p class="mt-3">Este curso no tiene una encuesta activa.</p>
+    <a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php"
+       class="btn-main w-100 text-center d-block mt-4">
+        Volver a mis cursos
+    </a>
 
-<!-- SOLO CAMBIO: type=button -->
-<button type="button" class="btn-enviar w-100" onclick="abrirConfirmacion()">
-    Enviar respuestas
-</button>
-</form>
+<?php elseif ($yaRespondioAntes || $mostrarMensajeRespondido): ?>
+
+    <h2>¡Encuesta respondida!</h2>
+    <p class="mt-3">
+        Ya has respondido esta encuesta.<br>
+        ¡Gracias por tu participación!
+    </p>
+    <a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php"
+       class="btn-main w-100 text-center d-block mt-4">
+        Volver a mis cursos
+    </a>
+
+<?php else: ?>
+
+    <h2><?= htmlspecialchars($encuesta["Titulo"]) ?></h2>
+    <p>Responde las preguntas para mejorar el curso</p>
+
+    <form method="POST" id="formEncuesta">
+        <?php foreach ($preguntas as $p): ?>
+            <div class="mb-3">
+                <label class="form-label text-white">
+                    <?= htmlspecialchars($p["Pregunta"]) ?>
+                </label>
+                <input type="text"
+                       name="pregunta_<?= $p["Id_Pregunta"] ?>"
+                       class="form-control"
+                       required>
+            </div>
+        <?php endforeach; ?>
+
+        <button type="button" class="btn-main w-100 mt-3" onclick="abrirConfirmacion()">
+            Enviar respuestas
+        </button>
+    </form>
+
+<?php endif; ?>
 
 </div>
 </div>
@@ -188,11 +173,8 @@ h2.title{
 <div class="confirm-box">
     <h5>Confirmar envío</h5>
     <p>¿Deseas enviar la encuesta?</p>
-
-    <div class="confirm-actions">
-        <button class="btn-cancelar" onclick="cerrarConfirmacion()">Cancelar</button>
-        <button class="btn-confirmar" onclick="confirmarEnvio()">Enviar</button>
-    </div>
+    <button class="btn btn-secondary w-100 mb-2" onclick="cerrarConfirmacion()">Cancelar</button>
+    <button class="btn btn-success w-100" onclick="confirmarEnvio()">Enviar</button>
 </div>
 </div>
 

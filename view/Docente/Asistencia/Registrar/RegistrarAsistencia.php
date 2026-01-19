@@ -12,6 +12,10 @@
     <!-- Fuente -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
 
+
+
+
+    
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -296,7 +300,38 @@
         </form>
     </div>
 
+<?php if (!empty($_GET['ok'])): ?>
+<div class="alert alert-success alert-dismissible fade show text-center"
+     style="border-radius:15px;background:rgba(34,197,94,0.15);border:1px solid #22c55e;color:#22c55e;">
+    <i class="bi bi-check-circle-fill"></i>
+    <?= $_GET['ok'] === 'editado'
+        ? '✏️ Asistencia actualizada correctamente'
+        : '✅ Asistencia guardada correctamente'
+    ?>
+    <button type="button" class="close text-success" data-dismiss="alert">
+        <span>&times;</span>
+    </button>
 </div>
+<?php endif; ?>
+
+<?php if (!empty($_GET['error'])): ?>
+<div class="alert alert-danger alert-dismissible fade show text-center"
+     style="border-radius:15px;background:rgba(239,68,68,0.15);border:1px solid #ef4444;color:#ef4444;">
+    <i class="bi bi-x-circle-fill"></i>
+    ❌ Error al guardar la asistencia
+    <button type="button" class="close text-danger" data-dismiss="alert">
+        <span>&times;</span>
+    </button>
+</div>
+<?php endif; ?>
+
+
+    
+</div>
+
+
+
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 

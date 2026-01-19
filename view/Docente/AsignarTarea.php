@@ -47,6 +47,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
+
+
+
+.modal-content {
+    background: rgba(29,30,40,0.95) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    border-radius: 20px !important;
+    box-shadow: none !important;
+}
+
+.modal-header,
+.modal-footer {
+    border: none !important;
+}
+
+.modal-body {
+    font-size: 1rem;
+    opacity: 0.95;
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+.modal-footer .btn {
+    border-radius: 12px;
+}
+
+
+
+
+
 body{
     font-family:'Poppins',sans-serif;
     font-size:15px;

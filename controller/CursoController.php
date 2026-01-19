@@ -14,12 +14,35 @@ class CursoController {
     }
 
 public static function asignarDocentes() {
-    if (!empty($_POST['asignaciones'])) {
-        foreach ($_POST['asignaciones'] as $idCurso => $docentes) {
-            CursoModel::asignarDocentes($idCurso, $docentes);
+
+
+    $cursos = CursoModel::obtenerCursos();
+
+ 
+    foreach ($cursos as $curso) {
+        CursoModel::limpiarDocentesCurso($curso['id']);
+    }
+
+  
+    if (empty($_POST['asignaciones'])) {
+        return;
+    }
+
+   
+    foreach ($_POST['asignaciones'] as $idCurso => $docentes) {
+
+       
+        if (count($docentes) > 1) {
+            die("❌ Error: Un curso solo puede tener un profesor asignado.");
+        }
+
+     
+        if (count($docentes) === 1) {
+            CursoModel::asignarDocenteCurso($idCurso, $docentes[0]);
         }
     }
 }
+
 
 
 

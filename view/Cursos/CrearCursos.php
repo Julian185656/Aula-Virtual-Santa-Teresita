@@ -65,16 +65,32 @@ textarea.form-style{
     margin-top:10px;
 }
 
-/* MODAL — MISMO ESTILO QUE ADMIN */
-.modal-content{
-    background:#343a40;
-    color:#fff;
-    border-radius:18px;
+/* === MODAL IGUAL AL DE USUARIOS === */
+.modal-content {
+    background: rgba(29,30,40,0.95) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    border-radius: 20px !important;
+    box-shadow: none !important;
 }
+
 .modal-header,
-.modal-footer{
-    border:none;
+.modal-footer {
+    border: none !important;
 }
+
+.modal-body {
+    font-size: 1rem;
+    opacity: 0.95;
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+.modal-footer .btn {
+    border-radius: 12px;
+}
+
 </style>
 </head>
 

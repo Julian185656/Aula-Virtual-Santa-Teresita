@@ -58,70 +58,51 @@ class RegistrarAsistenciaController
 
 
     
-    public function guardar()
-    {
-       
-        header('Content-Type: application/json; charset=utf-8');
-
-        try {
-            if (!$this->docenteId) {
-                http_response_code(401);
-                echo json_encode(['ok' => false, 'mensaje' => 'No autorizado.']);
-                return;
-            }
-
-           
-            $raw = file_get_contents('php://input');
-            $payload = json_decode($raw, true);
-
-            if (is_array($payload) && isset($payload['curso'])) {
-                $cursoId = (int)$payload['curso'];
-                $fecha   = isset($payload['fecha']) ? (string)$payload['fecha'] : date('Y-m-d');
-                $items   = isset($payload['items']) && is_array($payload['items']) ? $payload['items'] : [];
-            } else {
-              
-                $cursoId = isset($_POST['curso']) ? (int)$_POST['curso'] : 0;
-                $fecha   = isset($_POST['fecha']) ? (string)$_POST['fecha'] : date('Y-m-d');
-
-                
-                $items = [];
-                if (isset($_POST['estudiante_id']) && is_array($_POST['estudiante_id'])) {
-                    foreach ($_POST['estudiante_id'] as $estId) {
-                        $estId = (int)$estId;
-                     
-                        $pres = 0;
-                        if (isset($_POST['presente'][$estId])) {
-                            $pres = (int)($_POST['presente'][$estId] == '1');
-                        }
-                        $items[] = ['Id_Estudiante' => $estId, 'Presente' => $pres];
-                    }
-                }
-            }
-
-            if ($cursoId <= 0) {
-                http_response_code(400);
-                echo json_encode(['ok' => false, 'mensaje' => 'Curso inválido.']);
-                return;
-            }
-
-        
-            $res = $this->model->guardarLoteAsistencia($cursoId, $fecha, $this->docenteId, $items);
-
-            echo json_encode([
-                'ok' => $res['ok'],
-                'procesados' => $res['procesados'],
-                'mensaje' => $res['ok']
-                    ? "✅ Asistencia guardada. Registros procesados: {$res['procesados']}."
-                    : "No se pudo guardar la asistencia."
-            ]);
-        } catch (\Exception $e) {
-            http_response_code(500);
-            echo json_encode([
-                'ok' => false,
-                'mensaje' => "❌ Error al guardar: " . $e->getMessage()
-            ]);
+  public function guardar()
+{
+    try {
+        if (!$this->docenteId) {
+            header("Location: RegistrarAsistenciaController.php?error=unauthorized");
+            exit;
         }
+
+        $cursoId = isset($_POST['curso']) ? (int)$_POST['curso'] : 0;
+        $fecha   = isset($_POST['fecha']) ? $_POST['fecha'] : date('Y-m-d');
+
+        if ($cursoId <= 0) {
+            header("Location: RegistrarAsistenciaController.php?error=curso");
+            exit;
+        }
+
+        $items = [];
+        if (isset($_POST['estudiante_id']) && is_array($_POST['estudiante_id'])) {
+            foreach ($_POST['estudiante_id'] as $estId) {
+                $estId = (int)$estId;
+                $pres = isset($_POST['estado'][$estId]) ? (int)$_POST['estado'][$estId] : 0;
+
+                $items[] = [
+                    'Id_Estudiante' => $estId,
+                    'Presente' => $pres
+                ];
+            }
+        }
+
+        $res = $this->model->guardarLoteAsistencia(
+            $cursoId,
+            $fecha,
+            $this->docenteId,
+            $items
+        );
+
+        header("Location: RegistrarAsistenciaController.php?curso=$cursoId&fecha=$fecha&ok=1");
+        exit;
+
+    } catch (\Exception $e) {
+        header("Location: RegistrarAsistenciaController.php?error=500");
+        exit;
     }
+}
+
 
    
 private function obtenerDocenteIdDeSesion(): ?int

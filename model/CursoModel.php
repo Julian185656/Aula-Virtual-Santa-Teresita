@@ -75,6 +75,41 @@ public static function asignarDocentes($idCurso, $docentes) {
 
 
 
+public static function asignarDocenteCurso($idCurso, $idDocente) {
+    global $pdo;
+
+    $stmt = $pdo->prepare("
+        INSERT INTO aulavirtual.curso_docente (Id_Curso, Id_Docente)
+        VALUES (:idCurso, :idDocente)
+    ");
+
+    $stmt->execute([
+        ':idCurso' => (int)$idCurso,
+        ':idDocente' => (int)$idDocente
+    ]);
+}
+
+
+
+
+
+
+public static function limpiarDocentesCurso($idCurso) {
+    global $pdo;
+
+    $stmt = $pdo->prepare("
+        DELETE FROM aulavirtual.curso_docente 
+        WHERE Id_Curso = :idCurso
+    ");
+
+    $stmt->execute([
+        ':idCurso' => (int)$idCurso
+    ]);
+}
+
+
+
+
 
 public static function eliminarCurso($idCurso) {
     global $pdo;

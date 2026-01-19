@@ -15,6 +15,11 @@ class RegistrarAsistenciaModel
      * Obtiene los cursos asignados al docente.
      * @return array
      */
+
+
+
+
+    
 public function obtenerCursosDocente(int $docenteId): array
 {
     try {

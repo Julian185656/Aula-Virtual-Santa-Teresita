@@ -54,6 +54,53 @@ $totalPages = ceil($total / $perPage);
 
     <!-- TU CSS ORIGINAL, SIN TOCAR -->
 <style>
+
+
+
+/* MODAL — MISMO ESTILO QUE ADMIN */
+/* === MODAL IGUAL AL DE USUARIOS === */
+.modal-content {
+    background: rgba(29,30,40,0.95) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    border-radius: 20px !important;
+    box-shadow: none !important;
+}
+
+.modal-header,
+.modal-footer {
+    border: none !important;
+}
+
+.modal-body {
+    font-size: 1rem;
+    opacity: 0.95;
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+.modal-footer .btn {
+    border-radius: 12px;
+}
+
+.pagination .page-link {
+    border-radius: 10px;
+    margin: 0 3px;
+    background: rgba(255,255,255,.10);
+}
+
+.pagination .active .page-link {
+    background: rgba(255,255,255,.30);
+    font-weight: bold;
+}
+
+.pagination .disabled .page-link {
+    opacity: .4;
+    pointer-events: none;
+}
+
+
     body {
         font-family: 'Poppins', sans-serif;
         font-weight: 300;
@@ -275,6 +322,46 @@ $totalPages = ceil($total / $perPage);
 </div>
 </div>
 </div>
+
+<?php if ($totalPages > 1): ?>
+<nav class="mt-4">
+<ul class="pagination justify-content-center">
+
+<?php
+$qParam = $search !== '' ? '&q=' . urlencode($search) : '';
+?>
+
+<!-- Anterior -->
+<li class="page-item <?= $page <= 1 ? 'disabled' : '' ?>">
+<a class="page-link bg-dark text-white border-0"
+   href="?page=<?= $page - 1 . $qParam ?>">
+   &laquo;
+</a>
+</li>
+
+<!-- Números -->
+<?php for ($i = 1; $i <= $totalPages; $i++): ?>
+<li class="page-item <?= $i == $page ? 'active' : '' ?>">
+<a class="page-link bg-dark text-white border-0"
+   href="?page=<?= $i . $qParam ?>">
+   <?= $i ?>
+</a>
+</li>
+<?php endfor; ?>
+
+<!-- Siguiente -->
+<li class="page-item <?= $page >= $totalPages ? 'disabled' : '' ?>">
+<a class="page-link bg-dark text-white border-0"
+   href="?page=<?= $page + 1 . $qParam ?>">
+   &raquo;
+</a>
+</li>
+
+</ul>
+</nav>
+<?php endif; ?>
+
+
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
