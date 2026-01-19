@@ -47,6 +47,19 @@ if (!$id_estudiante || !$fecha_ausencia || !$id_curso) {
     exit;
 }
 
+/* Permitir HOY y fechas ANTERIORES (bloquear FUTURO) */
+date_default_timezone_set('America/Costa_Rica');
+$hoy = date('Y-m-d');
+
+if ($fecha_ausencia > $hoy) {
+    echo json_encode([
+        'ok' => false,
+        'error' => 'No puedes seleccionar una fecha futura.'
+    ]);
+    exit;
+}
+
+
 // 2️⃣ Carpeta de comprobantes
 $directorio_comprobantes = __DIR__ . '/view/Home/comprobantes/';
 if (!is_dir($directorio_comprobantes)) {

@@ -225,17 +225,8 @@ session_start();
     border-radius: 8px;
     padding: 0 10px;
 }
-
-
-
-
-
-
     </style>
 </head>
-
-
-
 
 <body>
 
@@ -342,18 +333,12 @@ session_start();
 
                 <?php elseif ($rolActual === 'Docente'): ?>
 
-
-
-
-
                     <div class="role-card">
                         <i class="fa fa-graduation-cap"></i>
                         <h4>Ver Perfiles Alumnos</h4>
                         <p>Ver Perfiles Alumnos</p>
                         <a href="/Aula-Virtual-Santa-Teresita/view/Docente/ListaDocente.php">Ir</a>
                     </div>
-
-
 
                     <div class="role-card">
                         <i class="fa fa-graduation-cap"></i>
@@ -384,13 +369,6 @@ session_start();
                         <p>Accede a contenido y material.</p>
                         <a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php">Ir</a>
                     </div>
-
-
-
-
-
-
-
 
                     <div class="role-card">
                         <i class="fa fa-headset"></i>
@@ -669,13 +647,23 @@ if (rol === "Administrador") {
                 <label>Curso:</label>
                 <select name="id_curso" required>${opciones}</select><br>
                 <label>Fecha de ausencia:</label>
-                <input type="date" name="fecha_ausencia" required><br>
+                <input type="date" id="fecha_ausencia" name="fecha_ausencia" required><br>
                 <label>Comprobante:</label>
                 <input type="file" name="comprobante" required><br>
                 <button type="submit">Enviar Justificación</button>
             </form>
         `;
         chatBody.scrollTop = chatBody.scrollHeight;
+
+        // PERMITIR HOY Y DÍAS ANTERIORES (NO FUTURO)
+        const inputFecha = document.getElementById("fecha_ausencia");
+        const ahora = new Date();
+        ahora.setMinutes(ahora.getMinutes() - ahora.getTimezoneOffset());
+        const hoy = ahora.toISOString().split("T")[0];
+
+        inputFecha.max = hoy;              // bloquea fechas futuras
+        inputFecha.removeAttribute("min"); // permite fechas pasadas
+        inputFecha.value = hoy;            // deja hoy por defecto
     })
     .catch(err=>{
         console.error(err);
@@ -683,6 +671,7 @@ if (rol === "Administrador") {
     });
 }
 
+    
 // Manejo del envío de la justificación
 chatBody.addEventListener("submit", function(event) {
     const form = event.target;
@@ -855,12 +844,6 @@ chatBody.addEventListener("submit", function(event) {
 
 });
 </script>
-
-
-
-
-
-
 
     <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
