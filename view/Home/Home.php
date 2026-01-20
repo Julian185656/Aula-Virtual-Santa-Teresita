@@ -710,7 +710,7 @@ chatBody.addEventListener("submit", function(event) {
                     <div style="border:1px solid #ccc; padding:5px; margin:5px 0; border-radius:5px;">
                         <b>Estudiante:</b> ${j.Nombre}<br>
                         <b>Fecha:</b> ${j.fecha_ausencia}<br>
-                        <a href="${j.comprobante}" target="_blank">Ver comprobante</a><br>
+                        <a href="/Aula-Virtual-Santa-Teresita/${j.comprobante}" target="_blank" download>Ver comprobante</a>
                         <b>Estado:</b> ${j.estado}<br>
                         ${j.estado==='pendiente'?`
                             <button data-id="${j.id}" data-accion="aprobar">Aprobar</button> 
