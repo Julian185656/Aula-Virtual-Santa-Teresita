@@ -1,4 +1,5 @@
 <?php
+// /view/Cursos/CrearCursos.php
 require_once __DIR__ . '/../../controller/CursoController.php';
 require_once __DIR__ . '/../../model/CursoModel.php';
 
@@ -12,156 +13,200 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Crear Curso</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Crear Curso</title>
 
-<!-- Iconos -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,600,700" rel="stylesheet">
 
-<!-- Fuente -->
-<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,600,700" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#2a2b38;
+      --text:#fff;
+      --muted:rgba(255,255,255,.75);
+      --glass1:rgba(255,255,255,.10);
+      --glass2:rgba(255,255,255,.06);
+      --stroke:rgba(255,255,255,.20);
+      --stroke2:rgba(255,255,255,.30);
+      --shadow:0 14px 44px rgba(0,0,0,.42);
+      --radius:18px;
+    }
 
-<style>
-/* =====================================================
-   ESTILO GLOBAL
-===================================================== */
+    body{
+      font-family:'Poppins',sans-serif;
+      background:var(--bg);
+      background-image:url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+      background-size:600px;
+      background-repeat:repeat;
+      color:var(--text);
+      padding:40px 25px;
+    }
 
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #2a2b38;
-    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
-    background-size: 600px;
-    color: #fff;
-    padding: 40px 20px;
-}
+    .page-wrap{
+      max-width:1200px;
+      margin:0 auto;
+    }
 
-/* Título */
-.page-title {
-    text-align: center;
-    color: #fff;
-    font-size: 2.3rem;
-    font-weight: 700;
-    margin-bottom: 20px;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.35);
-}
+    .page-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
 
-.page-title i {
-    display: block;
-    font-size: 45px;
-    margin-bottom: 8px;
-    opacity: 0.9;
-}
+    .btn-volver{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 18px;
+      background:linear-gradient(180deg, var(--glass1), var(--glass2));
+      color:var(--text);
+      border-radius:14px;
+      font-size:15px;
+      border:1px solid var(--stroke);
+      text-decoration:none;
+      transition:.18s;
+      box-shadow:0 10px 26px rgba(0,0,0,.22);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      line-height:1;
+    }
+    .btn-volver:hover{
+      border-color:var(--stroke2);
+      background:rgba(255,255,255,.14);
+      color:var(--text);
+    }
+    .btn-volver i{
+      font-size:16px;
+      line-height:1;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      transform: translateY(1px);
+    }
 
-/* =====================================================
-   CARD (MISMO ESTILO QUE LOS DEMÁS MÓDULOS)
-===================================================== */
+    .title{
+      text-align:center;
+      font-weight:700;
+      font-size:32px;
+      margin:10px 0 22px;
+      text-shadow:0 2px 10px rgba(0,0,0,.35);
+    }
+    .title i{
+      display:block;
+      font-size:44px;
+      margin-bottom:10px;
+      opacity:.95;
+    }
 
-.card-wrapper {
-    max-width: 650px;
-    margin: 0 auto;
-    background: rgba(255,255,255,0.08);
-    border-radius: 20px;
-    padding: 35px;
-    border: 1px solid rgba(255,255,255,0.18);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 10px 35px rgba(0,0,0,0.4);
-}
+    .glass-card{
+      background:linear-gradient(180deg, var(--glass1), var(--glass2));
+      border:1px solid var(--stroke);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding:22px;
+    }
 
-.card-wrapper label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 500;
-    color: #fff;
-}
+    .form-wrap{
+      max-width:680px;
+      margin:0 auto;
+    }
 
-.card-wrapper input,
-.card-wrapper textarea {
-    width: 100%;
-    padding: 12px 15px;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.25);
-    background: rgba(255,255,255,0.10);
-    color: #fff;
-    margin-bottom: 18px;
-}
+    label{
+      display:block;
+      margin:0 0 8px;
+      font-weight:600;
+      color:var(--text);
+    }
 
-.card-wrapper textarea {
-    resize: vertical;
-}
+    input[type="text"], textarea{
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid var(--stroke);
+      background:rgba(255,255,255,0.08);
+      color:var(--text);
+      outline:none;
+      margin-bottom:16px;
+    }
+    input[type="text"]::placeholder,
+    textarea::placeholder{
+      color:rgba(255,255,255,.55);
+    }
+    input[type="text"]:focus,
+    textarea:focus{
+      border-color:var(--stroke2);
+    }
 
-/* Botón principal */
-.btn-submit {
-    width: 100%;
-    padding: 12px;
-    border-radius: 12px;
-    background: rgba(255,255,255,0.20);
-    border: 1px solid rgba(255,255,255,0.32);
-    color: #fff;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.25s;
-}
+    textarea{
+      resize:vertical;
+      min-height:120px;
+    }
 
-.btn-submit:hover {
-    background: rgba(255,255,255,0.32);
-}
+    .btn-submit{
+      width:100%;
+      height:44px;
+      border-radius:14px;
+      border:1px solid var(--stroke);
+      background:rgba(255,255,255,0.14);
+      color:var(--text);
+      font-weight:700;
+      cursor:pointer;
+      transition:.18s;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+    }
+    .btn-submit:hover{
+      border-color:var(--stroke2);
+      background:rgba(255,255,255,0.22);
+    }
 
-/* Botón volver */
-.volver-btn {
-    display: block;
-    text-align: center;
-    width: fit-content;
-    margin: 30px auto 0;
-    padding: 10px 22px;
-    border-radius: 12px;
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.3);
-    color: #fff;
-    text-decoration: none;
-    transition: 0.25s;
-}
-
-.volver-btn:hover {
-    background: rgba(255,255,255,0.32);
-}
-</style>
+    @media (max-width:520px){
+      body{ padding:28px 14px; }
+      .title{ font-size:26px; }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="page-wrap">
 
-<!-- ================================
-     TÍTULO 
-================================ -->
-<h2 class="page-title">
-    <i class="fa fa-plus-circle"></i>
-    Crear Curso
-</h2>
+    <div class="page-header">
+      <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn-volver">
+        <i class="fa-solid fa-circle-arrow-left" aria-hidden="true"></i>
+        Volver
+      </a>
+      <div></div>
+    </div>
 
-<!-- ================================
-     CARD FORMULARIO
-================================ -->
-<div class="card-wrapper">
-    <form method="POST">
+    <h1 class="title">
+      <i class="fa-solid fa-circle-plus" aria-hidden="true"></i>
+      Crear Curso
+    </h1>
 
-        <label>Nombre del curso</label>
-        <input type="text" name="nombre" placeholder="Ingrese el nombre del curso" required>
+    <div class="form-wrap">
+      <div class="glass-card">
+        <form method="POST">
+          <label for="nombre">Nombre del curso</label>
+          <input id="nombre" type="text" name="nombre" placeholder="Ingrese el nombre del curso" required>
 
-        <label>Descripción del curso</label>
-        <textarea name="descripcion" rows="4" placeholder="Detalle o información del curso" required></textarea>
+          <label for="descripcion">Descripción del curso</label>
+          <textarea id="descripcion" name="descripcion" rows="4" placeholder="Detalle o información del curso" required></textarea>
 
-        <button type="submit" name="crearCurso" class="btn-submit">
+          <button type="submit" name="crearCurso" class="btn-submit">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
             Crear Curso
-        </button>
-    </form>
-</div>
+          </button>
+        </form>
+      </div>
+    </div>
 
-<!-- ================================
-     BOTÓN VOLVER
-================================ -->
-<a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="volver-btn">
-    <i class="fa fa-arrow-left"></i> Volver
-</a>
-
+  </div>
 </body>
 </html>
