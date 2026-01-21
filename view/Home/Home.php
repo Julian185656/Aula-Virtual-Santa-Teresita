@@ -595,71 +595,193 @@ document.addEventListener("DOMContentLoaded", () => {
   closeBtn.onclick = () => win.style.display = "none";
 
   function mensajeInicial() {
-    let opciones = `
-      Puedes escribir:<br>
-      • <b>cursos</b><br>
-      • <b>tareas</b><br>
-    `;
-    if (rol.includes("docente")) {
-      opciones += `• <b>asistencia</b><br>`;
-    }
-    if (rol.includes("estudiante")) {
-      opciones += `• <b>pendientes</b><br>`;
+    let msg = "Hola 👋, estas son las palabras que puedes usar:<br>";
+
+    if (rol === "Docente") {
+        msg += "lista y ver cursos";
+    } else if (rol === "Estudiante") {
+        msg += "tareas, justificación";
+    } else {
+        msg += "inicia sesión";
     }
 
-    body.innerHTML = `
-      <div><b>Bot:</b> Hola 👋, soy tu asistente virtual.</div><br>${opciones}<br>
-    `;
-  }
+    chatBody.innerHTML += `<div><b>Bot:</b> ${msg}</div>`;
+    chatBody.scrollTop = chatBody.scrollHeight;
+}
 
-  send.onclick = enviarMensaje;
-  input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") enviarMensaje();
-  });
 
-  function enviarMensaje() {
-    const texto = input.value.trim();
-    if (!texto) return;
+    
+    function manejarJustificacion() {
+    chatBody.innerHTML += `<div><b>Bot:</b> Por favor, selecciona el curso, la fecha y adjunta tu comprobante.</div>`;
 
-    body.innerHTML += `<div><b>Tú:</b> ${texto}</div>`;
-    input.value = "";
+    // Traer cursos del estudiante vía fetch
+    fetch(`/Aula-Virtual-Santa-Teresita/view/Home/obtener_cursos.php?id_estudiante=${idUsuario}`)
+    .then(res => res.json())
+    .then(data => {
+        if(!data.ok) {
+            chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error al cargar cursos</div>`;
+            return;
+        }
 
-    procesarTexto(texto.toLowerCase());
-  }
+        let opciones = '<option value="">--Selecciona un curso--</option>';
+        data.cursos.forEach(c => {
+            opciones += `<option value="${c.Id_Curso}">${c.Nombre}</option>`;
+        });
 
-  function procesarTexto(txt) {
-    if (rol.includes("docente")) {
-      if (/curso/i.test(txt)) {
-        body.innerHTML += `<div><b>Bot:</b> Abriendo tus cursos...</div>`;
-        window.location.href = "/Aula-Virtual-Santa-Teresita/view/Docente/MisCursos.php";
-        return;
-      }
-      if (/tarea/i.test(txt)) {
-        body.innerHTML += `<div><b>Bot:</b> Mostrando tareas asignadas...</div>`;
-        window.location.href = "/Aula-Virtual-Santa-Teresita/view/Docente/VerTareas.php";
-        return;
-      }
-      if (/asistencia/i.test(txt)) {
-        body.innerHTML += `<div><b>Bot:</b> Redirigiendo a registro de asistencia...</div>`;
-        window.location.href = "/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/Registrar/RegistrarAsistenciaController.php";
-        return;
-      }
+        chatBody.innerHTML += `
+            <form id="justificacion-form" enctype="multipart/form-data">
+                <label>Curso:</label>
+                <select name="id_curso" required>${opciones}</select><br>
+                <label>Fecha de ausencia:</label>
+                <input type="date" id="fecha_ausencia" name="fecha_ausencia" required><br>
+                <label>Comprobante:</label>
+                <input type="file" name="comprobante" required><br>
+                <button type="submit">Enviar Justificación</button>
+            </form>
+        `;
+        chatBody.scrollTop = chatBody.scrollHeight;
+
+        // PERMITIR HOY Y DÍAS ANTERIORES (NO FUTURO)
+        const inputFecha = document.getElementById("fecha_ausencia");
+        const ahora = new Date();
+        ahora.setMinutes(ahora.getMinutes() - ahora.getTimezoneOffset());
+        const hoy = ahora.toISOString().split("T")[0];
+
+        inputFecha.max = hoy;              // bloquea fechas futuras
+        inputFecha.removeAttribute("min"); // permite fechas pasadas
+        inputFecha.value = hoy;            // deja hoy por defecto
+    })
+    .catch(err=>{
+        console.error(err);
+        chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error de conexión al cargar cursos</div>`;
+    });
+}
+
+    
+// Manejo del envío de la justificación
+chatBody.addEventListener("submit", function(event) {
+    const form = event.target;
+    if (form.id !== "justificacion-form") return;
+    event.preventDefault();
+
+    const formData = new FormData(form);
+    formData.append("id_estudiante", idUsuario);
+
+    fetch('/Aula-Virtual-Santa-Teresita/view/Home/enviar_justificacion.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.ok) chatBody.innerHTML += `<div><b>Bot:</b> ✅ ${data.mensaje}</div>`;
+        else chatBody.innerHTML += `<div><b>Bot:</b> ❌ ${data.error}</div>`;
+        chatBody.scrollTop = chatBody.scrollHeight;
+        form.remove();
+    })
+    .catch(err => {
+        console.error(err);
+        chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error de conexión</div>`;
+        chatBody.scrollTop = chatBody.scrollHeight;
+    });
+});
+
+    function cargarJustificaciones() {
+        fetch('/Aula-Virtual-Santa-Teresita/view/Home/obtener_justificaciones.php')
+        .then(res => res.json())
+        .then(data => {
+            if(!data.ok){ chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error al cargar</div>`; return; }
+            chatBody.innerHTML += `<div style="margin-top:10px;"><b>Justificaciones pendientes:</b></div>`;
+            data.justificaciones.forEach(j=>{
+                chatBody.innerHTML += `
+                    <div style="border:1px solid #ccc; padding:5px; margin:5px 0; border-radius:5px;">
+                        <b>Estudiante:</b> ${j.Nombre}<br>
+                        <b>Fecha:</b> ${j.fecha_ausencia}<br>
+                        <a href="${j.comprobante}" target="_blank">Ver comprobante</a><br>
+                        <b>Estado:</b> ${j.estado}<br>
+                        ${j.estado==='pendiente'?`
+                            <button data-id="${j.id}" data-accion="aprobar">Aprobar</button> 
+                            <button data-id="${j.id}" data-accion="denegar">Denegar</button>
+                        `:''}
+                    </div>
+                `;
+            });
+            chatBody.scrollTop = chatBody.scrollHeight;
+        })
+        .catch(err=>{
+            console.error(err);
+            chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error de conexión</div>`;
+            chatBody.scrollTop = chatBody.scrollHeight;
+        });
     }
 
-    if (rol.includes("estudiante")) {
-      if (/curso/i.test(txt)) {
-        body.innerHTML += `<div><b>Bot:</b> Abriendo tus cursos...</div>`;
-        window.location.href = "/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php";
-        return;
-      }
-      if (/tarea|pendiente/i.test(txt)) {
-        obtenerTareasPendientes();
-        return;
-      }
+    // APROBAR / DENEGAR
+    chatBody.addEventListener("click", function(event){
+        const btn = event.target;
+        if(btn.tagName !== "BUTTON") return;
+
+        const id = btn.dataset.id;
+        const accion = btn.dataset.accion;
+        if(!id || !accion) return;
+
+        const formData = new FormData();
+        formData.append('id', id);
+        formData.append('accion', accion);
+
+        fetch('/Aula-Virtual-Santa-Teresita/view/Home/procesar_justificacion.php',{method:'POST',body:formData})
+        .then(res=>res.json())
+        .then(data=>{
+            if(data.ok) chatBody.innerHTML += `<div><b>Bot:</b> ✅ ${data.mensaje}</div>`;
+            else chatBody.innerHTML += `<div><b>Bot:</b> ❌ ${data.error}</div>`;
+            chatBody.scrollTop = chatBody.scrollHeight;
+            cargarJustificaciones();
+        })
+        .catch(err=>{
+            console.error(err);
+            chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error de conexión</div>`;
+            chatBody.scrollTop = chatBody.scrollHeight;
+        });
+    });
+
+    // FUNCIONES DE CURSOS / TAREAS
+    function mostrarCursosYTareas() {
+        fetch('/Aula-Virtual-Santa-Teresita/view/Home/obtener_cursos_tareas.php')
+        .then(res => res.json())
+        .then(data => {
+            if (!data.ok) { chatBody.innerHTML += `<div><b>Bot:</b> ❌ ${data.error}</div>`; return; }
+            if (data.cursos.length === 0) chatBody.innerHTML += `<div><b>Bot:</b> No tienes cursos asignados 😢</div>`;
+            else {
+                data.cursos.forEach(curso => {
+                    let html = `<div><b>Curso:</b> ${curso.nombre}</div>`;
+                    curso.tareas.forEach(tarea => {
+                        html += `<div>- Tarea: ${tarea.titulo} `;
+                        if (tarea.pendientes > 0) html += `(⏰ ${tarea.pendientes} estudiantes no han entregado) <button onclick="enviarRecordatorio(${tarea.id})">Enviar recordatorio</button>`;
+                        else html += `(🎉 Todos entregaron)`;
+                        html += `</div>`;
+                    });
+                    chatBody.innerHTML += `<div>${html}</div>`;
+                });
+            }
+            chatBody.scrollTop = chatBody.scrollHeight;
+        })
+        .catch(err => {
+            chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error al cargar cursos y tareas</div>`;
+            console.error(err);
+        });
     }
 
-    body.innerHTML += `<div><b>Bot:</b> No entendí tu mensaje 😅</div>`;
-  }
+    window.enviarRecordatorio = function(idTarea) {
+        fetch(`/Aula-Virtual-Santa-Teresita/view/Home/Enviar.php?id_tarea=${idTarea}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.ok) chatBody.innerHTML += `<div><b>Bot:</b> 📧 ${data.enviados} recordatorios enviados correctamente</div>`;
+            else chatBody.innerHTML += `<div><b>Bot:</b> ❌ ${data.error || 'Error al enviar correos'}</div>`;
+            chatBody.scrollTop = chatBody.scrollHeight;
+        })
+        .catch(err => {
+            chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error en la conexión</div>`;
+            console.error(err);
+        });
+    };
 
   function obtenerTareasPendientes() {
     fetch("/Aula-Virtual-Santa-Teresita/view/Home/obtener_tareas.php")

@@ -61,7 +61,7 @@ if ($fecha_ausencia > $hoy) {
 
 
 // 2️⃣ Carpeta de comprobantes
-$directorio_comprobantes = __DIR__ . '/view/Home/comprobantes/';
+$directorio_comprobantes = $_SERVER["DOCUMENT_ROOT"] . '/Aula-Virtual-Santa-Teresita/comprobantes/';
 if (!is_dir($directorio_comprobantes)) {
     mkdir($directorio_comprobantes, 0777, true);
 }
