@@ -455,354 +455,549 @@ $rolActual = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null);
     </div>
   </div>
 </div>
-
 <!-- ===================== Bootstrap 4 JS (OBLIGATORIO para modals) ===================== -->
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 
-<!-- BOTÓN FLOTANTE -->
-<div id="chatbot-btn">💬</div>
+<?php
+// ===== MOSTRAR SOLO A DOCENTE / ESTUDIANTE =====
+$rolChat = $_SESSION['usuario']['Rol'] ?? $_SESSION['usuario']['rol'] ?? ($_SESSION['rol'] ?? '');
+$rolChat = strtolower(trim((string)$rolChat));
 
-<!-- VENTANA DEL CHATBOT -->
-<div id="chatbot-window">
+$idUsuarioChat = $_SESSION['usuario']['Id_Usuario'] ?? $_SESSION['usuario']['id_usuario'] ?? ($_SESSION['id_usuario'] ?? '');
+$idUsuarioChat = (string)$idUsuarioChat;
+
+$mostrarChat = in_array($rolChat, ['docente', 'estudiante'], true);
+?>
+
+<?php if ($mostrarChat): ?>
+
+<!-- BOTÓN FLOTANTE -->
+<button id="chatbot-btn" type="button" aria-label="Abrir asistente">
+  <i class="fa-solid fa-comments"></i>
+</button>
+
+<!-- VENTANA CHATBOT -->
+<div id="chatbot-window" aria-hidden="true">
   <div id="chatbot-header">
-    <strong>Asistente Virtual</strong>
-    <button id="chatbot-close">×</button>
+    <span class="cb-title"><i class="fa-solid fa-robot"></i> Asistente Virtual</span>
+    <button id="chatbot-close" type="button" aria-label="Cerrar">&times;</button>
   </div>
+
   <div id="chatbot-body"></div>
+
   <div id="chatbot-footer">
-    <input id="chatbot-input" type="text" placeholder="Escribe algo...">
-    <button id="chatbot-send">Enviar</button>
+    <input type="text" id="chatbot-input" placeholder="Escribe tu mensaje..." autocomplete="off">
+    <button id="chatbot-send" type="button" aria-label="Enviar">
+      <i class="fa-solid fa-paper-plane"></i>
+    </button>
   </div>
 </div>
 
-<!-- ESTILOS -->
 <style>
-#chatbot-btn {
-  position: fixed;
-  bottom: 25px;
-  right: 25px;
-  width: 65px;
-  height: 65px;
-  background: #0d6efd;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 28px;
-  cursor: pointer;
-  z-index: 9999;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-  transition: transform 0.2s;
+/* Botón flotante */
+#chatbot-btn{
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  width:62px;
+  height:62px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.22);
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  z-index:9999;
+  box-shadow:0 12px 30px rgba(0,0,0,.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform .18s, background .18s, border-color .18s;
 }
-#chatbot-btn:hover { transform: scale(1.1); }
-
-#chatbot-window {
-  display: none;
-  position: fixed;
-  bottom: 100px;
-  right: 25px;
-  width: 360px;
-  max-height: 520px;
-  background: #f9f9f9;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  font-family: 'Segoe UI', sans-serif;
+#chatbot-btn:hover{
+  transform: translateY(-2px) scale(1.05);
+  background:rgba(255,255,255,.18);
+  border-color:rgba(255,255,255,.30);
 }
+#chatbot-btn i{ font-size:22px; }
 
-#chatbot-header {
-  background: linear-gradient(90deg, #0d6efd, #0a58ca);
-  color: white;
-  padding: 14px 18px;
-  font-weight: bold;
-  font-size: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-}
-
-#chatbot-close {
-  background: transparent;
-  border: none;
-  color: white;
-  font-size: 20px;
-  cursor: pointer;
+/* Ventana */
+#chatbot-window{
+  position:fixed;
+  right:22px;
+  bottom:96px;
+  width:380px;
+  max-width: calc(100vw - 44px);
+  max-height:520px;
+  display:none; /* ✅ oculto por defecto */
+  flex-direction:column;
+  overflow:hidden;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(18,19,28,.72);
+  color:#fff;
+  box-shadow:0 18px 44px rgba(0,0,0,.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index:9999;
 }
 
-#chatbot-body {
-  padding: 12px;
-  flex: 1;
-  overflow-y: auto;
-  font-size: 14px;
-  color: #333;
+/* Header */
+#chatbot-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 14px;
+  background:rgba(255,255,255,.10);
+  border-bottom:1px solid rgba(255,255,255,.14);
+  font-weight:800;
+}
+#chatbot-header .cb-title{ display:flex; align-items:center; gap:8px; }
+#chatbot-close{
+  background:transparent;
+  border:none;
+  color:#fff;
+  font-size:22px;
+  cursor:pointer;
+  line-height:1;
+  opacity:.9;
+}
+#chatbot-close:hover{ opacity:1; }
+
+/* Body */
+#chatbot-body{
+  padding:12px;
+  overflow-y:auto;
+  flex:1;
+  font-size:14px;
 }
 
-#chatbot-footer {
-  padding: 10px;
-  display: flex;
-  gap: 6px;
-  border-top: 1px solid #ddd;
-  background: #fff;
+/* Burbujas */
+.cb-msg{ margin:10px 0; display:flex; }
+.cb-msg.user{ justify-content:flex-end; }
+.cb-bubble{
+  max-width: 88%;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.10);
+  line-height:1.35;
+  word-break: break-word;
+}
+.cb-msg.user .cb-bubble{
+  background:rgba(13,110,253,.22);
+  border-color:rgba(13,110,253,.35);
 }
 
-#chatbot-input {
-  flex: 1;
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+/* UI dentro del chat */
+.cb-small{ font-size:12px; opacity:.85; }
+.cb-divider{ height:1px; background:rgba(255,255,255,.12); margin:10px 0; }
+.cb-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.08);
+  margin:4px 6px 0 0;
+  font-size:12px;
+  cursor:pointer;
+  color:#fff;
+  text-decoration:none;
+}
+.cb-chip:hover{ background:rgba(255,255,255,.14); }
+
+.cb-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:7px 10px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.10);
+  color:#fff;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:800;
+  margin-top:6px;
+  transition:.15s;
+}
+.cb-btn:hover{ background:rgba(255,255,255,.18); }
+.cb-btn.primary{ background:rgba(13,110,253,.35); border-color:rgba(13,110,253,.35); }
+.cb-btn.primary:hover{ background:rgba(13,110,253,.45); }
+
+.cb-pill{
+  display:inline-block;
+  padding:2px 8px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.08);
+  font-size:12px;
+  margin-left:6px;
 }
 
-#chatbot-send {
-  background: #0d6efd;
-  color: white;
-  padding: 8px 14px;
-  border-radius: 6px;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s;
+/* Footer */
+#chatbot-footer{
+  display:flex;
+  gap:8px;
+  padding:10px;
+  border-top:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);
 }
-#chatbot-send:hover {
-  background: #0b5ed7;
+#chatbot-input{
+  flex:1;
+  padding:10px 10px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.18);
+  outline:none;
+  background:rgba(255,255,255,.10);
+  color:#fff;
 }
+#chatbot-input::placeholder{ color:rgba(255,255,255,.65); }
+
+#chatbot-send{
+  width:44px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  cursor:pointer;
+  transition:.18s;
+}
+#chatbot-send:hover{ background:rgba(255,255,255,.20); }
+
+@media (max-width: 420px){
+  #chatbot-window{ width: calc(100vw - 44px); }
+}
+
+/* ✅ FIX: opciones del select visibles (dropdown) */
+#chatbot-window select option,
+#chatbot-window datalist option {
+  background: #2a2b38 !important;
+  color: #ffffff !important;
+}
+
+/* opcional: el placeholder un poco más gris */
+#chatbot-window select option[value=""] {
+  color: rgba(255,255,255,.75) !important;
+}
+
 </style>
 
-<!-- SCRIPT -->
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("chatbot-btn");
-  const win = document.getElementById("chatbot-window");
-  const closeBtn = document.getElementById("chatbot-close");
-  const body = document.getElementById("chatbot-body");
-  const input = document.getElementById("chatbot-input");
-  const send = document.getElementById("chatbot-send");
+document.addEventListener("DOMContentLoaded", function () {
+  const chatBtn    = document.getElementById("chatbot-btn");
+  const chatWindow = document.getElementById("chatbot-window");
+  const chatClose  = document.getElementById("chatbot-close");
+  const chatBody   = document.getElementById("chatbot-body");
+  const chatInput  = document.getElementById("chatbot-input");
+  const chatSend   = document.getElementById("chatbot-send");
 
-  const rol = "<?php echo $_SESSION['usuario']['Rol'] ?? 'Invitado'; ?>".trim().toLowerCase();
-  const idUsuario = "<?php echo $_SESSION['id_usuario'] ?? ''; ?>";
+  const rol = <?= json_encode($rolChat) ?>;      // "docente" | "estudiante"
+  const idUsuario = <?= json_encode($idUsuarioChat) ?>;
 
-  btn.onclick = () => {
-    win.style.display = "flex";
-    mensajeInicial();
-  };
+  function addMsg(tipo, html){
+    const wrap = document.createElement("div");
+    wrap.className = "cb-msg " + (tipo === "user" ? "user" : "bot");
 
-  closeBtn.onclick = () => win.style.display = "none";
+    const bubble = document.createElement("div");
+    bubble.className = "cb-bubble";
+    bubble.innerHTML = html;
 
-  function mensajeInicial() {
-    let msg = "Hola 👋, estas son las palabras que puedes usar:<br>";
+    wrap.appendChild(bubble);
+    chatBody.appendChild(wrap);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
 
-    if (rol === "Docente") {
-        msg += "lista y ver cursos";
-    } else if (rol === "Estudiante") {
-        msg += "tareas, justificación";
-    } else {
-        msg += "inicia sesión";
+  function abrir(){
+    chatWindow.style.display = "flex";
+    chatWindow.setAttribute("aria-hidden","false");
+    if (!chatBody.dataset.init){
+      chatBody.dataset.init = "1";
+      mensajeInicial();
+    }
+    chatInput.focus();
+  }
+  function cerrar(){
+    chatWindow.style.display = "none";
+    chatWindow.setAttribute("aria-hidden","true");
+  }
+
+  chatBtn.addEventListener("click", abrir);
+  chatClose.addEventListener("click", cerrar);
+
+  document.addEventListener("keydown", (e) => {
+    if(e.key === "Escape") cerrar();
+  });
+
+  function mensajeInicial(){
+    let msg = "Hola 👋<br><br><b>Escribe:</b><br>";
+    if(rol === "docente"){
+      msg += `• <b>cursos</b> <span class="cb-small">(ver cursos + tareas + recordatorios)</span><br>`;
+      msg += `• <b>asistencia</b><br>`;
+    }else{
+      msg += `• <b>tareas</b> o <b>pendientes</b><br>`;
+      msg += `• <b>justificacion</b><br>`;
+    }
+    addMsg("bot", msg);
+  }
+
+  function enviar(){
+    const text = (chatInput.value || "").trim();
+    if(!text) return;
+    addMsg("user", escapeHtml(text));
+    chatInput.value = "";
+    manejar(text.toLowerCase());
+  }
+
+  chatSend.addEventListener("click", enviar);
+  chatInput.addEventListener("keydown", (e) => {
+    if(e.key === "Enter"){
+      e.preventDefault();
+      enviar();
+    }
+  });
+
+  function manejar(txt){
+    // DOCENTE: NO redirige al escribir "cursos" (muestra lista como antes)
+    if(rol === "docente"){
+      if(txt.includes("curso")){
+        mostrarCursosYTareas();
+        return;
+      }
+      if(txt.includes("asistencia")){
+        addMsg("bot","Abriendo asistencia...");
+        window.location.href = "/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/Registrar/RegistrarAsistenciaController.php";
+        return;
+      }
+      addMsg("bot","Prueba con <b>cursos</b> o <b>asistencia</b> 🙂");
+      return;
     }
 
-    chatBody.innerHTML += `<div><b>Bot:</b> ${msg}</div>`;
-    chatBody.scrollTop = chatBody.scrollHeight;
-}
+    // ESTUDIANTE
+    if(rol === "estudiante"){
+      if(txt.includes("tarea") || txt.includes("pendiente")){
+        obtenerTareasPendientes();
+        return;
+      }
+      if(txt.includes("justificacion") || txt.includes("justificación")){
+        manejarJustificacion();
+        return;
+      }
+      addMsg("bot","Prueba con <b>tareas</b>, <b>pendientes</b> o <b>justificacion</b> 🙂");
+      return;
+    }
+  }
 
+  // =========================
+  // DOCENTE: cursos + tareas + recordatorios
+  // Endpoint esperado: /view/Home/obtener_cursos_tareas.php  => { ok:true, cursos:[{ nombre, tareas:[{id,titulo,pendientes}] }] }
+  // Recordatorio: /view/Home/Enviar.php?id_tarea=XX => { ok:true, enviados: N }
+  // =========================
+  function mostrarCursosYTareas(){
+    addMsg("bot","Cargando tus cursos y tareas...");
 
-    
-    function manejarJustificacion() {
-    chatBody.innerHTML += `<div><b>Bot:</b> Por favor, selecciona el curso, la fecha y adjunta tu comprobante.</div>`;
-
-    // Traer cursos del estudiante vía fetch
-    fetch(`/Aula-Virtual-Santa-Teresita/view/Home/obtener_cursos.php?id_estudiante=${idUsuario}`)
-    .then(res => res.json())
-    .then(data => {
-        if(!data.ok) {
-            chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error al cargar cursos</div>`;
-            return;
+    fetch("/Aula-Virtual-Santa-Teresita/view/Home/obtener_cursos_tareas.php")
+      .then(r => r.json())
+      .then(data => {
+        if(!data || data.ok === false){
+          addMsg("bot","❌ No pude cargar cursos/tareas.");
+          return;
         }
 
-        let opciones = '<option value="">--Selecciona un curso--</option>';
-        data.cursos.forEach(c => {
-            opciones += `<option value="${c.Id_Curso}">${c.Nombre}</option>`;
-        });
+        const cursos = data.cursos || [];
+        if(cursos.length === 0){
+          addMsg("bot","No tienes cursos asignados 😢");
+          return;
+        }
 
-        chatBody.innerHTML += `
-            <form id="justificacion-form" enctype="multipart/form-data">
-                <label>Curso:</label>
-                <select name="id_curso" required>${opciones}</select><br>
-                <label>Fecha de ausencia:</label>
-                <input type="date" id="fecha_ausencia" name="fecha_ausencia" required><br>
-                <label>Comprobante:</label>
-                <input type="file" name="comprobante" required><br>
-                <button type="submit">Enviar Justificación</button>
-            </form>
-        `;
-        chatBody.scrollTop = chatBody.scrollHeight;
+        let html = `<b>Tus cursos y tareas:</b><div class="cb-divider"></div>`;
 
-        // PERMITIR HOY Y DÍAS ANTERIORES (NO FUTURO)
-        const inputFecha = document.getElementById("fecha_ausencia");
-        const ahora = new Date();
-        ahora.setMinutes(ahora.getMinutes() - ahora.getTimezoneOffset());
-        const hoy = ahora.toISOString().split("T")[0];
+        cursos.forEach(c => {
+          const nombreCurso = escapeHtml(c.nombre || c.Nombre || "Curso");
+          html += `<div style="margin-bottom:10px;">
+                    <div><b>${nombreCurso}</b></div>`;
 
-        inputFecha.max = hoy;              // bloquea fechas futuras
-        inputFecha.removeAttribute("min"); // permite fechas pasadas
-        inputFecha.value = hoy;            // deja hoy por defecto
-    })
-    .catch(err=>{
-        console.error(err);
-        chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error de conexión al cargar cursos</div>`;
-    });
-}
+          const tareas = (c.tareas || c.Tareas || []);
+          if(!tareas.length){
+            html += `<div class="cb-small">Sin tareas registradas.</div>`;
+          }else{
+            tareas.forEach(t => {
+              const id = t.id ?? t.Id_Tarea ?? t.Id ?? null;
+              const titulo = escapeHtml(t.titulo || t.Titulo || "Tarea");
+              const pendientes = Number(t.pendientes ?? t.Pendientes ?? 0);
 
-    
-// Manejo del envío de la justificación
-chatBody.addEventListener("submit", function(event) {
-    const form = event.target;
-    if (form.id !== "justificacion-form") return;
-    event.preventDefault();
+              html += `<div class="cb-small" style="margin-top:6px;">
+                        • ${titulo}
+                        <span class="cb-pill">⏰ ${pendientes} pendientes</span>
+                      </div>`;
 
-    const formData = new FormData(form);
-    formData.append("id_estudiante", idUsuario);
-
-    fetch('/Aula-Virtual-Santa-Teresita/view/Home/enviar_justificacion.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.ok) chatBody.innerHTML += `<div><b>Bot:</b> ✅ ${data.mensaje}</div>`;
-        else chatBody.innerHTML += `<div><b>Bot:</b> ❌ ${data.error}</div>`;
-        chatBody.scrollTop = chatBody.scrollHeight;
-        form.remove();
-    })
-    .catch(err => {
-        console.error(err);
-        chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error de conexión</div>`;
-        chatBody.scrollTop = chatBody.scrollHeight;
-    });
-});
-
-    function cargarJustificaciones() {
-        fetch('/Aula-Virtual-Santa-Teresita/view/Home/obtener_justificaciones.php')
-        .then(res => res.json())
-        .then(data => {
-            if(!data.ok){ chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error al cargar</div>`; return; }
-            chatBody.innerHTML += `<div style="margin-top:10px;"><b>Justificaciones pendientes:</b></div>`;
-            data.justificaciones.forEach(j=>{
-                chatBody.innerHTML += `
-                    <div style="border:1px solid #ccc; padding:5px; margin:5px 0; border-radius:5px;">
-                        <b>Estudiante:</b> ${j.Nombre}<br>
-                        <b>Fecha:</b> ${j.fecha_ausencia}<br>
-                        <a href="${j.comprobante}" target="_blank">Ver comprobante</a><br>
-                        <b>Estado:</b> ${j.estado}<br>
-                        ${j.estado==='pendiente'?`
-                            <button data-id="${j.id}" data-accion="aprobar">Aprobar</button> 
-                            <button data-id="${j.id}" data-accion="denegar">Denegar</button>
-                        `:''}
-                    </div>
-                `;
+              if(id && pendientes > 0){
+                html += `<button class="cb-btn primary"
+                              data-action="recordatorio"
+                              data-id-tarea="${String(id)}">
+                          Enviar recordatorio
+                        </button>`;
+              }else{
+                html += `<div class="cb-small">🎉 Todos entregaron</div>`;
+              }
             });
-            chatBody.scrollTop = chatBody.scrollHeight;
+          }
+
+          html += `</div>`;
+        });
+
+        addMsg("bot", html);
+      })
+      .catch(() => addMsg("bot","❌ Error de conexión al cargar cursos/tareas."));
+  }
+
+  // Click en botones dentro del chat (delegado)
+  chatBody.addEventListener("click", function(e){
+    const btn = e.target.closest("button");
+    if(!btn) return;
+
+    const action = btn.dataset.action;
+    if(action === "recordatorio"){
+      const idTarea = btn.dataset.idTarea;
+      if(!idTarea) return;
+
+      btn.disabled = true;
+      btn.textContent = "Enviando...";
+
+      fetch(`/Aula-Virtual-Santa-Teresita/view/Home/Enviar.php?id_tarea=${encodeURIComponent(idTarea)}`)
+        .then(r => r.json())
+        .then(data => {
+          if(data && data.ok){
+            addMsg("bot", `📧 Recordatorios enviados: <b>${escapeHtml(String(data.enviados ?? 0))}</b>`);
+          }else{
+            addMsg("bot", "❌ No se pudieron enviar los recordatorios.");
+          }
         })
-        .catch(err=>{
-            console.error(err);
-            chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error de conexión</div>`;
-            chatBody.scrollTop = chatBody.scrollHeight;
+        .catch(() => addMsg("bot","❌ Error de conexión al enviar recordatorios."))
+        .finally(() => {
+          btn.disabled = false;
+          btn.textContent = "Enviar recordatorio";
         });
     }
+  });
 
-    // APROBAR / DENEGAR
-    chatBody.addEventListener("click", function(event){
-        const btn = event.target;
-        if(btn.tagName !== "BUTTON") return;
+  // =========================
+  // ESTUDIANTE: tareas pendientes
+  // Endpoint: /view/Home/obtener_tareas.php => array
+  // =========================
+  function obtenerTareasPendientes(){
+    addMsg("bot","Buscando tareas pendientes...");
 
-        const id = btn.dataset.id;
-        const accion = btn.dataset.accion;
-        if(!id || !accion) return;
-
-        const formData = new FormData();
-        formData.append('id', id);
-        formData.append('accion', accion);
-
-        fetch('/Aula-Virtual-Santa-Teresita/view/Home/procesar_justificacion.php',{method:'POST',body:formData})
-        .then(res=>res.json())
-        .then(data=>{
-            if(data.ok) chatBody.innerHTML += `<div><b>Bot:</b> ✅ ${data.mensaje}</div>`;
-            else chatBody.innerHTML += `<div><b>Bot:</b> ❌ ${data.error}</div>`;
-            chatBody.scrollTop = chatBody.scrollHeight;
-            cargarJustificaciones();
-        })
-        .catch(err=>{
-            console.error(err);
-            chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error de conexión</div>`;
-            chatBody.scrollTop = chatBody.scrollHeight;
-        });
-    });
-
-    // FUNCIONES DE CURSOS / TAREAS
-    function mostrarCursosYTareas() {
-        fetch('/Aula-Virtual-Santa-Teresita/view/Home/obtener_cursos_tareas.php')
-        .then(res => res.json())
-        .then(data => {
-            if (!data.ok) { chatBody.innerHTML += `<div><b>Bot:</b> ❌ ${data.error}</div>`; return; }
-            if (data.cursos.length === 0) chatBody.innerHTML += `<div><b>Bot:</b> No tienes cursos asignados 😢</div>`;
-            else {
-                data.cursos.forEach(curso => {
-                    let html = `<div><b>Curso:</b> ${curso.nombre}</div>`;
-                    curso.tareas.forEach(tarea => {
-                        html += `<div>- Tarea: ${tarea.titulo} `;
-                        if (tarea.pendientes > 0) html += `(⏰ ${tarea.pendientes} estudiantes no han entregado) <button onclick="enviarRecordatorio(${tarea.id})">Enviar recordatorio</button>`;
-                        else html += `(🎉 Todos entregaron)`;
-                        html += `</div>`;
-                    });
-                    chatBody.innerHTML += `<div>${html}</div>`;
-                });
-            }
-            chatBody.scrollTop = chatBody.scrollHeight;
-        })
-        .catch(err => {
-            chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error al cargar cursos y tareas</div>`;
-            console.error(err);
-        });
-    }
-
-    window.enviarRecordatorio = function(idTarea) {
-        fetch(`/Aula-Virtual-Santa-Teresita/view/Home/Enviar.php?id_tarea=${idTarea}`)
-        .then(res => res.json())
-        .then(data => {
-            if (data.ok) chatBody.innerHTML += `<div><b>Bot:</b> 📧 ${data.enviados} recordatorios enviados correctamente</div>`;
-            else chatBody.innerHTML += `<div><b>Bot:</b> ❌ ${data.error || 'Error al enviar correos'}</div>`;
-            chatBody.scrollTop = chatBody.scrollHeight;
-        })
-        .catch(err => {
-            chatBody.innerHTML += `<div><b>Bot:</b> ❌ Error en la conexión</div>`;
-            console.error(err);
-        });
-    };
-
-  function obtenerTareasPendientes() {
     fetch("/Aula-Virtual-Santa-Teresita/view/Home/obtener_tareas.php")
       .then(r => r.json())
       .then(data => {
-        if (!data || data.length === 0) {
-          body.innerHTML += `<div><b>Bot:</b> No tienes tareas pendientes 🎉</div>`;
-        } else {
-          let html = "<b>Bot:</b> Tienes estas tareas:<br>";
-          data.forEach(t => {
-            html += `• <b>${t.Titulo}</b> (Entrega: ${t.Fecha_Entrega})<br>`;
-          });
-          body.innerHTML += `<div>${html}</div>`;
+        if (!data || !Array.isArray(data) || data.length === 0) {
+          addMsg("bot","No tienes tareas pendientes 🎉");
+          return;
         }
+        let html = "<b>Tus tareas pendientes:</b><div class='cb-divider'></div>";
+        data.forEach(t => {
+          html += `• <b>${escapeHtml(t.Titulo ?? t.titulo ?? "Tarea")}</b>
+                  <span class="cb-pill">Entrega: ${escapeHtml(t.Fecha_Entrega ?? t.fecha ?? "-")}</span><br>`;
+        });
+        addMsg("bot", html);
       })
-      .catch(() => {
-        body.innerHTML += `<div><b>Bot:</b> Error al obtener tareas.</div>`;
-      });
+      .catch(() => addMsg("bot","❌ Error al obtener tareas."));
+  }
+
+  // =========================
+  // ESTUDIANTE: justificación
+  // Endpoints:
+  //  - /view/Home/obtener_cursos.php?id_estudiante=ID => { ok:true, cursos:[{Id_Curso,Nombre}] }
+  //  - /view/Home/enviar_justificacion.php POST(FormData) => { ok:true, mensaje:"..." }
+  // =========================
+  function manejarJustificacion(){
+    addMsg("bot","Ok ✅ Vamos a enviar una justificación. Cargando cursos...");
+
+    fetch(`/Aula-Virtual-Santa-Teresita/view/Home/obtener_cursos.php?id_estudiante=${encodeURIComponent(idUsuario)}`)
+      .then(res => res.json())
+      .then(data => {
+        if(!data || !data.ok){
+          addMsg("bot","❌ No pude cargar cursos.");
+          return;
+        }
+
+        const cursos = data.cursos || [];
+        let opciones = '<option value="">--Selecciona un curso--</option>';
+        cursos.forEach(c => {
+          opciones += `<option value="${escapeAttr(String(c.Id_Curso))}">${escapeHtml(c.Nombre)}</option>`;
+        });
+
+        addMsg("bot", `
+          <b>Formulario de justificación</b>
+          <div class="cb-small">Completa y envía:</div>
+
+          <form id="justificacion-form" style="margin-top:8px;">
+            <div style="display:grid; gap:8px;">
+              <select name="id_curso" required
+                style="padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.10);color:#fff;">
+                ${opciones}
+              </select>
+
+              <input type="date" name="fecha_ausencia" required
+                style="padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.10);color:#fff;">
+
+              <input type="file" name="comprobante" required
+                style="padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.10);color:#fff;">
+
+              <button type="submit" class="cb-btn primary">Enviar justificación</button>
+            </div>
+          </form>
+        `);
+
+        // limitar fecha: no futuro
+        const form = document.getElementById("justificacion-form");
+        const inputDate = form.querySelector('input[type="date"]');
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        inputDate.max = now.toISOString().split("T")[0];
+      })
+      .catch(() => addMsg("bot","❌ Error de conexión al cargar cursos."));
+  }
+
+  // Enviar form de justificación (delegado)
+  chatBody.addEventListener("submit", function(e){
+    const form = e.target;
+    if(form.id !== "justificacion-form") return;
+
+    e.preventDefault();
+    const formData = new FormData(form);
+    formData.append("id_estudiante", idUsuario);
+
+    addMsg("bot","Enviando justificación...");
+
+    fetch("/Aula-Virtual-Santa-Teresita/view/Home/enviar_justificacion.php", {
+      method:"POST",
+      body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+      if(data && data.ok) addMsg("bot", "✅ " + escapeHtml(data.mensaje || "Justificación enviada."));
+      else addMsg("bot", "❌ " + escapeHtml(data.error || "No se pudo enviar."));
+      form.remove();
+    })
+    .catch(() => addMsg("bot","❌ Error de conexión al enviar."));
+  });
+
+  // Helpers: evitar inyectar HTML raro desde inputs
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, (m) => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+  }
+  function escapeAttr(str){
+    return String(str).replace(/"/g, "&quot;");
   }
 });
 </script>
 
-</body>
-</html>
+<?php endif; ?>

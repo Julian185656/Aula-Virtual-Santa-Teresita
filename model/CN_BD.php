@@ -5,7 +5,7 @@ class CN_BD
     public function conectar()
     {
         $server   = "tcp:serverab.database.windows.net,1433";
-        $database = "NuevaSanta";
+        $database = "SantaTere";
         $user     = "Julianab@serverab";
         $pass     = "tuguis2004A@";
 

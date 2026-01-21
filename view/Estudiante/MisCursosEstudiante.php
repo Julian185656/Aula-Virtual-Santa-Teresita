@@ -41,18 +41,21 @@ h1{
     font-weight: 700;
 }
 
+/* ✅ CARD SIN ALTURA FIJA (adiós espacio vacío) */
 .card{
-    width: 280px;
-    height: 280px;
+    width: 320px;
     background: rgba(255,255,255,0.06);
     backdrop-filter: blur(10px);
     border-radius: 22px;
     border: 1px solid rgba(255,255,255,0.18);
     box-shadow: 0 8px 25px rgba(0,0,0,0.25);
-    padding: 25px 20px;
+    padding: 22px 20px;
     text-align: center;
     color: #fff;
     transition: 0.3s;
+
+    display: flex;
+    flex-direction: column;
 }
 
 .card:hover{
@@ -61,22 +64,30 @@ h1{
 }
 
 .card h5{
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 6px;
 }
 
+/* ✅ Para que si el texto es largo no desarme todo (2 líneas) */
 .card p{
     font-size: 0.95rem;
     color: rgba(255,255,255,0.85);
-    margin-bottom: 18px;
+    margin: 0;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-/* Contenedor de iconos */
+/* ✅ Iconos al fondo SIN crear espacio extra */
 .icon-group{
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
     gap: 10px;
+
+    margin-top: 16px;      /* separación normal */
 }
 
 /* Botones circulares */
@@ -136,36 +147,36 @@ h1{
                     <div class="card">
 
                         <h5><?= htmlspecialchars($curso['Nombre']) ?></h5>
-                        <p><?= htmlspecialchars($curso['Descripcion']) ?></p>
+                        <p><?= htmlspecialchars($curso['Descripcion'] ?? '') ?></p>
 
                         <div class="icon-group">
 
                             <a class="icon-btn btn-tareas"
-                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/TareasEstudiante.php?idCurso=<?= $curso['Id_Curso'] ?>"
+                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/TareasEstudiante.php?idCurso=<?= (int)$curso['Id_Curso'] ?>"
                                title="Tareas">
                                 <i class="fa-solid fa-list-check"></i>
                             </a>
 
                             <a class="icon-btn btn-foro"
-                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/ForoCursoEstudiante.php?idCurso=<?= $curso['Id_Curso'] ?>"
+                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/ForoCursoEstudiante.php?idCurso=<?= (int)$curso['Id_Curso'] ?>"
                                title="Foro">
                                 <i class="fa-solid fa-comments"></i>
                             </a>
 
                             <a class="icon-btn btn-material"
-                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/Material.php?curso=<?= $curso['Id_Curso'] ?>"
+                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/Material.php?curso=<?= (int)$curso['Id_Curso'] ?>"
                                title="Material">
                                 <i class="fa-solid fa-book-open"></i>
                             </a>
 
                             <a class="icon-btn btn-ranking"
-                               href="/Aula-Virtual-Santa-Teresita/controller/RankingController.php?idCurso=<?= $curso['Id_Curso'] ?>"
+                               href="/Aula-Virtual-Santa-Teresita/controller/RankingController.php?idCurso=<?= (int)$curso['Id_Curso'] ?>"
                                title="Ranking">
                                 <i class="fa-solid fa-trophy"></i>
                             </a>
 
                             <a class="icon-btn btn-encuesta"
-                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/ResponderEncuesta.php?idCurso=<?= $curso['Id_Curso'] ?>"
+                               href="/Aula-Virtual-Santa-Teresita/view/Estudiante/ResponderEncuesta.php?idCurso=<?= (int)$curso['Id_Curso'] ?>"
                                title="Encuestas">
                                 <i class="fa-solid fa-square-poll-horizontal"></i>
                             </a>
