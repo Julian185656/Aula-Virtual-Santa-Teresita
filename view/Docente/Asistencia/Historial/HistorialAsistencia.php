@@ -5,11 +5,8 @@
 <title>Historial de Asistencia</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
-
 <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
 
 <style>
@@ -29,7 +26,6 @@ body{
 
 .container { max-width: 1200px; margin: 0 auto; }
 h2 { color: #fff; text-align: center; margin-bottom: 30px; text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
-
 
 .btn-outline-light {
     border-radius: 15px;
@@ -59,11 +55,7 @@ form select, form input {
     padding: 10px 15px;
 }
 form select option { background-color: #000; color: #fff; }
-form button {
-    border-radius: 15px;
-    padding: 10px 20px;
-}
-
+form button { border-radius: 15px; padding: 10px 20px; }
 
 .card {
     background: rgba(255, 255, 255, 0.05);
@@ -73,30 +65,15 @@ form button {
     color: #fff;
 }
 
-
-.table thead {
-    background: rgba(255,255,255,0.1);
-    font-weight: bold;
-}
-.table td, .table th {
-    color: #fff;
-}
+.table thead { background: rgba(255,255,255,0.1); font-weight: bold; }
+.table td, .table th { color: #fff; }
 .table tr:nth-child(even) { background: rgba(255,255,255,0.02); }
 .table tr:hover { background: rgba(255,255,255,0.1); }
-.badge { font-weight: 500; }
 
-
-.btn-primary {
-    background-color: #6a5acd;
-    border: none;
-}
+.btn-primary { background-color: #6a5acd; border: none; }
 .btn-primary:hover { background-color: #836fff; }
-.btn-outline-primary {
-    color: #fff;
-    border-color: #fff;
-}
+.btn-outline-primary { color: #fff; border-color: #fff; }
 .btn-outline-primary:hover { background-color: rgba(255,255,255,0.15); }
-
 
 .pagination a {
     color: #fff;
@@ -105,6 +82,8 @@ form button {
 }
 .pagination a:hover { background: rgba(255,255,255,0.35); }
 .pagination .active a { background: #6a5acd !important; }
+
+.text-muted { color: rgba(255,255,255,0.65) !important; }
 </style>
 </head>
 
@@ -125,9 +104,9 @@ form button {
             <label class="form-label">Curso</label>
             <select name="curso" class="form-select" required>
                 <option value="">Seleccione un curso</option>
-                <?php foreach($cursos as $c): 
-                    $idC = (int)$c['Id_Curso']; 
-                    $nombreC = $c['Curso'] ?? $c['Nombre'] ?? 'Curso '.$idC;
+                <?php foreach($cursos as $c):
+                    $idC = (int)$c['Id_Curso'];
+                    $nombreC = $c['Curso'] ?? $c['Nombre'] ?? ('Curso '.$idC);
                 ?>
                 <option value="<?= $idC ?>" <?= ($cursoId===$idC)?'selected':'' ?>>
                     <?= htmlspecialchars($nombreC) ?>
@@ -147,16 +126,19 @@ form button {
         </div>
 
         <div class="col-md-2 d-flex justify-content-start align-items-end">
-            <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel-fill me-1"></i> Filtrar</button>
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-funnel-fill me-1"></i> Filtrar
+            </button>
         </div>
     </form>
 
     <div class="row">
 
-   
+        <!-- Panel izquierda: estudiantes -->
         <div class="col-lg-5 mb-4">
             <div class="card shadow-sm h-100 p-3">
                 <h5 class="mb-3"><i class="bi bi-people-fill me-2"></i> Estudiantes del curso</h5>
+
                 <?php if($cursoId<=0): ?>
                     <p class="text-muted">Selecciona un curso para ver la lista de estudiantes.</p>
                 <?php elseif(empty($alumnos)): ?>
@@ -164,7 +146,7 @@ form button {
                 <?php else: ?>
                     <div class="table-responsive">
                         <table class="table table-bordered table-sm mb-0">
-                            <thead class="table-dark">
+                            <thead class="thead-dark">
                                 <tr><th>Nombre</th><th>Correo</th><th>Historial</th></tr>
                             </thead>
                             <tbody>
@@ -173,7 +155,8 @@ form button {
                                         <td><?= htmlspecialchars($al['Nombre']) ?></td>
                                         <td><?= htmlspecialchars($al['Email']) ?></td>
                                         <td class="text-center">
-                                            <a href="?curso=<?= $cursoId ?>&alumno=<?= $al['Id'] ?>&desde=<?= $fechaDesde ?>&hasta=<?= $fechaHasta ?>" class="btn btn-sm btn-outline-primary">
+                                            <a href="?curso=<?= $cursoId ?>&alumno=<?= $al['Id'] ?>&desde=<?= htmlspecialchars($fechaDesde ?? '') ?>&hasta=<?= htmlspecialchars($fechaHasta ?? '') ?>"
+                                               class="btn btn-sm btn-outline-primary">
                                                 <i class="bi bi-list-ul me-1"></i> Ver
                                             </a>
                                         </td>
@@ -186,7 +169,7 @@ form button {
             </div>
         </div>
 
-
+        <!-- Panel derecha: historial -->
         <div class="col-lg-7 mb-4">
             <div class="card shadow-sm h-100 p-3">
                 <h5 class="mb-3"><i class="bi bi-card-checklist me-2"></i> Historial del alumno</h5>
@@ -195,13 +178,17 @@ form button {
                     <p class="text-muted">Selecciona un curso y luego un estudiante para ver su historial.</p>
                 <?php else: ?>
                     <div class="mb-2">
-                        <strong>Alumno:</strong> <?= htmlspecialchars($alumnoNombre) ?><br>
-                        <strong>Curso:</strong> <?= htmlspecialchars($cursoNombre) ?>
+                        <strong>Alumno:</strong> <?= htmlspecialchars($alumnoNombre ?? '') ?><br>
+                        <strong>Curso:</strong> <?= htmlspecialchars($cursoNombre ?? '') ?>
                     </div>
+
                     <div class="mb-2">
-                        <span class="badge bg-success me-1">Presentes: <?= $resumen['presentes'] ?></span>
-                        <span class="badge bg-danger me-1">Ausentes: <?= $resumen['ausentes'] ?></span>
-                        <span class="badge bg-secondary">Total: <?= $resumen['presentes']+$resumen['ausentes'] ?></span>
+                        <span class="badge badge-success mr-1">Presentes: <?= (int)$resumen['presentes'] ?></span>
+                        <span class="badge badge-warning text-dark mr-1">Justificadas: <?= (int)$resumen['justificadas'] ?></span>
+                        <span class="badge badge-danger mr-1">Ausentes: <?= (int)$resumen['ausentes'] ?></span>
+                        <span class="badge badge-secondary">
+                            Total: <?= (int)$resumen['presentes'] + (int)$resumen['justificadas'] + (int)$resumen['ausentes'] ?>
+                        </span>
                     </div>
 
                     <?php if(empty($historial)): ?>
@@ -209,18 +196,24 @@ form button {
                     <?php else: ?>
                         <div class="table-responsive mt-3">
                             <table class="table table-bordered table-striped mb-0">
-                                <thead class="table-dark">
+                                <thead class="thead-dark">
                                     <tr><th>Fecha</th><th>Estado</th></tr>
                                 </thead>
                                 <tbody>
                                     <?php foreach($historial as $h): ?>
+                                        <?php
+                                            $presente = (int)($h['Presente'] ?? 0);
+                                            $justif   = (int)($h['Justificada'] ?? 0);
+                                        ?>
                                         <tr>
                                             <td><?= htmlspecialchars($h['Fecha']) ?></td>
                                             <td>
-                                                <?php if((int)$h['Presente']===1): ?>
-                                                    <span class="badge bg-success">Presente</span>
+                                                <?php if($presente === 1): ?>
+                                                    <span class="badge badge-success">Presente</span>
+                                                <?php elseif($justif === 1): ?>
+                                                    <span class="badge badge-warning text-dark">Justificada</span>
                                                 <?php else: ?>
-                                                    <span class="badge bg-danger">Ausente</span>
+                                                    <span class="badge badge-danger">Ausente</span>
                                                 <?php endif; ?>
                                             </td>
                                         </tr>
@@ -234,14 +227,19 @@ form button {
                                 <ul class="pagination justify-content-center">
                                     <?php for($i=1;$i<=$totalPaginas;$i++): ?>
                                         <li class="page-item <?= ($pagina==$i)?'active':'' ?>">
-                                            <a class="page-link" href="?curso=<?= $cursoId ?>&alumno=<?= $usuarioId ?>&desde=<?= $fechaDesde ?>&hasta=<?= $fechaHasta ?>&pagina=<?= $i ?>"><?= $i ?></a>
+                                            <a class="page-link"
+                                               href="?curso=<?= $cursoId ?>&alumno=<?= $usuarioId ?>&desde=<?= htmlspecialchars($fechaDesde ?? '') ?>&hasta=<?= htmlspecialchars($fechaHasta ?? '') ?>&pagina=<?= $i ?>">
+                                                <?= $i ?>
+                                            </a>
                                         </li>
                                     <?php endfor; ?>
                                 </ul>
                             </nav>
                         <?php endif; ?>
+
                     <?php endif; ?>
                 <?php endif; ?>
+
             </div>
         </div>
 

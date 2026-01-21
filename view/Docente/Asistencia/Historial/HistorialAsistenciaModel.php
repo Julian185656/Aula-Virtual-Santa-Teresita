@@ -12,7 +12,7 @@ class HistorialAsistenciaModel
     }
 
     // Obtener cursos del docente
-     public function obtenerCursosDocente(int $docenteId): array
+    public function obtenerCursosDocente(int $docenteId): array
     {
         try {
             $stmt = $this->pdo->prepare("EXEC aulavirtual.sp_asist_cursos_por_docente :doc");
@@ -48,7 +48,6 @@ class HistorialAsistenciaModel
         }
     }
 
- 
     public function obtenerHistorialAlumno(
         int $cursoId,
         int $usuarioId,
@@ -61,7 +60,7 @@ class HistorialAsistenciaModel
             $desde = $this->normalizarFecha($fechaDesde) ?? '1900-01-01';
             $hasta = $this->normalizarFecha($fechaHasta) ?? date('Y-m-d');
 
-    
+            // Total (para paginación)
             $sqlTotal = "
                 SELECT COUNT(*) AS total
                 FROM aulavirtual.asistencia
@@ -75,14 +74,15 @@ class HistorialAsistenciaModel
             $stmt->bindParam(':desde', $desde);
             $stmt->bindParam(':hasta', $hasta);
             $stmt->execute();
-            $total = (int) $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+            $rowTotal = $stmt->fetch(PDO::FETCH_ASSOC);
+            $total = (int)($rowTotal['total'] ?? 0);
             $stmt->closeCursor();
 
-   
             $offset = ($pagina - 1) * $limite;
 
+            // Traer historial (incluye Justificada)
             $sql = "
-                SELECT Fecha, Presente
+                SELECT Fecha, Presente, Justificada
                 FROM aulavirtual.asistencia
                 WHERE Id_Curso = :curso
                   AND Id_Estudiante = :usuario
@@ -102,12 +102,26 @@ class HistorialAsistenciaModel
             $filas = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
             $stmt->closeCursor();
 
-        
+            // Resumen (por página, según el dataset retornado)
             $presentes = 0;
             $ausentes = 0;
+            $justificadas = 0;
+
             foreach ($filas as $fila) {
-                if ((int)($fila['Presente'] ?? 0) === 1) $presentes++;
-                else $ausentes++;
+                $presente = (int)($fila['Presente'] ?? 0);
+                $justif   = (int)($fila['Justificada'] ?? 0);
+
+                // Regla de prioridad:
+                // 1) Presente=1 -> Presente
+                // 2) Presente=0 y Justificada=1 -> Justificada
+                // 3) Presente=0 y Justificada=0 -> Ausente
+                if ($presente === 1) {
+                    $presentes++;
+                } elseif ($justif === 1) {
+                    $justificadas++;
+                } else {
+                    $ausentes++;
+                }
             }
 
             return [
@@ -115,14 +129,15 @@ class HistorialAsistenciaModel
                 'total' => $total,
                 'resumen' => [
                     'presentes' => $presentes,
-                    'ausentes' => $ausentes
+                    'ausentes' => $ausentes,
+                    'justificadas' => $justificadas
                 ]
             ];
         } catch (\Exception $e) {
             return [
                 'historial' => [],
                 'total' => 0,
-                'resumen' => ['presentes'=>0,'ausentes'=>0]
+                'resumen' => ['presentes' => 0, 'ausentes' => 0, 'justificadas' => 0]
             ];
         }
     }
@@ -130,10 +145,12 @@ class HistorialAsistenciaModel
     private function normalizarFecha(?string $fecha): ?string
     {
         if (!$fecha || trim($fecha) === '') return null;
+
         if (preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $fecha)) {
-            [$d,$m,$y] = explode('/', $fecha);
-            return sprintf('%04d-%02d-%02d', $y,$m,$d);
+            [$d, $m, $y] = explode('/', $fecha);
+            return sprintf('%04d-%02d-%02d', $y, $m, $d);
         }
+
         return substr($fecha, 0, 10); // YYYY-MM-DD
     }
 }
