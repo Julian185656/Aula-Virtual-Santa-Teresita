@@ -333,6 +333,16 @@ $rolActual = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null);
             </div>
           </div>
 
+          <!-- ✅ NUEVO APARTADO -->
+          <div class="col-md-6 col-lg-3">
+            <div class="role-card">
+              <i class="fa fa-file-circle-check"></i>
+              <h4>Solicitudes de Justificación</h4>
+              <p>Revisa comprobantes enviados por estudiantes. Aprueba o deniega.</p>
+              <a href="/Aula-Virtual-Santa-Teresita/view/Docente/Asistencia/Solicitudes/SolicitudesJustificacionController.php">Ir</a>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -455,6 +465,7 @@ $rolActual = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null);
     </div>
   </div>
 </div>
+
 <!-- ===================== Bootstrap 4 JS (OBLIGATORIO para modals) ===================== -->
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
@@ -1001,3 +1012,5 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 <?php endif; ?>
+</body>
+</html>

@@ -105,6 +105,7 @@ form button { border-radius: 15px; padding: 10px 20px; }
             <select name="curso" class="form-select" required>
                 <option value="">Seleccione un curso</option>
                 <?php foreach($cursos as $c):
+                
                     $idC = (int)$c['Id_Curso'];
                     $nombreC = $c['Curso'] ?? $c['Nombre'] ?? ('Curso '.$idC);
                 ?>
