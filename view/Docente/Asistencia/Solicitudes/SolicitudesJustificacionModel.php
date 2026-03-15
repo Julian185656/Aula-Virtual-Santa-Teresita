@@ -134,4 +134,28 @@ class SolicitudesJustificacionModel
 
         return substr($fecha, 0, 10); // YYYY-MM-DD
     }
+
+
+
+public function obtenerCorreoEstudiante(int $idJustificacion): ?array
+{
+    $sql = "
+        SELECT u.Nombre, u.Email
+        FROM aulavirtual.justificaciones j
+        INNER JOIN aulavirtual.usuario u 
+            ON u.Id_Usuario = j.id_estudiante
+        WHERE j.id = :id
+    ";
+
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindParam(':id', $idJustificacion, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->closeCursor();
+
+    return $row ?: null;
+}
+
+
 }

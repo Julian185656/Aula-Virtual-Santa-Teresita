@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once "SolicitudesJustificacionModel.php";
-
+require_once "../../../../controller/EmailHelper.php";
 class SolicitudesJustificacionController
 {
     private $model;
@@ -53,10 +53,38 @@ class SolicitudesJustificacionController
                     );
 
                     if ($ok) {
-                        $mensaje = ($accion === 'aprobar')
-                            ? "✅ Solicitud aprobada y asistencia marcada como justificada."
-                            : "✅ Solicitud denegada.";
-                        $tipo = "success";
+
+    $estudiante = $this->model->obtenerCorreoEstudiante($idJustificacion);
+
+    if ($estudiante) {
+
+    $nombre = $estudiante['Nombre'];
+    $correo = $estudiante['Email'];
+
+    $estadoTexto = $accion === 'aprobar' ? "APROBADA" : "DENEGADA";
+
+    $asunto = "Resultado de tu solicitud de justificación";
+
+    $mensajeEmail = "
+    <h2>Hola $nombre</h2>
+    <p>Tu solicitud de justificación de asistencia ha sido:</p>
+    <h3>$estadoTexto</h3>
+    <p><b>Comentario del docente:</b></p>
+    <p>" . htmlspecialchars($comentarioDoc ?? "Sin comentario") . "</p>
+    <br>
+    <p>Ingresa al Aula Virtual para más detalles.</p>
+    ";
+
+    // Llamada correcta según tu helper
+    EnviarCorreo($asunto, $mensajeEmail, $correo);
+}
+
+    $mensaje = ($accion === 'aprobar')
+        ? "✅ Solicitud aprobada y asistencia marcada como justificada."
+        : "✅ Solicitud denegada.";
+
+    $tipo = "success";
+
                     } else {
                         $mensaje = "No se pudo resolver la solicitud. Puede que ya no esté pendiente.";
                         $tipo = "warning";
