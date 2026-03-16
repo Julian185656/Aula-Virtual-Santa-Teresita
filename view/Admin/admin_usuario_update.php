@@ -4,25 +4,20 @@ require_once __DIR__ . '/../../controller/AuditoriaHelper.php';
 
 $pdo = (new CN_BD())->conectar();
 
+
+
 /* ===============================
    DATOS DEL FORMULARIO
 =============================== */
-$id       = (int)($_POST['Id_Usuario'] ?? 0);
-$nombre   = trim($_POST['Nombre'] ?? '');
-$email    = strtolower(trim($_POST['Email'] ?? ''));
-$telefono = trim($_POST['Telefono'] ?? '');
-$estado   = $_POST['Estado'] ?? 'Activo';
-$rolNuevo = $_POST['Rol'] ?? 'Estudiante';
-
-/*
-$contrasena = $_POST['Contrasena'] ?? '';
-$contrasenaHasheada = !empty($contrasena)
-    ? password_hash($contrasena, PASSWORD_BCRYPT)
-    : null;
-*/
+$id       = isset($_POST['Id_Usuario']) ? (int)$_POST['Id_Usuario'] : 0;
+$nombre   = isset($_POST['Nombre']) ? trim($_POST['Nombre']) : '';
+$email    = isset($_POST['Email']) ? strtolower(trim($_POST['Email'])) : '';
+$telefono = isset($_POST['Telefono']) ? trim($_POST['Telefono']) : '';
+$rolNuevo = isset($_POST['Rol']) ? trim($_POST['Rol']) : 'Estudiante';
+$estado   = isset($_POST['Estado']) ? trim($_POST['Estado']) : 'Activo';
 
 /* ===============================
-   VALIDACIONES BÁSICAS
+   VALIDACIONES
 =============================== */
 if ($id <= 0 || $nombre === '' || $email === '') {
     $_SESSION['error_message'] = 'Datos inválidos.';
@@ -30,27 +25,27 @@ if ($id <= 0 || $nombre === '' || $email === '') {
     exit;
 }
 
-/* Email institucional */
-if (!preg_match('/^[^@\s]+@santateresita\.ac\.cr$/i', $email)) {
-    $_SESSION['error_message'] = 'Solo se permiten correos institucionales.';
+/* validar email */
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $_SESSION['error_message'] = 'Correo inválido.';
     header("Location: admin_usuario_edit.php?id={$id}");
     exit;
 }
 
-/* Teléfono: solo 8 dígitos */
+/* validar telefono */
 if ($telefono !== '' && !preg_match('/^\d{8}$/', $telefono)) {
-    $_SESSION['error_message'] = 'El teléfono debe tener exactamente 8 números.';
+    $_SESSION['error_message'] = 'El teléfono debe tener 8 dígitos.';
     header("Location: admin_usuario_edit.php?id={$id}");
     exit;
 }
 
 /* ===============================
-   DATOS ACTUALES (ANTES DEL CAMBIO)
+   DATOS ACTUALES
 =============================== */
 $stmt = $pdo->prepare("
-    SELECT Email, Rol
-    FROM aulavirtual.usuario
-    WHERE Id_Usuario = ?
+SELECT Email, Rol
+FROM aulavirtual.usuario
+WHERE Id_Usuario = ?
 ");
 $stmt->execute([$id]);
 $actual = $stmt->fetch();
@@ -65,13 +60,13 @@ $emailAnterior = strtolower($actual['Email']);
 $rolAnterior   = $actual['Rol'];
 
 /* ===============================
-   VALIDAR EMAIL DUPLICADO
+   EMAIL DUPLICADO
 =============================== */
 $stmt = $pdo->prepare("
-    SELECT 1
-    FROM aulavirtual.usuario
-    WHERE Email = ?
-      AND Id_Usuario <> ?
+SELECT 1
+FROM aulavirtual.usuario
+WHERE Email = ?
+AND Id_Usuario <> ?
 ");
 $stmt->execute([$email, $id]);
 
@@ -82,58 +77,58 @@ if ($stmt->fetch()) {
 }
 
 /* ===============================
-   ACTUALIZACIÓN
+   UPDATE
 =============================== */
 try {
-    $stmt = $pdo->prepare("
-        UPDATE aulavirtual.usuario
-        SET Nombre   = ?,
-            Email    = ?,
-            Telefono = ?,
-            Rol      = ?,
-            Estado   = ?
-        WHERE Id_Usuario = ?
-    ");
-    $stmt->execute([
-        $nombre,
-        $email,
-        $telefono,
-        $rolNuevo,
-        $estado,
-        $id
-    ]);
 
-    /* ===============================
-       AUDITORÍA
-    =============================== */
-    if ($emailAnterior !== $email) {
-        registrarAuditoria(
-            'CAMBIO_EMAIL',
-            'Gestión de Usuarios',
-            "Email cambiado de {$emailAnterior} a {$email}"
-        );
-    }
+$stmt = $pdo->prepare("
+UPDATE aulavirtual.usuario
+SET
+    Nombre = :nombre,
+    Email = :email,
+    Telefono = :telefono,
+    Rol = :rol,
+    Estado = :estado
+WHERE Id_Usuario = :id
+");
 
-    if ($rolAnterior !== $rolNuevo) {
-        registrarAuditoria(
-            'CAMBIO_ROL',
-            'Gestión de Usuarios',
-            "Rol cambiado de {$rolAnterior} a {$rolNuevo}"
-        );
-    }
+$stmt->execute([
+    ':nombre'   => $nombre,
+    ':email'    => $email,
+    ':telefono' => $telefono,
+    ':rol'      => $rolNuevo,
+    ':estado'   => $estado,
+    ':id'       => $id
+]);
 
-    $_SESSION['success_message'] = 'Usuario actualizado correctamente.';
-    header("Location: admin_usuarios_list.php?ok=1");
-    exit;
-} catch (PDOException $e) {
+/* ===============================
+   AUDITORIA
+=============================== */
+
+if ($emailAnterior !== $email) {
     registrarAuditoria(
-        'ACTUALIZAR_USUARIO',
+        'CAMBIO_EMAIL',
         'Gestión de Usuarios',
-        'Error al actualizar usuario',
-        'Fallido'
+        "Email cambiado de {$emailAnterior} a {$email}"
     );
+}
 
-    $_SESSION['error_message'] = 'Error al actualizar el usuario.';
-    header("Location: admin_usuario_edit.php?id={$id}");
-    exit;
+if ($rolAnterior !== $rolNuevo) {
+    registrarAuditoria(
+        'CAMBIO_ROL',
+        'Gestión de Usuarios',
+        "Rol cambiado de {$rolAnterior} a {$rolNuevo}"
+    );
+}
+
+$_SESSION['success_message'] = 'Usuario actualizado correctamente.';
+header("Location: admin_usuarios_list.php?ok=1");
+exit;
+
+} catch (PDOException $e) {
+
+$_SESSION['error_message'] = 'Error al actualizar usuario.';
+header("Location: admin_usuario_edit.php?id={$id}");
+exit;
+
 }
