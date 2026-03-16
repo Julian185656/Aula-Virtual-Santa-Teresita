@@ -19,7 +19,7 @@ $estados = ['Activo', 'Inactivo'];
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            font-weight: 300;
+            font-weight: 400;
             font-size: 15px;
             line-height: 1.7;
             color: #c4c3ca;
@@ -30,6 +30,8 @@ $estados = ['Activo', 'Inactivo'];
             background-repeat: no-repeat;
             background-size: 300%;
             overflow-x: hidden;
+            background-size:auto;
+background-repeat:repeat;
         }
 
         .card-container {
