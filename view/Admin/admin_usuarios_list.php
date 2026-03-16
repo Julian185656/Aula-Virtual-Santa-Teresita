@@ -52,6 +52,17 @@ $totalPages = (int)ceil($total / $perPage);
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <style>
+
+
+td:last-child{
+  text-align:center;
+}
+
+
+th, td{
+  text-align:center;
+}
+
 :root{
   --bg:#2a2b38;
   --text:#fff;
@@ -212,14 +223,16 @@ tbody tr:hover{
 }
 .actions a,
 .actions button{
-  padding:8px 12px;
+  width:36px;
+  height:36px;
+  padding:0;
   border-radius:12px;
   background:rgba(255,255,255,0.14);
   color:var(--text) !important;
   border:1px solid var(--stroke);
-  display:inline-flex;
+  display:flex;
   align-items:center;
-  gap:6px;
+  justify-content:center;
   text-decoration:none;
   transition:.18s;
   cursor:pointer;
