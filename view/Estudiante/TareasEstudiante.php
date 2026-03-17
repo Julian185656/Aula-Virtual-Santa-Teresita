@@ -14,11 +14,11 @@ $idCurso = $_GET['idCurso'] ?? null;
 $mensaje = '';
 $errores = [];
 
+// ENTREGAR TAREA
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['entregarTarea'])) {
     $idTarea = (int)($_POST['idTarea'] ?? 0);
 
     if ($idTarea && isset($_FILES['archivo']) && $_FILES['archivo']['error'] === 0) {
-
         $rutaCarpeta = $_SERVER['DOCUMENT_ROOT'] . "/Aula-Virtual-Santa-Teresita/uploads/";
         if (!is_dir($rutaCarpeta)) mkdir($rutaCarpeta, 0777, true);
 
@@ -26,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['entregarTarea'])) {
         $rutaDestino = $rutaCarpeta . $nombreArchivo;
 
         if (move_uploaded_file($_FILES['archivo']['tmp_name'], $rutaDestino)) {
-
             $archivoUrl = "/Aula-Virtual-Santa-Teresita/uploads/" . $nombreArchivo;
 
             $sel = $pdo->prepare("SELECT Id_Entrega FROM aulavirtual.entrega_tarea WHERE Id_Tarea=? AND Id_Estudiante=?");
@@ -50,90 +49,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['entregarTarea'])) {
     }
 }
 
+// BORRAR ENTREGA
+if (isset($_POST['borrarEntrega'])) {
+    $idEntrega = (int)($_POST['idEntrega'] ?? 0);
+    if ($idEntrega) {
+        if(TareaModel::borrarEntrega($idEntrega, $idUsuario)){
+            $mensaje = "Entrega borrada correctamente.";
+        } else {
+            $errores[] = "No se pudo borrar la entrega.";
+        }
+    }
+}
+
+// Obtener todas las tareas del estudiante
 $tareas = TareaModel::obtenerTareasEstudiante($idUsuario, $idCurso);
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <title>Mis Tareas</title>
-
 <link href="/Aula-Virtual-Santa-Teresita/view/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
 <style>
-body{
-    font-family:'Poppins',sans-serif;
-    background:#2a2b38 url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg') repeat;
-    padding:40px 15px;
-    color:#c4c3ca;
-}
+body{font-family:'Poppins',sans-serif;background:#2a2b38 url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg') repeat;padding:40px 15px;color:#c4c3ca;}
 h2{color:#fff;text-align:center;margin-bottom:30px;}
-
-#confirmModal .modal-header,
-#confirmModal .modal-footer {
-    border: none;
-}
-
-.card{
-    background:rgba(255,255,255,.05);
-    backdrop-filter:blur(10px);
-    border-radius:18px;
-    padding:20px;
-    margin-bottom:20px;
-    box-shadow:0 8px 25px rgba(0,0,0,.35);
-}
-
-.btn-entregar,.btn-file{
-    background:rgba(255,255,255,.15);
-    color:#fff;
-    border:none;
-    border-radius:10px;
-    padding:8px 16px;
-}
-.btn-entregar:hover,.btn-file:hover{
-    background:rgba(255,255,255,.30);
-}
-
+.card{background:rgba(255,255,255,.05);backdrop-filter:blur(10px);border-radius:18px;padding:20px;margin-bottom:20px;box-shadow:0 8px 25px rgba(0,0,0,.35);}
+.btn-entregar,.btn-file,.btn-borrar{background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:10px;padding:8px 16px;margin-top:5px;}
+.btn-entregar:hover,.btn-file:hover,.btn-borrar:hover{background:rgba(255,255,255,.30);}
 input[type=file]{display:none;}
-
-.archivo-nombre{
-    font-size:.9rem;
-    color:#4dd0e1;
-    margin-top:6px;
-}
-
-/* MODAL OSCURO */
-.modal-content{
-    background-color:#343a40;
-    color:#fff;
-    border-radius:8px;
-}
-.modal-header,
-.modal-footer{
-    border-color:#495057;
-}
-.btn-close{
-    filter:invert(1);
-}
-
-/* ALERTA OSCURA */
-.alert-dark-custom{
-    background: rgba(255,255,255,0.08);
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 12px;
-    padding: 15px;
-}
+.archivo-nombre{font-size:.9rem;color:#4dd0e1;margin-top:6px;}
+.alert-dark-custom{background: rgba(255,255,255,0.08);color: #fff;border: 1px solid rgba(255,255,255,0.2);border-radius: 12px;padding: 15px;}
 </style>
 </head>
-
 <body>
 
-<a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php"
-class="btn btn-outline-light mb-3" style="border-radius:15px;">
-<i class="fa fa-arrow-left"></i> Volver
-</a>
+<a href="/Aula-Virtual-Santa-Teresita/view/Estudiante/MisCursosEstudiante.php" class="btn btn-outline-light mb-3" style="border-radius:15px;">
+<i class="fa fa-arrow-left"></i> Volver</a>
 
 <h2>Mis Tareas</h2>
 
@@ -142,103 +95,50 @@ class="btn btn-outline-light mb-3" style="border-radius:15px;">
 <?php endif; ?>
 
 <?php if (!empty($errores)): ?>
-    <?php foreach ($errores as $e): ?>
-        <div class="alert alert-danger text-center"><?= htmlspecialchars($e) ?></div>
-    <?php endforeach; ?>
+<?php foreach ($errores as $e): ?>
+<div class="alert alert-danger text-center"><?= htmlspecialchars($e) ?></div>
+<?php endforeach; ?>
 <?php endif; ?>
 
-<div class="container">
-<div class="row">
-
+<div class="container"><div class="row">
 <?php if (!empty($tareas)): ?>
-    <?php foreach ($tareas as $tarea): ?>
-        <div class="col-lg-6">
-        <div class="card">
+<?php foreach ($tareas as $tarea): ?>
+<div class="col-lg-6">
+<div class="card">
+<h5><?= htmlspecialchars($tarea['Titulo']) ?></h5>
+<p><?= htmlspecialchars($tarea['Descripcion']) ?></p>
+<p><strong>Fecha límite:</strong> <?= htmlspecialchars($tarea['FechaLimite'] ?? 'No definida') ?></p>
 
-            <h5><?= htmlspecialchars($tarea['Titulo']) ?></h5>
-            <p><?= htmlspecialchars($tarea['Descripcion']) ?></p>
-            <p><strong>Entrega:</strong> <?= htmlspecialchars($tarea['Fecha_Entrega']) ?></p>
-
-            <form method="POST" enctype="multipart/form-data" class="form-entrega">
-                <input type="hidden" name="idTarea" value="<?= (int)$tarea['Id_Tarea'] ?>">
-                <input type="hidden" name="entregarTarea" value="1">
-
-                <label for="archivo-<?= $tarea['Id_Tarea'] ?>" class="btn-file">
-                    Seleccionar archivo
-                </label>
-                <input type="file" name="archivo" id="archivo-<?= $tarea['Id_Tarea'] ?>" required>
-
-                <div id="archivo-nombre-<?= $tarea['Id_Tarea'] ?>" class="archivo-nombre">
-                    Ningún archivo seleccionado
-                </div>
-
-                <button type="button" class="btn-entregar mt-3 btn-confirmar">
-                    Entregar
-                </button>
-            </form>
-
-        </div>
-        </div>
-    <?php endforeach; ?>
+<?php if(!empty($tarea['Archivo_URL'])): ?>
+    <p><strong>Archivo entregado:</strong> <a href="<?= htmlspecialchars($tarea['Archivo_URL']) ?>" target="_blank">Ver archivo</a></p>
+    <p><strong>Calificación:</strong> <?= isset($tarea['Calificacion']) && $tarea['Calificacion'] !== null ? htmlspecialchars($tarea['Calificacion']) : 'Pendiente' ?></p>
+    <p><strong>Comentario:</strong> <?= isset($tarea['Comentario']) && $tarea['Comentario'] !== null ? htmlspecialchars($tarea['Comentario']) : '-' ?></p>
+    <form method="POST">
+        <input type="hidden" name="idEntrega" value="<?= (int)($tarea['Id_Entrega'] ?? 0) ?>">
+        <button type="submit" name="borrarEntrega" class="btn-borrar">Borrar entrega</button>
+    </form>
 <?php else: ?>
-    <div class="col-12 text-center mt-5">
-        <div class="alert-dark-custom">
-            No tienes tareas asignadas por ahora.
-        </div>
-    </div>
+<form method="POST" enctype="multipart/form-data" class="form-entrega">
+    <input type="hidden" name="idTarea" value="<?= (int)$tarea['Id_Tarea'] ?>">
+    <input type="hidden" name="entregarTarea" value="1">
+    <label for="archivo-<?= $tarea['Id_Tarea'] ?>" class="btn-file">Seleccionar archivo</label>
+    <input type="file" name="archivo" id="archivo-<?= $tarea['Id_Tarea'] ?>" required>
+    <div id="archivo-nombre-<?= $tarea['Id_Tarea'] ?>" class="archivo-nombre">Ningún archivo seleccionado</div>
+    <button type="submit" class="btn-entregar mt-3">Entregar</button>
+</form>
 <?php endif; ?>
 
 </div>
 </div>
-
-<!-- MODAL CONFIRMACIÓN BOOTSTRAP -->
-<div class="modal fade" id="confirmModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h5 class="modal-title">Confirmar entrega</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body">
-        ¿Deseas entregar este archivo?
-        <div id="archivoConfirmado" class="archivo-nombre mt-2"></div>
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn btn-outline-light" data-bs-dismiss="modal">
-          Cancelar
-        </button>
-        <button class="btn btn-danger" id="btnConfirmarEnvio">
-          Confirmar
-        </button>
-      </div>
-
-    </div>
-  </div>
+<?php endforeach; ?>
+<?php else: ?>
+<div class="col-12 text-center mt-5">
+<div class="alert-dark-custom">No tienes tareas asignadas por ahora.</div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<?php endif; ?>
+</div></div>
 
 <script>
-let formActual=null;
-const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
-
-document.querySelectorAll('.btn-confirmar').forEach(btn=>{
-    btn.onclick=()=>{
-        formActual = btn.closest('form');
-        const file = formActual.querySelector('input[type=file]');
-        document.getElementById('archivoConfirmado').innerText =
-            file.files.length ? file.files[0].name : 'Sin archivo';
-        modal.show();
-    };
-});
-
-document.getElementById('btnConfirmarEnvio').onclick=()=>{
-    if(formActual) formActual.submit();
-};
-
 document.querySelectorAll('input[type=file]').forEach(input=>{
     input.onchange=()=>{
         const id=input.id.split('-')[1];
@@ -247,6 +147,5 @@ document.querySelectorAll('input[type=file]').forEach(input=>{
     };
 });
 </script>
-
 </body>
 </html>

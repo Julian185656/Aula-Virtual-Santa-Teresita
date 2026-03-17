@@ -91,38 +91,27 @@ public function eliminarTarea($idTarea) {
 
 
 
-public static function obtenerTareasEstudiante($idEstudiante, $idCurso = null, $offset = 0, $limite = 10) {
+public static function obtenerTareasEstudiante($idUsuario, $idCurso) {
     global $pdo;
-
-    $sql = "
-        SELECT t.Id_Tarea, t.Titulo, t.Descripcion, t.Fecha_Entrega, c.Nombre AS Curso
-        FROM aulavirtual.Tarea t
-        INNER JOIN aulavirtual.Curso c ON t.Id_Curso = c.Id_Curso
-        INNER JOIN aulavirtual.Matricula m ON c.Id_Curso = m.Id_Curso
-        WHERE m.Id_Estudiante = :idEstudiante
-    ";
-
-    if ($idCurso !== null) {
-        $sql .= " AND c.Id_Curso = :idCurso";
-    }
-
-    $sql .= " ORDER BY t.Fecha_Entrega
-              OFFSET :offset ROWS
-              FETCH NEXT :limite ROWS ONLY";
-
+    $sql = "SELECT t.Id_Tarea, t.Titulo, t.Descripcion, t.Fecha_Entrega AS FechaLimite,
+                   e.Id_Entrega, e.Archivo_URL, e.Calificacion, e.Comentario
+            FROM aulavirtual.tarea t
+            LEFT JOIN aulavirtual.entrega_tarea e
+                   ON t.Id_Tarea = e.Id_Tarea AND e.Id_Estudiante = :idUsuario
+            WHERE t.Id_Curso = :idCurso
+            ORDER BY t.Fecha_Entrega ASC";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':idEstudiante', (int)$idEstudiante, PDO::PARAM_INT);
-
-    if ($idCurso !== null) {
-        $stmt->bindValue(':idCurso', (int)$idCurso, PDO::PARAM_INT);
-    }
-
-    $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-    $stmt->bindValue(':limite', (int)$limite, PDO::PARAM_INT);
-
-    $stmt->execute();
+    $stmt->execute(['idUsuario'=>$idUsuario, 'idCurso'=>$idCurso]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+    public static function borrarEntrega($idEntrega, $idUsuario)
+    {
+        global $pdo;
+        $stmt = $pdo->prepare("DELETE FROM aulavirtual.entrega_tarea WHERE Id_Entrega = :idEntrega AND Id_Estudiante = :idUsuario");
+        $stmt->execute([':idEntrega' => $idEntrega, ':idUsuario' => $idUsuario]);
+        return $stmt->rowCount() > 0;
+    }
 
 
 
