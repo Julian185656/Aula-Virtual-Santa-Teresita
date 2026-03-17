@@ -34,8 +34,9 @@ class RegistrarAsistenciaController
             }
 
             $totalPaginas = $totalRegistros > 0 ? (int)ceil($totalRegistros / $limite) : 1;
+
         } catch (\Exception $e) {
-            $mensaje = " Error al cargar la asistencia: " . $e->getMessage();
+            $mensaje = "Error al cargar la asistencia: " . $e->getMessage();
             $tipo = "danger";
             $cursos = $cursos ?? [];
             $alumnos = [];
@@ -47,14 +48,16 @@ class RegistrarAsistenciaController
             $totalPaginas = 1;
         }
 
+        // Incluimos la vista
         include "RegistrarAsistencia.php";
     }
 
     public function guardar()
     {
+        header('Content-Type: application/json; charset=utf-8'); // ✅ JSON header
         try {
             if (!$this->docenteId) {
-                header("HTTP/1.1 401 Unauthorized");
+                http_response_code(401);
                 echo json_encode(['ok' => false, 'mensaje' => 'No autorizado']);
                 exit;
             }
@@ -78,7 +81,7 @@ class RegistrarAsistenciaController
             $fecha   = $_POST['fecha'] ?? date('Y-m-d');
 
             if ($cursoId <= 0) {
-                header("HTTP/1.1 400 Bad Request");
+                http_response_code(400);
                 echo json_encode(['ok' => false, 'mensaje' => 'Curso inválido']);
                 exit;
             }
@@ -94,12 +97,19 @@ class RegistrarAsistenciaController
 
             $res = $this->model->guardarLoteAsistencia($cursoId, $fecha, $this->docenteId, $items);
 
-            echo json_encode(['ok' => true, 'procesados' => $res['procesados'], 'mensaje' => 'Asistencia guardada']);
+            echo json_encode([
+                'ok' => true,
+                'procesados' => $res['procesados'] ?? count($items),
+                'mensaje' => 'Asistencia guardada correctamente'
+            ]);
             exit;
 
         } catch (\Exception $e) {
-            header("HTTP/1.1 500 Internal Server Error");
-            echo json_encode(['ok' => false, 'mensaje' => 'Error al guardar la asistencia']);
+            http_response_code(500);
+            echo json_encode([
+                'ok' => false,
+                'mensaje' => 'Error al guardar la asistencia: ' . $e->getMessage()
+            ]);
             exit;
         }
     }
