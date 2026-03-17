@@ -22,15 +22,16 @@ class RendimientoModel
                         u.Nombre AS Estudiante,
                         c.Nombre AS Curso,
                         d.Nombre AS Docente,
-                        e.Calificacion,
+                        e.Calificacion AS Nota,
                         e.Comentario,
-                        e.Fecha_Entrega
+                        e.Fecha_Entrega AS Fecha,
+                        t.Titulo AS Evaluacion
                     FROM aulavirtual.entrega_tarea e
                     INNER JOIN aulavirtual.usuario u ON u.Id_Usuario = e.Id_Estudiante
                     INNER JOIN aulavirtual.tarea t ON t.Id_Tarea = e.Id_Tarea
                     INNER JOIN aulavirtual.curso c ON c.Id_Curso = t.Id_Curso
-                    INNER JOIN aulavirtual.curso_docente cd ON cd.Id_Curso = c.Id_Curso
-                    INNER JOIN aulavirtual.usuario d ON d.Id_Usuario = cd.Id_Docente
+                    LEFT JOIN aulavirtual.curso_docente cd ON cd.Id_Curso = c.Id_Curso
+                    LEFT JOIN aulavirtual.usuario d ON d.Id_Usuario = cd.Id_Docente
                     " . ($idCurso ? "WHERE c.Id_Curso = :idCurso" : "") . "
                     ORDER BY e.Fecha_Entrega DESC
                     OFFSET :offset ROWS FETCH NEXT :limite ROWS ONLY";
@@ -69,32 +70,12 @@ class RendimientoModel
         }
     }
 
-    // Obtener resumen de calificaciones
-    public function obtenerResumen()
-    {
-        try {
-            $sql = "SELECT c.Nombre AS Curso, AVG(e.Calificacion) AS Promedio
-                    FROM aulavirtual.entrega_tarea e
-                    INNER JOIN aulavirtual.tarea t ON t.Id_Tarea = e.Id_Tarea
-                    INNER JOIN aulavirtual.curso c ON c.Id_Curso = t.Id_Curso
-                    INNER JOIN aulavirtual.curso_docente cd ON cd.Id_Curso = c.Id_Curso
-                    INNER JOIN aulavirtual.usuario d ON d.Id_Usuario = cd.Id_Docente
-                    GROUP BY c.Nombre";
-            $stmt = $this->pdo->query($sql);
-            $resumen = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            return $resumen ?: [];
-        } catch (Exception $e) {
-            throw new Exception("Error al obtener el resumen de rendimiento: " . $e->getMessage());
-        }
-    }
-
     // Obtener cursos disponibles
     public function obtenerCursos()
     {
         $stmt = $this->pdo->query("
             SELECT DISTINCT c.Id_Curso, c.Nombre 
             FROM aulavirtual.curso c
-            INNER JOIN aulavirtual.curso_docente cd ON cd.Id_Curso = c.Id_Curso
             ORDER BY c.Nombre
         ");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

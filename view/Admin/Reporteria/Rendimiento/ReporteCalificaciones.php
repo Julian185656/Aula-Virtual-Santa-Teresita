@@ -251,11 +251,11 @@ function v_or_dash($value): string {
           <?php if (!empty($reporte)): ?>
             <?php foreach ($reporte as $fila): ?>
               <tr>
-                <td><?= v_or_dash($fila['Estudiante'] ?? $fila['Nombre'] ?? null) ?></td>
-                <td><?= v_or_dash($fila['Curso'] ?? null) ?></td>
-                <td><?= v_or_dash($fila['Evaluacion'] ?? null) ?></td>
-                <td><?= v_or_dash($fila['Nota'] ?? null) ?></td>
-                <td><?= v_or_dash($fila['Fecha'] ?? null) ?></td>
+        <td><?= v_or_dash($fila['Estudiante'] ?? null) ?></td>
+<td><?= v_or_dash($fila['Curso'] ?? null) ?></td>
+<td><?= v_or_dash($fila['Evaluacion'] ?? null) ?></td>
+<td><?= v_or_dash($fila['Nota'] ?? null) ?></td>
+<td><?= v_or_dash($fila['Fecha'] ?? null) ?></td>
               </tr>
             <?php endforeach; ?>
           <?php else: ?>

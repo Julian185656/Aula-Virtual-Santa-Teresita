@@ -16,15 +16,10 @@ class RendimientoController
         $pagina = isset($_GET['pagina']) ? intval($_GET['pagina']) : 1;
         $limite = 15;
 
-        $mensaje = $_GET['msg'] ?? null;
-        $tipo = $_GET['tipo'] ?? 'info';
-
         try {
             // Exportar a Excel
-            if (isset($_GET['export']) && $_GET['export'] == 1) {
-
-                $reporteCompleto = $this->model
-                    ->obtenerReporte($idCurso, 1, 1000000)['reporte'];
+            if (isset($_GET['exportar']) && $_GET['exportar'] == 1) {
+                $reporteCompleto = $this->model->obtenerReporte($idCurso, 1, 1000000)['reporte'];
 
                 header("Content-Type: application/vnd.ms-excel");
                 header("Content-Disposition: attachment; filename=reporte_calificaciones.xls");
@@ -36,6 +31,7 @@ class RendimientoController
                             <th>Estudiante</th>
                             <th>Curso</th>
                             <th>Docente</th>
+                            <th>Evaluacion</th>
                             <th>Calificación</th>
                             <th>Comentario</th>
                             <th>Fecha de Entrega</th>
@@ -46,9 +42,10 @@ class RendimientoController
                         <td>{$fila['Estudiante']}</td>
                         <td>{$fila['Curso']}</td>
                         <td>{$fila['Docente']}</td>
-                        <td>{$fila['Calificacion']}</td>
+                        <td>{$fila['Evaluacion']}</td>
+                        <td>{$fila['Nota']}</td>
                         <td>{$fila['Comentario']}</td>
-                        <td>{$fila['Fecha_Entrega']}</td>
+                        <td>{$fila['Fecha']}</td>
                     </tr>";
                 }
 
@@ -60,16 +57,8 @@ class RendimientoController
             $resultado = $this->model->obtenerReporte($idCurso, $pagina, $limite);
             $reporte = $resultado['reporte'];
             $totalRegistros = $resultado['total'];
-
             $totalPaginas = ceil($totalRegistros / $limite);
             $paginaActual = $pagina;
-
-            // Resumen general
-            if (isset($_GET['verResumen']) && $_GET['verResumen'] == 1) {
-                $resumen = $this->model->obtenerResumen();
-                $mensaje = "Resumen de promedios mostrado correctamente.";
-                $tipo = "success";
-            }
 
             $cursos = $this->model->obtenerCursos();
 
