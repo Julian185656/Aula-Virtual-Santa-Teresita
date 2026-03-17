@@ -127,22 +127,58 @@ if (!empty($_POST['correo']) && !empty($_POST['codigo']) && !empty($_POST['nueva
 
 <style>
 
+.card-3d-wrap{
+width:100%;
+max-width:420px;
+margin:auto;
+}
+
+.card-front{
+padding:35px 30px;
+border-radius:12px;
+min-height:auto;
+display:flex;
+flex-direction:column;
+justify-content:center;
+}
 
 .center-wrap{
-padding:45px 40px;
+position:relative;
+width:100%;
+transform:none;
+top:0;
+padding:0;
+}
+
+.section.text-center{
+width:100%;
 }
 
 .alert-custom{
-font-weight:bold;
-border-radius:8px;
-padding:10px 15px;
-margin-bottom:20px;
+width:100%;
+box-sizing:border-box;
+padding:12px 16px;
+margin-bottom:18px;
+border-radius:10px;
+}
+
+.form-group{
+margin-bottom:16px;
 }
 
 .btn{
+width:100%;
+padding:12px;
 border-radius:8px;
 font-weight:600;
-padding:10px;
+}
+
+.mt-4{
+margin-top:14px !important;
+}
+
+.mt-5{
+margin-top:18px !important;
 }
 
 </style>

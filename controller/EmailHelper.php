@@ -24,7 +24,7 @@ function EnviarCorreo($asunto, $contenido, $destinatario)
         $mail->Username   = $correoSalida;
         $mail->Password   = $contrasennaSalida;
 
-        $mail->setFrom($correoSalida, 'Importadora Mora');
+        $mail->setFrom($correoSalida, 'Escuela Santa Teresita');
         $mail->Subject = $asunto;
         $mail->MsgHTML($contenido);
         $mail->addAddress($destinatario);
