@@ -30,7 +30,6 @@
       overflow-x:hidden;
     }
 
-    /* ✅ MISMA IDEA QUE TUS OTROS MÓDULOS: CONTENIDO CENTRADO Y EL "VOLVER" EN SU CARRIL */
     .page-wrap{
       max-width: 1120px;
       margin: 0 auto;
@@ -80,7 +79,6 @@
       font-weight:700;
     }
 
-    /* FILTROS */
     .filtro-box{
       display:flex;
       flex-wrap:wrap;
@@ -106,7 +104,6 @@
       outline:none;
     }
 
-    /* ✅ Para que el dropdown se vea bien: fondo oscuro y letras claras */
     .filtro-box select option{
       background: #2a2b38;
       color: #fff;
@@ -134,7 +131,6 @@
       text-decoration:none;
     }
 
-    /* CARD */
     .card-glass{
       background:rgba(255,255,255,0.05);
       padding:18px 18px 16px 18px;
@@ -144,7 +140,6 @@
       box-shadow: 0 14px 35px rgba(0,0,0,0.22);
     }
 
-    /* TABLA */
     .table,
     .table th,
     .table td,
@@ -167,7 +162,6 @@
       color:rgba(255,255,255,0.70) !important;
     }
 
-    /* BOTONES mini (todos presentes/ausentes) */
     .mini-actions{
       display:flex;
       gap:8px;
@@ -190,7 +184,6 @@
     }
     .btn-mini:hover{ background:rgba(255,255,255,0.20); }
 
-    /* ESTADO toggle */
     .estado-toggle{
       display:flex;
       gap:8px;
@@ -229,7 +222,6 @@
       border-color:#ef4444;
     }
 
-    /* FOOTER acciones */
     .sticky-actions{
       margin-top: 14px;
       padding: 12px 14px;
@@ -258,7 +250,6 @@
     }
     .btn-guardar:hover{ background:#836fff; }
 
-    /* PAGINACIÓN */
     .pagination .page-link{
       background:rgba(255,255,255,0.10);
       color:#fff;
@@ -275,14 +266,31 @@
       .sticky-actions{ flex-direction: column; align-items: stretch; }
       .btn-guardar{ width: 100%; justify-content:center; }
     }
+
+    /* Mensaje de respuesta bonito */
+    #msg-response{
+      margin-top:12px;
+      text-align:center;
+      font-weight:700;
+      border-radius:12px;
+      padding:10px;
+      display:none;
+    }
+    #msg-response.success{
+      background:rgba(34,197,94,0.15);
+      border:1px solid #22c55e;
+      color:#22c55e;
+    }
+    #msg-response.error{
+      background:rgba(239,68,68,0.15);
+      border:1px solid #ef4444;
+      color:#ef4444;
+    }
   </style>
 </head>
 
 <body>
-
   <div class="page-wrap">
-
-    <!-- ✅ VOLVER COMO EN LOS DEMÁS (NO ESQUINA), DENTRO DEL CONTENIDO -->
     <div class="topbar">
       <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn-volver">
         <i class="bi bi-arrow-left-circle-fill"></i> Volver
@@ -296,51 +304,35 @@
       <?php endif; ?>
     </h2>
 
-    <!-- FILTROS -->
-    <form method="GET" class="filtro-box">
+    <form class="filtro-box" method="GET">
       <input type="date" name="fecha" value="<?= htmlspecialchars($fecha ?? date('Y-m-d')) ?>">
-
       <select name="curso" required>
         <option value="">Seleccione un curso</option>
-
         <?php foreach(($cursos ?? []) as $c):
-          $idC = (int)($c['Id_Curso'] ?? $c['id'] ?? 0);
-          $nombreC = $c['Curso'] ?? $c['Nombre'] ?? $c['nombre'] ?? ('Curso ' . $idC);
+          $idC = (int)($c['Id_Curso'] ?? 0);
+          $nombreC = $c['Curso'] ?? 'Curso '.$idC;
         ?>
-          <option value="<?= $idC ?>"
-            <?= (!empty($cursoId) && (int)$cursoId === $idC) ? 'selected' : '' ?>>
+          <option value="<?= $idC ?>" <?= (!empty($cursoId) && (int)$cursoId === $idC) ? 'selected' : '' ?>>
             <?= htmlspecialchars($nombreC) ?>
           </option>
         <?php endforeach; ?>
       </select>
-
-      <button type="submit">
-        <i class="bi bi-filter"></i> Cargar lista
-      </button>
-
-      <a href="RegistrarAsistenciaController.php">
-        <i class="bi bi-arrow-clockwise"></i> Restablecer
-      </a>
+      <button type="submit"><i class="bi bi-filter"></i> Cargar lista</button>
+      <a href="RegistrarAsistenciaController.php"><i class="bi bi-arrow-clockwise"></i> Restablecer</a>
     </form>
 
     <div class="card-glass">
-
       <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap" style="gap:12px;">
         <h5 class="m-0 font-weight-bold">
           <i class="bi bi-people-fill"></i> Lista de estudiantes
         </h5>
-
         <div class="mini-actions">
-          <button type="button" class="btn-mini" id="btnMarcarTodos">
-            <i class="bi bi-check2-circle"></i> Todos presentes
-          </button>
-          <button type="button" class="btn-mini" id="btnMarcarNadie">
-            <i class="bi bi-x-circle"></i> Todos ausentes
-          </button>
+          <button type="button" class="btn-mini" id="btnMarcarTodos"><i class="bi bi-check2-circle"></i> Todos presentes</button>
+          <button type="button" class="btn-mini" id="btnMarcarNadie"><i class="bi bi-x-circle"></i> Todos ausentes</button>
         </div>
       </div>
 
-      <form method="POST" id="formAsistencia">
+      <form id="formAsistencia">
         <input type="hidden" name="curso" value="<?= (int)($cursoId ?? 0) ?>">
         <input type="hidden" name="fecha" value="<?= htmlspecialchars($fecha ?? date('Y-m-d')) ?>">
 
@@ -348,37 +340,29 @@
           <table class="table table-borderless text-center mb-0">
             <thead>
               <tr>
-                <th style="width:90px;">ID</th>
+                <th>ID</th>
                 <th>Estudiante</th>
                 <th>Correo</th>
                 <th>Curso</th>
-                <th style="width:260px;">Estado</th>
+                <th>Estado</th>
               </tr>
             </thead>
-
             <tbody>
             <?php if(!empty($alumnos)): ?>
               <?php foreach($alumnos as $al):
                 $idEst = (int)$al['Id_Estudiante'];
-                $valor = isset($asistenciaMap[$idEst]) ? (int)$asistenciaMap[$idEst] : 1; // default presente
-                $cursoNombreFila = $al['Curso'] ?? ($al['NombreCurso'] ?? '');
+                $valor = isset($asistenciaMap[$idEst]) ? (int)$asistenciaMap[$idEst] : 1;
+                $cursoNombreFila = $al['Curso'] ?? '';
               ?>
                 <tr>
-                  <td>
-                    <?= $idEst ?>
-                    <input type="hidden" name="estudiante_id[]" value="<?= $idEst ?>">
-                  </td>
+                  <td><?= $idEst ?><input type="hidden" name="estudiante_id[]" value="<?= $idEst ?>"></td>
                   <td><?= htmlspecialchars($al['Nombre'] ?? '') ?></td>
                   <td><?= htmlspecialchars($al['Email'] ?? '') ?></td>
                   <td><?= htmlspecialchars($cursoNombreFila) ?></td>
                   <td>
                     <div class="estado-toggle" data-id="<?= $idEst ?>">
-                      <button type="button" class="toggle-btn btn-presente <?= $valor ? 'active' : '' ?>">
-                        Presente
-                      </button>
-                      <button type="button" class="toggle-btn btn-ausente <?= !$valor ? 'active' : '' ?>">
-                        Ausente
-                      </button>
+                      <button type="button" class="toggle-btn btn-presente <?= $valor ? 'active' : '' ?>">Presente</button>
+                      <button type="button" class="toggle-btn btn-ausente <?= !$valor ? 'active' : '' ?>">Ausente</button>
                       <input type="hidden" name="estado[<?= $idEst ?>]" id="estado-<?= $idEst ?>" value="<?= $valor ?>">
                     </div>
                   </td>
@@ -386,9 +370,7 @@
               <?php endforeach; ?>
             <?php else: ?>
               <tr>
-                <td colspan="5" class="text-muted py-4">
-                  Selecciona un curso y fecha para cargar la lista.
-                </td>
+                <td colspan="5" class="text-muted py-4">Selecciona un curso y fecha para cargar la lista.</td>
               </tr>
             <?php endif; ?>
             </tbody>
@@ -397,59 +379,19 @@
 
         <div class="sticky-actions">
           <div class="text-muted">
-            <?php if(!empty($alumnos)): ?>
-              Mostrando <?= count($alumnos) ?> estudiantes
-            <?php else: ?>
-              —
-            <?php endif; ?>
+            <?php if(!empty($alumnos)): ?>Mostrando <?= count($alumnos) ?> estudiantes<?php else: ?>—<?php endif; ?>
           </div>
-
-          <button type="submit" class="btn-guardar">
-            <i class="bi bi-save"></i> Guardar
-          </button>
+          <button type="submit" class="btn-guardar"><i class="bi bi-save"></i> Guardar</button>
         </div>
       </form>
 
-      <!-- PAGINACIÓN -->
-      <?php if (!empty($cursoId) && (int)($totalPaginas ?? 1) > 1): ?>
-        <nav class="mt-3">
-          <ul class="pagination justify-content-center mb-0">
-            <?php
-              $pActual = (int)($pagina ?? 1);
-              $f = $fecha ?? date('Y-m-d');
-              for ($i = 1; $i <= (int)$totalPaginas; $i++):
-                $qs = http_build_query(['curso'=>$cursoId,'fecha'=>$f,'pagina'=>$i]);
-            ?>
-              <li class="page-item <?= $i === $pActual ? 'active' : '' ?>">
-                <a class="page-link" href="RegistrarAsistenciaController.php?<?= $qs ?>"><?= $i ?></a>
-              </li>
-            <?php endfor; ?>
-          </ul>
-        </nav>
-      <?php endif; ?>
-
-      <!-- ALERTAS -->
-      <?php if (!empty($_GET['ok'])): ?>
-        <div class="alert alert-success mt-3 text-center"
-             style="border-radius:14px;background:rgba(34,197,94,0.15);border:1px solid #22c55e;color:#22c55e;">
-          <i class="bi bi-check-circle-fill"></i>
-          <?= $_GET['ok'] === 'editado' ? '✏️ Asistencia actualizada correctamente' : '✅ Asistencia guardada correctamente' ?>
-        </div>
-      <?php endif; ?>
-
-      <?php if (!empty($_GET['error'])): ?>
-        <div class="alert alert-danger mt-3 text-center"
-             style="border-radius:14px;background:rgba(239,68,68,0.15);border:1px solid #ef4444;color:#ef4444;">
-          <i class="bi bi-x-circle-fill"></i> ❌ Error al guardar la asistencia
-        </div>
-      <?php endif; ?>
-
+      <div id="msg-response"></div>
     </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-    // Toggle presente/ausente por fila
+    // Toggle presente/ausente
     $('.estado-toggle .toggle-btn').click(function(){
       const box = $(this).closest('.estado-toggle');
       box.find('.toggle-btn').removeClass('active');
@@ -477,7 +419,24 @@
         $('#estado-'+id).val(0);
       });
     });
-  </script>
 
+    // AJAX submit
+    $('#formAsistencia').submit(function(e){
+      e.preventDefault();
+      const data = $(this).serialize();
+      $.post('RegistrarAsistenciaController.php', data, function(res){
+        const msg = $('#msg-response');
+        msg.removeClass('success error').hide();
+        if(res.ok){
+          msg.addClass('success').text('✅ Asistencia guardada correctamente').fadeIn();
+        } else {
+          msg.addClass('error').text('❌ '+(res.mensaje||'Error al guardar')).fadeIn();
+        }
+      }, 'json').fail(function(){
+        const msg = $('#msg-response');
+        msg.removeClass('success').addClass('error').text('❌ Error de conexión').fadeIn();
+      });
+    });
+  </script>
 </body>
 </html>
