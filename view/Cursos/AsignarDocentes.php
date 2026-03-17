@@ -61,36 +61,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['asignarProfesores']))
       margin-bottom:14px;
     }
 
-    .btn-volver{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 18px;
-      background:linear-gradient(180deg, var(--glass1), var(--glass2));
-      color:var(--text);
-      border-radius:14px;
-      font-size:15px;
-      border:1px solid var(--stroke);
-      text-decoration:none;
-      transition:.18s;
-      box-shadow:0 10px 26px rgba(0,0,0,.22);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      line-height:1;
-    }
-    .btn-volver:hover{
-      border-color:var(--stroke2);
-      background:rgba(255,255,255,.14);
-      color:var(--text);
-    }
-    .btn-volver i{
-      font-size:16px;
-      line-height:1;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      transform: translateY(1px);
-    }
+.btn-volver {
+  text-decoration: none; /* Quita subrayado */
+  color: var(--text);    /* Color blanco definido */
+  transition: .2s;
+}
+
+.btn-volver:hover,
+.btn-volver:focus {
+  color: var(--text);         /* Mantiene el color blanco */
+  text-decoration: none;      /* Quita subrayado */
+  outline: none;              /* Quita el contorno azul del navegador */
+}
+    
+   .btn-volver{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 18px;
+  background:linear-gradient(180deg,var(--glass1),var(--glass2));
+  color:var(--text);
+  border-radius:14px;
+  border:1px solid var(--stroke);
+  text-decoration:none;
+  transition:.2s;
+}
 
     h1{
       text-align:center;

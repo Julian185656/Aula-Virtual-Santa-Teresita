@@ -41,6 +41,35 @@ if (isset($_GET['eliminar'])) {
 <style>
 
 
+
+
+/* Botones de acción uniformes */
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;       /* tamaño de icono uniforme, un poco más grande */
+    width: 44px;            /* ancho fijo */
+    height: 44px;           /* alto fijo */
+    border-radius: 12px;    /* bordes redondeados */
+    margin-left: 8px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #fff;            /* icono blanco */
+}
+
+/* Colores según tipo */
+.btn-edit { background-color: #4a6cf7; }
+.btn-edit:hover { background-color: #3956d9; }
+
+.btn-delete { background-color: #dc3545; }
+.btn-delete:hover { background-color: #b02a37; }
+
+.btn-eval { background-color: #6c757d; }
+.btn-eval:hover { background-color: #5c636a; }
+
 .modal-content {
     background: rgba(29,30,40,0.95) !important;
     border: 1px solid rgba(255,255,255,0.15) !important;

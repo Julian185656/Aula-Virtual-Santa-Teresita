@@ -62,39 +62,6 @@ $tareas = TareaModel::obtenerTareasEstudiante($idUsuario, $idCurso);
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
 <style>
-
-
-
-.modal-content {
-    background: rgba(29,30,40,0.95) !important;
-    border: 1px solid rgba(255,255,255,0.15) !important;
-    border-radius: 20px !important;
-    box-shadow: none !important;
-}
-
-.modal-header,
-.modal-footer {
-    border: none !important;
-}
-
-.modal-body {
-    font-size: 1rem;
-    opacity: 0.95;
-}
-
-.modal-title {
-    font-weight: 600;
-}
-
-.modal-footer .btn {
-    border-radius: 12px;
-}
-
-
-
-
-
-
 body{
     font-family:'Poppins',sans-serif;
     background:#2a2b38 url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg') repeat;
@@ -103,12 +70,10 @@ body{
 }
 h2{color:#fff;text-align:center;margin-bottom:30px;}
 
-
 #confirmModal .modal-header,
 #confirmModal .modal-footer {
     border: none;
 }
-
 
 .card{
     background:rgba(255,255,255,.05);
@@ -138,7 +103,7 @@ input[type=file]{display:none;}
     margin-top:6px;
 }
 
-/* MODAL OSCURO IGUAL AL DE USUARIOS */
+/* MODAL OSCURO */
 .modal-content{
     background-color:#343a40;
     color:#fff;
@@ -150,6 +115,15 @@ input[type=file]{display:none;}
 }
 .btn-close{
     filter:invert(1);
+}
+
+/* ALERTA OSCURA */
+.alert-dark-custom{
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 15px;
 }
 </style>
 </head>
@@ -167,38 +141,52 @@ class="btn btn-outline-light mb-3" style="border-radius:15px;">
 <div class="alert alert-success text-center"><?= htmlspecialchars($mensaje) ?></div>
 <?php endif; ?>
 
+<?php if (!empty($errores)): ?>
+    <?php foreach ($errores as $e): ?>
+        <div class="alert alert-danger text-center"><?= htmlspecialchars($e) ?></div>
+    <?php endforeach; ?>
+<?php endif; ?>
+
 <div class="container">
 <div class="row">
 
-<?php foreach ($tareas as $tarea): ?>
-<div class="col-lg-6">
-<div class="card">
+<?php if (!empty($tareas)): ?>
+    <?php foreach ($tareas as $tarea): ?>
+        <div class="col-lg-6">
+        <div class="card">
 
-<h5><?= htmlspecialchars($tarea['Titulo']) ?></h5>
-<p><?= htmlspecialchars($tarea['Descripcion']) ?></p>
-<p><strong>Entrega:</strong> <?= htmlspecialchars($tarea['Fecha_Entrega']) ?></p>
+            <h5><?= htmlspecialchars($tarea['Titulo']) ?></h5>
+            <p><?= htmlspecialchars($tarea['Descripcion']) ?></p>
+            <p><strong>Entrega:</strong> <?= htmlspecialchars($tarea['Fecha_Entrega']) ?></p>
 
-<form method="POST" enctype="multipart/form-data" class="form-entrega">
-<input type="hidden" name="idTarea" value="<?= (int)$tarea['Id_Tarea'] ?>">
-<input type="hidden" name="entregarTarea" value="1">
+            <form method="POST" enctype="multipart/form-data" class="form-entrega">
+                <input type="hidden" name="idTarea" value="<?= (int)$tarea['Id_Tarea'] ?>">
+                <input type="hidden" name="entregarTarea" value="1">
 
-<label for="archivo-<?= $tarea['Id_Tarea'] ?>" class="btn-file">
-Seleccionar archivo
-</label>
-<input type="file" name="archivo" id="archivo-<?= $tarea['Id_Tarea'] ?>" required>
+                <label for="archivo-<?= $tarea['Id_Tarea'] ?>" class="btn-file">
+                    Seleccionar archivo
+                </label>
+                <input type="file" name="archivo" id="archivo-<?= $tarea['Id_Tarea'] ?>" required>
 
-<div id="archivo-nombre-<?= $tarea['Id_Tarea'] ?>" class="archivo-nombre">
-Ningún archivo seleccionado
-</div>
+                <div id="archivo-nombre-<?= $tarea['Id_Tarea'] ?>" class="archivo-nombre">
+                    Ningún archivo seleccionado
+                </div>
 
-<button type="button" class="btn-entregar mt-3 btn-confirmar">
-Entregar
-</button>
-</form>
+                <button type="button" class="btn-entregar mt-3 btn-confirmar">
+                    Entregar
+                </button>
+            </form>
 
-</div>
-</div>
-<?php endforeach; ?>
+        </div>
+        </div>
+    <?php endforeach; ?>
+<?php else: ?>
+    <div class="col-12 text-center mt-5">
+        <div class="alert-dark-custom">
+            No tienes tareas asignadas por ahora.
+        </div>
+    </div>
+<?php endif; ?>
 
 </div>
 </div>

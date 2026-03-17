@@ -25,6 +25,44 @@ $rolActual = $_SESSION['usuario']['Rol'] ?? ($_SESSION['rol'] ?? null);
   <link rel="stylesheet" href="../assets/css/lightbox.css">
 
   <style>
+
+
+
+
+
+#chatbot-body form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+#chatbot-body form select,
+#chatbot-body form input[type="text"],
+#chatbot-body form input[type="date"],
+#chatbot-body form input[type="file"],
+#chatbot-body form button {
+  width: 100%;          /* ocupa todo el contenedor */
+  box-sizing: border-box; /* incluye padding dentro del ancho */
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+}
+
+#chatbot-body form button {
+  background-color: #0d6efd; /* azul similar al chat */
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#chatbot-body form button:hover {
+  background-color: #0b5ed7;
+}
+
+
+
     #bg-video{
       position: fixed;
       top: 0; left: 0;

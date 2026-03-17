@@ -22,6 +22,9 @@ $cursos = CursoModel::obtenerCursosEstudiante($estudianteId);
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
+
+
+
 body{
     font-family: 'Poppins', sans-serif;
     font-size: 15px;
@@ -75,7 +78,6 @@ h1{
     margin: 0;
 
     display: -webkit-box;
-    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -100,8 +102,12 @@ h1{
     justify-content: center;
     color: #fff;
     font-size: 18px;
-    text-decoration: none;
+    text-decoration: none !important; /* forzamos que no haya subrayado */
     transition: 0.2s ease;
+}
+
+.icon-btn i {
+    text-decoration: none !important; /* aseguramos que los íconos no tengan subrayado */
 }
 
 .icon-btn:hover{

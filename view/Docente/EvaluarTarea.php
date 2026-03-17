@@ -234,7 +234,27 @@ form {
 
           <?php if ($entregada && $row['Archivo_URL']): ?>
             <div class="mt-2">
-              <a href="<?= htmlspecialchars($row['Archivo_URL']) ?>" target="_blank">Ver archivo</a>
+              <?php
+              $archivoURL = $row['Archivo_URL'];
+
+              // Si es ruta física de Windows la convertimos
+              if (str_starts_with($archivoURL, 'C:\\xampp\\htdocs\\Aula-Virtual-Santa-Teresita\\')) {
+                  $archivoURL = str_replace(
+                      'C:\\xampp\\htdocs\\Aula-Virtual-Santa-Teresita\\',
+                      '/Aula-Virtual-Santa-Teresita/',
+                      $archivoURL
+                  );
+                  $archivoURL = str_replace('\\', '/', $archivoURL);
+              }
+
+              // Codificar nombre de archivo para URL
+              $archivoURL = preg_replace_callback(
+                  '/[^\/]+$/',
+                  fn($m) => urlencode($m[0]),
+                  $archivoURL
+              );
+              ?>
+              <a href="<?= htmlspecialchars($archivoURL) ?>" target="_blank">Ver archivo</a>
             </div>
           <?php endif; ?>
       </div>

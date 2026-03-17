@@ -136,17 +136,30 @@ h1{
   margin-bottom:14px;
 }
 
-/* BOTÓN VOLVER */
-.btn-volver{
+.btn-volver {
+  text-decoration: none; /* Quita subrayado */
+  color: var(--text);    /* Color blanco definido */
+  transition: .2s;
+}
+
+.btn-volver:hover,
+.btn-volver:focus {
+  color: var(--text);         /* Mantiene el color blanco */
+  text-decoration: none;      /* Quita subrayado */
+  outline: none;              /* Quita el contorno azul del navegador */
+}
+    
+   .btn-volver{
   display:inline-flex;
   align-items:center;
   gap:8px;
   padding:10px 18px;
-  background:linear-gradient(180deg, var(--glass1), var(--glass2));
+  background:linear-gradient(180deg,var(--glass1),var(--glass2));
   color:var(--text);
   border-radius:14px;
   border:1px solid var(--stroke);
   text-decoration:none;
+  transition:.2s;
 }
 
 .glass-card{
