@@ -19,276 +19,258 @@ $error = $_GET['error'] ?? '';
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Gestión de Notificaciones</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,600,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 
+  <style>
+    :root{
+      --bg:#2a2b38;
+      --text:#fff;
+      --muted:rgba(255,255,255,.75);
+      --glass1:rgba(255,255,255,.10);
+      --glass2:rgba(255,255,255,.06);
+      --stroke:rgba(255,255,255,.20);
+      --stroke2:rgba(255,255,255,.30);
+      --shadow:0 14px 44px rgba(0,0,0,.42);
+      --radius:18px;
+    }
 
+    body{
+      font-family:'Poppins',sans-serif;
+      font-size:15px;
+      color:var(--text);
+      padding:40px 25px;
+      background:var(--bg);
+      background-image:url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
+      background-repeat:repeat;
+      background-size:600px;
+    }
 
+    /* FIX: Quitar subrayado del rayo y cualquier enlace de tabla */
+    a, a:hover, a:focus, a:active {
+      text-decoration: none !important;
+      outline: none !important;
+    }
 
-<div class="page-header">
-<a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn-volver">
-<i class="bi bi-arrow-left-circle-fill"></i> Volver
-</a>
-</div>
-<title>Gestión de Notificaciones</title>
+    .page-wrap{ max-width:1200px; margin:0 auto; }
 
+    .page-header{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; margin-bottom:14px;
+    }
 
-<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,600,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    .btn-volver{
+      display:inline-flex; align-items:center; gap:8px; padding:10px 18px;
+      background:linear-gradient(180deg,var(--glass1),var(--glass2));
+      color:var(--text) !important; border-radius:14px; border:1px solid var(--stroke);
+      transition:.2s;
+    }
+    .btn-volver:hover{ border-color:var(--stroke2); background:rgba(255,255,255,.15); }
 
-<style>
+    .title{
+      text-align:center; font-weight:700; font-size:32px;
+      margin:10px 0 22px; text-shadow:0 2px 10px rgba(0,0,0,.35);
+    }
 
+    .glass-card{
+      background:linear-gradient(180deg, var(--glass1), var(--glass2));
+      border:1px solid var(--stroke); border-radius:var(--radius);
+      box-shadow:var(--shadow); backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px); padding:22px; margin-bottom: 20px;
+    }
 
-.btn-volver {
-  text-decoration: none; /* Quita subrayado */
-  color: var(--text);    /* Color blanco definido */
-  transition: .2s;
-}
+    /* Inputs */
+    label{ font-weight:600; font-size:13px; margin-bottom:8px; display:block; opacity:.9; }
+    .form-control, textarea{
+      background:rgba(255,255,255,0.08) !important; border:1px solid var(--stroke) !important;
+      color:#fff !important; border-radius:14px !important; padding:12px 15px !important;
+    }
 
-.btn-volver:hover,
-.btn-volver:focus {
-  color: var(--text);         /* Mantiene el color blanco */
-  text-decoration: none;      /* Quita subrayado */
-  outline: none;              /* Quita el contorno azul del navegador */
-}
+    .btn-accion-principal{
+      width:100%; height:48px; border-radius:14px; border:1px solid var(--stroke);
+      background:rgba(255,255,255,0.12); color:#fff; font-weight:700;
+      transition:.2s; cursor:pointer;
+    }
+
+    /* Tabla */
+    .table{ color:#fff; margin-bottom:0; }
+    .table thead th{ border:none; background:rgba(255,255,255,0.05); }
+    .table td{ border-top:1px solid rgba(255,255,255,0.1); vertical-align:middle; }
+
+    .badge-status{ padding:5px 12px; border-radius:10px; font-size:11px; font-weight:700; }
+    .badge-ok{ background: rgba(40,199,111,0.2); color:#28c76f; border:1px solid rgba(40,199,111,0.3); }
+    .badge-warn{ background: rgba(255,159,67,0.2); color:#ff9f43; border:1px solid rgba(255,159,67,0.3); }
+
+    .btn-tabla{
+      width:38px; height:38px; display:inline-flex; align-items:center; justify-content:center;
+      border-radius:10px; border:1px solid var(--stroke); background:rgba(255,255,255,0.05);
+      color:#fff !important; transition:.2s; margin-left:5px; cursor: pointer;
+      text-decoration: none !important;
+    }
+    .btn-tabla:hover{ background:rgba(255,255,255,0.15); border-color:var(--stroke2); }
+    .btn-danger-tabla:hover{ background:rgba(255,0,0,0.3); border-color:rgba(255,0,0,0.5); }
+
+    /* --- MODAL IDÉNTICO AL DE ELIMINAR CURSO --- */
+    .modal-content{
+      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06)) !important;
+      border:1px solid rgba(255,255,255,0.18) !important;
+      border-radius:20px !important; box-shadow:var(--shadow) !important;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color:var(--text);
+    }
+    .modal-header, .modal-footer{ border:none !important; }
+    .modal-title{ font-weight:700; }
+    .close{ color:#fff !important; opacity:.95 !important; font-size:1.6rem; text-shadow: none !important; }
     
-   .btn-volver{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:10px 18px;
-  background:linear-gradient(180deg,var(--glass1),var(--glass2));
-  color:var(--text);
-  border-radius:14px;
-  border:1px solid var(--stroke);
-  text-decoration:none;
-  transition:.2s;
-}
+    .btn-outline-light{ 
+        border-color:rgba(255,255,255,.30) !important; 
+        border-radius:14px; padding:10px 16px; font-weight:700; 
+    }
+    .btn-danger{ 
+        background:rgba(255,0,0,.55) !important; 
+        border-radius:14px; padding:10px 16px; font-weight:700; 
+        border:1px solid rgba(255,255,255,0.16) !important; 
+    }
+    .btn-danger:hover{ background:rgba(255,0,0,.70) !important; }
+    /* ------------------------------------------- */
 
-
-
-:root{
-  --bg:#2a2b38; --text:#fff; --muted:rgba(255,255,255,.75);
-  --glass1:rgba(255,255,255,.10); --glass2:rgba(255,255,255,.06);
-  --stroke:rgba(255,255,255,.20); --stroke2:rgba(255,255,255,.30);
-  --shadow:0 14px 44px rgba(0,0,0,.42); --radius:18px;
-  --warn:rgba(255, 193, 7, .18); --ok:#28c76f; --pending:#6c757d;
-  --danger:#ff4c4c; --amber:#ff9f43;
-}
-
-body{
-  font-family:'Poppins',sans-serif; background:var(--bg);
-  background-image:url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
-  background-size:600px; background-repeat:repeat; color:var(--text);
-  padding:40px 25px; overflow-x:hidden;
-}
-
-.page-wrap{ max-width:1100px; margin:0 auto; }
-.page-header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
-h1{ text-align:center; font-weight:700; font-size:32px; margin:10px 0 22px; text-shadow:0 2px 10px rgba(0,0,0,.35); }
-
-.btn-volver{
-  display:inline-flex; align-items:center; gap:8px; padding:10px 18px;
-  background:linear-gradient(180deg, var(--glass1), var(--glass2)); color:var(--text);
-  border-radius:14px; font-size:15px; border:1px solid var(--stroke);
-  text-decoration:none; transition:.18s; box-shadow:0 10px 26px rgba(0,0,0,.22);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); line-height:1;
-}
-.btn-volver:hover{ border-color:var(--stroke2); background:rgba(255,255,255,.14); color:var(--text); }
-.btn-volver i{ font-size:16px; line-height:1; display:inline-flex; align-items:center; justify-content:center; transform: translateY(1px); }
-
-.glass-card{ background:linear-gradient(180deg, var(--glass1), var(--glass2)); border:1px solid var(--stroke);
-  border-radius:var(--radius); box-shadow:var(--shadow); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); overflow:hidden; }
-.card-pad{ padding:18px; }
-.section-title{ font-weight:800; margin:0 0 12px; }
-
-label{ font-weight:700; font-size:13px; opacity:.9; }
-.form-control, textarea{ border-radius:14px !important; padding:12px 14px !important; background:rgba(255,255,255,0.08) !important; border:1px solid var(--stroke) !important; color:var(--text) !important; outline:none !important; }
-.form-control::placeholder{ color:rgba(255,255,255,.60) !important; }
-.form-control:focus, textarea:focus{ border-color:var(--stroke2) !important; box-shadow:none !important; }
-
-.btn-save{ width:100%; padding:12px 14px; border-radius:14px; border:1px solid rgba(255,255,255,.20); background:#fff; color:#1f272b; font-weight:900; cursor:pointer; transition:.18s; }
-.btn-save:hover{ background:#e9e9e9; }
-
-.table-wrap{ max-height:420px; overflow:auto; border-radius:16px; }
-.table{ margin:0; color:#fff; }
-.table thead th{ position:sticky; top:0; z-index:2; background:rgba(255,255,255,0.12); border:0 !important; font-weight:900; white-space:nowrap; }
-.table td{ border-top:1px solid rgba(255,255,255,0.10) !important; vertical-align:middle !important; }
-.table tbody tr:nth-child(even){ background:rgba(255,255,255,0.04); }
-.table tbody tr:hover{ background:rgba(255,255,255,0.10); }
-.row-pendiente{ background: var(--warn) !important; }
-
-.badge-pill{ padding:6px 10px; border-radius:999px; font-weight:900; }
-.badge-ok{ background: var(--ok); }
-.badge-pending{ background: var(--pending); }
-
-.btn-icon{ width:38px; height:38px; border-radius:12px; border:1px solid rgba(255,255,255,0.20);
-  background:rgba(255,255,255,0.10); color:#fff; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:.18s; }
-.btn-icon:hover{ border-color:rgba(255,255,255,0.35); background:rgba(255,255,255,0.18); }
-.btn-icon-send{ border-color:rgba(255,159,67,.55); }
-.btn-icon-send:hover{ background:rgba(255,159,67,.18); }
-.btn-icon-del{ border-color:rgba(255,76,76,.55); }
-.btn-icon-del:hover{ background:rgba(255,76,76,.18); }
-
-.alert{ border-radius:14px; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.10); color:#fff; }
-.alert-success{ background:rgba(40,200,90,.18); }
-.alert-danger{ background:rgba(255,76,76,.18); }
-.alert-warning{ background:rgba(255,193,7,.18); }
-
-@media (max-width:520px){ body{ padding:28px 14px; } h1{ font-size:26px; } }
-
-
-body{
-    font-family:'Poppins',sans-serif;
-    background-color:#2a2b38;
-    color:#fff;
-    padding:40px 15px;
-    background-image:url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
-}
-
-.page-wrap{ max-width:1100px; margin:auto; }
-h1{ text-align:center; margin-bottom:20px; font-weight:700; }
-
-.glass-card{ background: rgba(255,255,255,0.08); padding:20px; border-radius:18px; margin-bottom:20px; }
-.table-wrap{ max-height:420px; overflow:auto; border-radius:16px; }
-.table thead th{ position:sticky; top:0; background:rgba(255,255,255,0.12); }
-.row-pendiente{ background: rgba(255,193,7,0.18); }
-
-.btn-icon{ width:38px; height:38px; border-radius:12px; border:1px solid rgba(255,255,255,0.20); background:rgba(255,255,255,0.10); color:#fff; cursor:pointer; margin:2px; }
-.btn-icon:hover{ background:rgba(255,255,255,0.18); }
-
-.modal-content {
-    background: rgba(29,30,40,0.95) !important;
-    border: 1px solid rgba(255,255,255,0.15) !important;
-    border-radius: 20px !important;
-}
-.modal-header, .modal-footer{ border:none !important; }
-</style>
+  </style>
 </head>
+
 <body>
+  <div class="page-wrap">
 
-<div class="page-wrap">
+    <div class="page-header">
+      <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn-volver">
+        <i class="fa-solid fa-circle-arrow-left"></i> Volver
+      </a>
+    </div>
 
-<h1>Gestión de Notificaciones</h1>
+    <h1 class="title"><i class="bi bi-bell-fill"></i> Gestión de Notificaciones</h1>
 
-<?php if ($msg): ?>
-<div class="alert alert-success text-center"><?= htmlspecialchars($msg) ?></div>
-<?php elseif ($error): ?>
-<div class="alert alert-danger text-center"><?= htmlspecialchars($error) ?></div>
-<?php endif; ?>
-
-<!-- CREAR NOTIFICACIÓN -->
-<div class="glass-card">
-    <h5>Crear nueva notificación</h5>
-    <form method="POST" action="/Aula-Virtual-Santa-Teresita/controller/NotificacionController.php">
-        <input type="hidden" name="accion" value="crear">
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label>Asunto</label>
-                <input type="text" name="asunto" class="form-control" required>
+    <div class="row">
+      <div class="col-lg-4 mb-4">
+        <div class="glass-card">
+          <h5 class="mb-4 font-weight-bold">Nueva Notificación</h5>
+          <form method="POST" action="/Aula-Virtual-Santa-Teresita/controller/NotificacionController.php">
+            <input type="hidden" name="accion" value="crear">
+            <div class="form-group">
+              <label>Asunto</label>
+              <input type="text" name="asunto" class="form-control" placeholder="Escriba el asunto..." required>
             </div>
-            <div class="form-group col-md-6">
-                <label>Destinatario</label>
-                <input type="email" name="destinatario" class="form-control" required>
+            <div class="form-group">
+              <label>Destinatario</label>
+              <input type="email" name="destinatario" class="form-control" placeholder="correo@ejemplo.com" required>
             </div>
-            <div class="form-group col-md-6">
-                <label>Fecha de envío</label>
-                <input type="date" name="fecha_envio" class="form-control" required>
+            <div class="form-group">
+              <label>Mensaje</label>
+              <textarea name="mensaje" rows="4" class="form-control" placeholder="Contenido..." required></textarea>
             </div>
-            <div class="form-group col-md-6">
-                <label>Hora de envío</label>
-                <input type="time" name="hora_envio" class="form-control" required>
-            </div>
-            <div class="form-group col-12">
-                <label>Mensaje</label>
-                <textarea name="mensaje" rows="4" class="form-control" required></textarea>
-            </div>
+            <button type="submit" class="btn-accion-principal">
+              <i class="fa-solid fa-paper-plane mr-2"></i> Crear Notificación
+            </button>
+          </form>
         </div>
-        <button type="submit" class="btn btn-light btn-block"><i class="fa-solid fa-paper-plane"></i> Guardar Notificación</button>
-    </form>
-</div>
+      </div>
 
-<!-- HISTORIAL -->
-<div class="glass-card">
-<h5>Historial de Notificaciones</h5>
-<?php if(empty($notificaciones)): ?>
-    <div class="alert alert-warning text-center mb-0">No hay notificaciones registradas.</div>
-<?php else: ?>
-<div class="table-wrap mt-3">
-<table class="table table-borderless text-center">
-<thead>
-<tr>
-<th>Asunto</th>
-<th>Destinatario</th>
-<th>Fecha</th>
-<th>Hora</th>
-<th>Estado</th>
-<th>Acciones</th>
-</tr>
-</thead>
-<tbody>
-<?php foreach($notificaciones as $n): ?>
-<tr class="<?= ($n['Estado'] ?? '')==='Pendiente'?'row-pendiente':'' ?>">
-<td><?= htmlspecialchars($n['Asunto'] ?? '—') ?></td>
-<td><?= htmlspecialchars($n['Destinatario'] ?? '—') ?></td>
-<td><?= !empty($n['Fecha_Envio'])?date('d-m-Y',strtotime($n['Fecha_Envio'])):'—' ?></td>
-<td><?= !empty($n['Hora_Envio'])?date('H:i',strtotime($n['Hora_Envio'])):'—' ?></td>
-<td><?= ($n['Estado'] ?? '')==='Enviada'?'<span class="badge badge-success">Enviada</span>':'<span class="badge badge-warning">Pendiente</span>' ?></td>
-<td>
-<?php if(($n['Estado'] ?? '')==='Pendiente'): ?>
-<form method="POST" action="/Aula-Virtual-Santa-Teresita/controller/NotificacionController.php" class="d-inline">
-<input type="hidden" name="accion" value="enviar_inmediato">
-<input type="hidden" name="id" value="<?= (int)($n['Id_Notificacion'] ?? 0) ?>">
-<button type="submit" class="btn-icon" title="Enviar ahora"><i class="fa-solid fa-paper-plane"></i></button>
-</form>
-<?php endif; ?>
-<!-- BOTÓN MODAL ELIMINAR -->
-<button class="btn-icon" data-toggle="modal" data-target="#deleteModal" data-id="<?= (int)($n['Id_Notificacion'] ?? 0) ?>" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
-</td>
-</tr>
-<?php endforeach; ?>
-</tbody>
-</table>
-</div>
-<?php endif; ?>
-</div>
+      <div class="col-lg-8">
+        <div class="glass-card">
+          <h5 class="mb-4 font-weight-bold">Historial Reciente</h5>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Asunto / Destinatario</th>
+                  <th>Estado</th>
+                  <th class="text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php if(empty($notificaciones)): ?>
+                  <tr><td colspan="3" class="text-center opacity-50">No hay notificaciones</td></tr>
+                <?php else: ?>
+                  <?php foreach($notificaciones as $n): ?>
+                    <tr>
+                      <td>
+                        <div class="font-weight-bold"><?= htmlspecialchars($n['Asunto']) ?></div>
+                        <small class="opacity-50"><?= htmlspecialchars($n['Destinatario']) ?></small>
+                      </td>
+                      <td>
+                        <span class="badge-status <?= ($n['Estado'] === 'Enviada') ? 'badge-ok' : 'badge-warn' ?>">
+                          <?= htmlspecialchars($n['Estado']) ?>
+                        </span>
+                      </td>
+                      <td class="text-right">
+                        <?php if($n['Estado'] === 'Pendiente'): ?>
+                          <a href="/Aula-Virtual-Santa-Teresita/controller/NotificacionController.php?accion=enviar_inmediato&id=<?= $n['Id_Notificacion'] ?>" class="btn-tabla" title="Enviar ahora">
+                            <i class="fa-solid fa-bolt"></i>
+                          </a>
+                        <?php endif; ?>
+                        
+                        <button type="button" class="btn-tabla btn-danger-tabla" 
+                                onclick="confirmarEliminacion(<?= $n['Id_Notificacion'] ?>, '<?= addslashes(htmlspecialchars($n['Asunto'])) ?>')">
+                          <i class="fa-solid fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  <?php endforeach; ?>
+                <?php endif; ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<!-- MODAL CONFIRMAR ELIMINAR -->
-<div class="modal fade" id="deleteModal">
-<div class="modal-dialog modal-dialog-centered">
-<div class="modal-content bg-dark text-white">
-<div class="modal-header">
-<h5 class="modal-title">Confirmar eliminación</h5>
-<button type="button" class="close text-white" data-dismiss="modal">&times;</button>
-</div>
-<div class="modal-body">
-¿Estás seguro de eliminar esta notificación? Esta acción no se puede deshacer.
-</div>
-<div class="modal-footer">
-<button type="button" class="btn btn-outline-light" data-dismiss="modal">Cancelar</button>
-<form method="POST" id="deleteForm" action="/Aula-Virtual-Santa-Teresita/controller/NotificacionController.php">
-<input type="hidden" name="accion" value="eliminar">
-<input type="hidden" name="id" id="deleteId" value="">
-<button type="submit" class="btn btn-danger">Eliminar</button>
-</form>
-</div>
-</div>
-</div>
-</div>
+  <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmar eliminación</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          ¿Estás seguro de que deseas eliminar la notificación: <br>
+          <strong id="notifNombre" style="color:rgba(255,80,80,1);"></strong>?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-light" data-dismiss="modal">
+            Cancelar
+          </button>
+          <button type="button" id="btnConfirmarFinal" class="btn btn-danger">
+            Confirmar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 
-<script>
-// Al abrir modal, asigna el id de la notificación al formulario
-$('#deleteModal').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget);
-    var id = button.data('id');
-    $(this).find('#deleteId').val(id);
-});
-</script>
+  <script>
+    let idAEliminar = null;
 
+    function confirmarEliminacion(id, asunto) {
+        idAEliminar = id;
+        document.getElementById('notifNombre').innerText = asunto;
+        $('#confirmModal').modal('show');
+    }
+
+    document.getElementById('btnConfirmarFinal').addEventListener('click', function() {
+        if (idAEliminar) {
+            // Se ejecuta la eliminación al confirmar
+            window.location.href = `/Aula-Virtual-Santa-Teresita/controller/NotificacionController.php?accion=eliminar&id=${idAEliminar}`;
+        }
+    });
+  </script>
 </body>
 </html>

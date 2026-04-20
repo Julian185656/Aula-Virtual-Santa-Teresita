@@ -65,29 +65,62 @@ body{
   align-items:center;
   justify-content:space-between;
   gap:12px;
-  margin-bottom:14px;
+  margin-bottom:20px;
 }
 
-/* ✅ MISMO VOLVER QUE TU BASE */
-.btn-volver{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:10px 18px;
-  background:linear-gradient(180deg, var(--glass1), var(--glass2));
-  color:var(--text);
-  border-radius:14px;
-  font-size:15px;
-  border:1px solid var(--stroke);
-  text-decoration:none;
-  transition:.18s;
-  box-shadow:0 10px 26px rgba(0,0,0,.22);
+.btn-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: linear-gradient(180deg, var(--glass1), var(--glass2));
+  color: var(--text) !important;
+  border-radius: 14px;
+  font-size: 15px;
+  border: 1px solid var(--stroke);
+  text-decoration: none !important;
+  transition: .18s;
+  box-shadow: 0 10px 26px rgba(0,0,0,.22);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  line-height:1;
 }
-.btn-volver:hover{ border-color:var(--stroke2); background:rgba(255,255,255,.14); color:var(--text); }
-.btn-volver i{ transform: translateY(1px); }
+.btn-volver:hover {
+  border-color: var(--stroke2);
+  background: rgba(255,255,255,.14);
+  transform: translateY(-1px);
+}
+
+/* ESTILO DEL BUSCADOR */
+.search-container {
+  max-width: 500px;
+  margin: 0 auto 30px;
+  position: relative;
+}
+.search-input {
+  width: 100%;
+  padding: 14px 20px 14px 45px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--stroke);
+  border-radius: 15px;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  backdrop-filter: blur(10px);
+  outline: none;
+  transition: 0.3s;
+}
+.search-input:focus {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--stroke2);
+  box-shadow: 0 0 15px rgba(255,255,255,0.05);
+}
+.search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 18px;
+}
 
 h1{
   text-align:center;
@@ -96,22 +129,12 @@ h1{
   margin:10px 0 22px;
   text-shadow:0 2px 10px rgba(0,0,0,.35);
 }
-h1 i{ margin-right:8px; opacity:.95; }
-
-.glass-card{
-  background:linear-gradient(180deg, var(--glass1), var(--glass2));
-  border:1px solid var(--stroke);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
 
 /* GRID */
 .grid{
   display:grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap:18px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap:20px;
 }
 
 /* CARD */
@@ -121,40 +144,31 @@ h1 i{ margin-right:8px; opacity:.95; }
   border:1px solid rgba(255,255,255,0.18);
   background:rgba(255,255,255,0.06);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   box-shadow:0 10px 28px rgba(0,0,0,0.30);
-  transition:.18s;
+  transition:.2s;
   display:flex;
   flex-direction:column;
   min-height: 170px;
 }
 .course-card:hover{
-  transform: translateY(-4px);
-  box-shadow:0 14px 34px rgba(0,0,0,0.40);
+  transform: translateY(-5px);
+  background:rgba(255,255,255,0.10);
 }
 
 .course-title{
   font-size:18px;
   font-weight:800;
   margin:0 0 6px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
 }
 
 .course-desc{
   margin:0;
   font-size:13px;
   color:rgba(255,255,255,.78);
-  line-height:1.35;
-  min-height: 38px;
-  overflow:hidden;
-  display:-webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  line-height:1.4;
+  margin-bottom: 15px;
 }
 
-/* BOTÓN (misma línea que ghost) */
 .btn-ir{
   margin-top:auto;
   display:inline-flex;
@@ -168,23 +182,22 @@ h1 i{ margin-right:8px; opacity:.95; }
   background:rgba(255,255,255,0.14);
   color:var(--text);
   text-decoration:none;
-  font-weight:800;
+  font-weight:700;
   transition:.18s;
-  white-space:nowrap;
 }
 .btn-ir:hover{
-  border-color:var(--stroke2);
   background:rgba(255,255,255,0.22);
 }
 
-.empty{
-  text-align:center;
-  padding:18px;
-  color:rgba(255,255,255,.80);
+#no-results {
+  display: none;
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  opacity: 0.7;
 }
 
 @media (max-width:520px){
-  body{ padding:28px 14px; }
   h1{ font-size:26px; }
 }
 </style>
@@ -195,39 +208,73 @@ h1 i{ margin-right:8px; opacity:.95; }
 
     <div class="page-header">
       <a href="/Aula-Virtual-Santa-Teresita/view/Home/Home.php" class="btn-volver">
-        <i class="bi bi-arrow-left-circle-fill" aria-hidden="true"></i>
-        Volver
+        <i class="bi bi-arrow-left-circle-fill"></i> Volver
       </a>
-      <div></div>
     </div>
 
-    <h1><i class="bi bi-journal-bookmark-fill" aria-hidden="true"></i>Seleccione un Curso</h1>
+    <h1><i class="bi bi-journal-bookmark-fill"></i> Seleccione un Curso</h1>
+
+    <div class="search-container">
+      <i class="bi bi-search search-icon"></i>
+      <input type="text" id="searchInput" class="search-input" placeholder="Buscar curso por nombre o descripción...">
+    </div>
 
     <?php if (!empty($cursos)): ?>
-      <div class="grid">
+      <div class="grid" id="courseGrid">
         <?php foreach ($cursos as $curso): ?>
-          <div class="course-card">
-            <div class="course-title" title="<?= esc($curso['nombre'] ?? '') ?>">
-              <?= esc($curso['nombre'] ?? '—') ?>
-            </div>
-            <p class="course-desc" title="<?= esc($curso['descripcion'] ?? '') ?>">
-              <?= esc($curso['descripcion'] ?? 'Sin descripción') ?>
-            </p>
+          <div class="course-card" data-nombre="<?= strtolower(esc($curso['nombre'])) ?>" data-desc="<?= strtolower(esc($curso['descripcion'] ?? '')) ?>">
+            <div class="course-title"><?= esc($curso['nombre'] ?? '—') ?></div>
+            <p class="course-desc"><?= esc($curso['descripcion'] ?? 'Sin descripción') ?></p>
 
-            <a class="btn-ir"
-               href="/Aula-Virtual-Santa-Teresita/view/Admin/MaterialAdmin.php?curso=<?= urlencode((string)($curso['id'] ?? '')) ?>">
-              <i class="bi bi-folder2-open" aria-hidden="true"></i>
-              Administrar Material
+            <a class="btn-ir" href="/Aula-Virtual-Santa-Teresita/view/Admin/MaterialAdmin.php?curso=<?= urlencode((string)($curso['id'] ?? '')) ?>">
+              <i class="bi bi-folder2-open"></i> Administrar Material
             </a>
           </div>
         <?php endforeach; ?>
       </div>
+      
+      <div id="no-results" class="glass-card">
+        <i class="bi bi-exclamation-circle"></i> No se encontraron cursos que coincidan con tu búsqueda.
+      </div>
+
     <?php else: ?>
-      <div class="glass-card empty">
+      <div class="glass-card" style="text-align:center; padding:20px;">
         No hay cursos registrados.
       </div>
     <?php endif; ?>
 
   </div>
+
+  <script>
+    // LÓGICA DE FILTRADO EN TIEMPO REAL
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+      const term = e.target.value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.course-card');
+      const grid = document.getElementById('courseGrid');
+      const noResults = document.getElementById('no-results');
+      let hasResults = false;
+
+      cards.forEach(card => {
+        const nombre = card.getAttribute('data-nombre');
+        const desc = card.getAttribute('data-desc');
+
+        if (nombre.includes(term) || desc.includes(term)) {
+          card.style.display = 'flex';
+          hasResults = true;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // Mostrar/Ocultar mensaje de "no hay resultados"
+      if (hasResults) {
+        grid.style.display = 'grid';
+        noResults.style.display = 'none';
+      } else {
+        grid.style.display = 'none';
+        noResults.style.display = 'block';
+      }
+    });
+  </script>
 </body>
 </html>

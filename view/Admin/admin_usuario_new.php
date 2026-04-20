@@ -101,22 +101,27 @@ background-repeat:repeat;
             background: rgba(255, 255, 255, 0.35);
         }
 
-        .btn-back {
-            display: block;
-            text-align: center;
-            margin-top: 12px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            border-radius: 12px;
-            color: #fff;
-            text-decoration: none;
-            transition: 0.25s;
-        }
+.btn-back {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    padding: 12px; /* Igual al padding de .btn-custom */
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 12px;
+    color: #fff !important; /* !important asegura que no cambie a azul */
+    text-decoration: none !important; /* Elimina el subrayado */
+    transition: 0.25s;
+    font-size: 1rem;
+    width: 100%; /* Asegura que mida lo mismo que el botón */
+    box-sizing: border-box; /* Evita que el padding ensanche el botón de más */
+}
 
-        .btn-back:hover {
-            background: rgba(255, 255, 255, 0.35);
-        }
+.btn-back:hover {
+    background: rgba(255, 255, 255, 0.35);
+    color: #fff;
+    text-decoration: none;
+}
     </style>
 </head>
 

@@ -4,8 +4,6 @@ require_once __DIR__ . '/../../controller/AuditoriaHelper.php';
 
 $pdo = (new CN_BD())->conectar();
 
-
-
 /* ===============================
    DATOS DEL FORMULARIO
 =============================== */
@@ -25,16 +23,23 @@ if ($id <= 0 || $nombre === '' || $email === '') {
     exit;
 }
 
-/* validar email */
+/* validar email formato */
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $_SESSION['error_message'] = 'Correo inválido.';
     header("Location: admin_usuario_edit.php?id={$id}");
     exit;
 }
 
-/* validar telefono */
-if ($telefono !== '' && !preg_match('/^\d{8}$/', $telefono)) {
-    $_SESSION['error_message'] = 'El teléfono debe tener 8 dígitos.';
+/* validar dominio del correo */
+if (!preg_match('/^[a-zA-Z0-9._%+-]+@santateresita\.ac\.cr$/', $email)) {
+    $_SESSION['error_message'] = 'El correo debe terminar en @santateresita.ac.cr';
+    header("Location: admin_usuario_edit.php?id={$id}");
+    exit;
+}
+
+/* validar telefono: solo números y 8 dígitos */
+if ($telefono !== '' && !preg_match('/^[0-9]{8}$/', $telefono)) {
+    $_SESSION['error_message'] = 'El teléfono debe contener exactamente 8 números.';
     header("Location: admin_usuario_edit.php?id={$id}");
     exit;
 }
@@ -81,54 +86,51 @@ if ($stmt->fetch()) {
 =============================== */
 try {
 
-$stmt = $pdo->prepare("
-UPDATE aulavirtual.usuario
-SET
-    Nombre = :nombre,
-    Email = :email,
-    Telefono = :telefono,
-    Rol = :rol,
-    Estado = :estado
-WHERE Id_Usuario = :id
-");
+    $stmt = $pdo->prepare("
+    UPDATE aulavirtual.usuario
+    SET
+        Nombre = :nombre,
+        Email = :email,
+        Telefono = :telefono,
+        Rol = :rol,
+        Estado = :estado
+    WHERE Id_Usuario = :id
+    ");
 
-$stmt->execute([
-    ':nombre'   => $nombre,
-    ':email'    => $email,
-    ':telefono' => $telefono,
-    ':rol'      => $rolNuevo,
-    ':estado'   => $estado,
-    ':id'       => $id
-]);
+    $stmt->execute([
+        ':nombre'   => $nombre,
+        ':email'    => $email,
+        ':telefono' => $telefono,
+        ':rol'      => $rolNuevo,
+        ':estado'   => $estado,
+        ':id'       => $id
+    ]);
 
-/* ===============================
-   AUDITORIA
-=============================== */
+    /* ===============================
+       AUDITORIA
+    =============================== */
+    if ($emailAnterior !== $email) {
+        registrarAuditoria(
+            'CAMBIO_EMAIL',
+            'Gestión de Usuarios',
+            "Email cambiado de {$emailAnterior} a {$email}"
+        );
+    }
 
-if ($emailAnterior !== $email) {
-    registrarAuditoria(
-        'CAMBIO_EMAIL',
-        'Gestión de Usuarios',
-        "Email cambiado de {$emailAnterior} a {$email}"
-    );
-}
+    if ($rolAnterior !== $rolNuevo) {
+        registrarAuditoria(
+            'CAMBIO_ROL',
+            'Gestión de Usuarios',
+            "Rol cambiado de {$rolAnterior} a {$rolNuevo}"
+        );
+    }
 
-if ($rolAnterior !== $rolNuevo) {
-    registrarAuditoria(
-        'CAMBIO_ROL',
-        'Gestión de Usuarios',
-        "Rol cambiado de {$rolAnterior} a {$rolNuevo}"
-    );
-}
-
-$_SESSION['success_message'] = 'Usuario actualizado correctamente.';
-header("Location: admin_usuarios_list.php?ok=1");
-exit;
+    $_SESSION['success_message'] = 'Usuario actualizado correctamente.';
+    header("Location: admin_usuarios_list.php?ok=1");
+    exit;
 
 } catch (PDOException $e) {
-
-$_SESSION['error_message'] = 'Error al actualizar usuario.';
-header("Location: admin_usuario_edit.php?id={$id}");
-exit;
-
+    $_SESSION['error_message'] = 'Error al actualizar usuario.';
+    header("Location: admin_usuario_edit.php?id={$id}");
+    exit;
 }

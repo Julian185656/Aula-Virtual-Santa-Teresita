@@ -89,4 +89,27 @@ class AsistenciaModel
             throw new Exception("Error al contar registros: " . $e->getMessage());
         }
     }
+
+public function obtenerAusentismoCritico(): array
+{
+    try {
+        // Buscamos estudiantes que tengan Presente = 0 y los agrupamos
+        // Incluimos el Email para el envío de alertas
+        $sql = "SELECT u.Id_Usuario, u.Nombre, u.Email, c.Nombre AS Curso, 
+                       COUNT(a.Id_Asistencia) AS Total_Faltas
+                FROM aulavirtual.asistencia a
+                INNER JOIN aulavirtual.usuario u ON u.Id_Usuario = a.Id_Estudiante
+                INNER JOIN aulavirtual.curso c ON c.Id_Curso = a.Id_Curso
+                WHERE a.Presente = 0
+                GROUP BY u.Id_Usuario, u.Nombre, u.Email, c.Nombre
+                HAVING COUNT(a.Id_Asistencia) >= 3
+                ORDER BY Total_Faltas DESC";
+        
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    } catch (Exception $e) {
+        throw new Exception("Error en alerta crítica: " . $e->getMessage());
+    }
+}
+
 }

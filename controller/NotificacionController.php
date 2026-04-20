@@ -5,7 +5,7 @@ require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/db.
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/model/NotificacionModel.php";
 require_once $_SERVER["DOCUMENT_ROOT"] . "/Aula-Virtual-Santa-Teresita/controller/EmailHelper.php";
 
-$rol = $_SESSION['rol'] ?? '';
+$rol = $_SESSION['rol'] ?? ($_SESSION['usuario']['Rol'] ?? '');
 
 if (strtolower(trim($rol)) !== 'administrador') {
     header("Location: /Aula-Virtual-Santa-Teresita/view/Login/Login.php");
@@ -14,44 +14,49 @@ if (strtolower(trim($rol)) !== 'administrador') {
 
 $model = new NotificacionModel($pdo);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $accion = $_POST['accion'] ?? '';
+// CAPTURAR ACCION E ID YA SEA POR POST O POR GET
+$accion = $_REQUEST['accion'] ?? ''; 
+$id = $_REQUEST['id'] ?? null;
 
-    switch ($accion) {
-
-        case 'crear':
+switch ($accion) {
+    case 'crear':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $asunto = $_POST['asunto'];
             $mensaje = $_POST['mensaje'];
-            $fecha = $_POST['fecha_envio'];
-            $hora = $_POST['hora_envio'];
+            $fecha = $_POST['fecha_envio'] ?? date('Y-m-d');
+            $hora = $_POST['hora_envio'] ?? date('H:i');
             $destinatario = $_POST['destinatario'];
 
             $model->crearNotificacion($asunto, $mensaje, $fecha, $hora, $destinatario);
 
-            // Enviar correo inmediatamente
             $contenido = "
                 <h2>Notificación - Aula Virtual</h2>
                 <p><strong>Asunto:</strong> $asunto</p>
                 <p>$mensaje</p>
-                <p><strong>Fecha programada:</strong> $fecha $hora</p>
             ";
-
             EnviarCorreo($asunto, $contenido, $destinatario);
 
             header("Location: /Aula-Virtual-Santa-Teresita/view/Admin/Notificaciones.php?msg=notificacion_creada");
-            break;
+        }
+        break;
 
-        case 'eliminar':
-            $model->eliminarNotificacion($_POST['id']);
+    case 'eliminar':
+        if ($id) {
+            $model->eliminarNotificacion($id);
             header("Location: /Aula-Virtual-Santa-Teresita/view/Admin/Notificaciones.php?msg=notificacion_eliminada");
-            break;
+        }
+        break;
 
-        case 'enviar_inmediato':
-            $model->enviarInmediato($_POST['id']);
+    case 'enviar_inmediato':
+        if ($id) {
+            $model->enviarInmediato($id);
             header("Location: /Aula-Virtual-Santa-Teresita/view/Admin/Notificaciones.php?msg=notificacion_enviada");
-            break;
-    }
-
-    exit();
+        }
+        break;
+        
+    default:
+        // Si no hay acción válida, regresar a la lista
+        header("Location: /Aula-Virtual-Santa-Teresita/view/Admin/Notificaciones.php");
+        break;
 }
-?>
+exit();

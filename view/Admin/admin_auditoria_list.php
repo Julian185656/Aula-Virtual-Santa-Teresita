@@ -123,27 +123,14 @@ $totalPages = (int)ceil($total / $perPage);
         }
 
         /* ==================== BOTÓN VOLVER (IGUAL AL BASE) ==================== */
-        .btn-volver{
-            display:inline-flex;
-            align-items:center;
-            gap:8px;
-            padding:10px 18px;
-            background:linear-gradient(180deg, var(--glass1), var(--glass2));
-            color:var(--text);
-            border-radius:14px;
-            font-size:15px;
-            border:1px solid var(--stroke);
-            text-decoration:none;
-            transition:.18s;
-            box-shadow:0 10px 26px rgba(0,0,0,.22);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+       .btn-volver {
+            display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px;
+            background: linear-gradient(180deg, var(--glass1), var(--glass2));
+            color: var(--text) !important; border-radius: 14px; border: 1px solid var(--stroke);
+            text-decoration: none !important; transition: .18s; backdrop-filter: blur(12px);
         }
-        .btn-volver:hover{
-            border-color:var(--stroke2);
-            background:rgba(255,255,255,.14);
-            color:var(--text);
-        }
+        .btn-volver:hover { transform: translateY(-1px); border-color: var(--stroke2); background: rgba(255,255,255,.14); }
+
 
         /* Glass card base */
         .glass-card{

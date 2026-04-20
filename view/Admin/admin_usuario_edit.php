@@ -28,7 +28,7 @@ if (!$usuario) {
     exit('Usuario no encontrado');
 }
 
-$roles = ['Administrador', 'Docente', 'Estudiante', 'Padre'];
+$roles = ['Administrador', 'Docente', 'Estudiante'];
 $estados = ['Activo', 'Inactivo'];
 ?>
 
@@ -42,19 +42,15 @@ $estados = ['Activo', 'Inactivo'];
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
 <style>
-
-/* MODAL */
 .modal-content {
     background: rgba(29,30,40,0.95) !important;
     border: 1px solid rgba(255,255,255,0.15) !important;
     border-radius: 20px !important;
 }
-
 .modal-header,
 .modal-footer {
     border: none !important;
 }
-
 body{
     font-family:'Poppins',sans-serif;
     font-weight:300;
@@ -65,7 +61,6 @@ body{
     background-color:#2a2b38;
     background-image:url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg');
 }
-
 .card-container{
     max-width:500px;
     margin:auto;
@@ -73,7 +68,6 @@ body{
     padding:35px;
     border-radius:20px;
 }
-
 .form-style{
     width:100%;
     padding:12px;
@@ -83,12 +77,10 @@ body{
     color:#fff;
     margin-bottom:15px;
 }
-
 select.form-style option{
     background:#1f272b;
     color:#fff;
 }
-
 .btn-custom,.btn-back{
     width:100%;
     padding:12px;
@@ -97,13 +89,16 @@ select.form-style option{
     color:#fff;
     border:1px solid rgba(255,255,255,.35);
 }
-
 .btn-back{
     display:block;
     text-align:center;
     margin-top:10px;
 }
-
+#errorModalMessage {
+    color:#ff6b6b;
+    font-weight:bold;
+    margin-bottom:10px;
+}
 </style>
 </head>
 
@@ -132,12 +127,14 @@ type="email"
 class="form-style"
 value="<?= htmlspecialchars($usuario['Email']) ?>"
 required
+id="emailInput"
 >
 
 <input 
 name="Telefono"
 class="form-style"
 value="<?= htmlspecialchars($usuario['Telefono'] ?? '') ?>"
+id="telefonoInput"
 >
 
 <select name="Rol" class="form-style">
@@ -190,6 +187,7 @@ Confirmar cambios
 </div>
 
 <div class="modal-body">
+<div id="errorModalMessage"></div>
 ¿Deseas guardar los cambios realizados en este usuario?
 </div>
 
@@ -199,7 +197,7 @@ Confirmar cambios
 Cancelar
 </button>
 
-<button type="submit" form="formEditar" class="btn btn-danger">
+<button id="confirmBtn" type="submit" form="formEditar" class="btn btn-danger">
 Confirmar
 </button>
 
@@ -211,6 +209,32 @@ Confirmar
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.getElementById("confirmBtn").addEventListener("click", function(e) {
+    const email = document.getElementById("emailInput").value;
+    const telefono = document.getElementById("telefonoInput").value;
+    const errorDiv = document.getElementById("errorModalMessage");
+    errorDiv.innerHTML = "";
+
+    const regexEmail = /^[a-zA-Z0-9._%+-]+@santateresita\.ac\.cr$/;
+    const regexTelefono = /^[0-9]{8}$/;
+
+    if (!regexEmail.test(email)) {
+        e.preventDefault();
+        errorDiv.innerHTML = "El correo debe terminar en @santateresita.ac.cr";
+        return;
+    }
+
+    if (telefono !== "" && !regexTelefono.test(telefono)) {
+        e.preventDefault();
+        errorDiv.innerHTML = "El teléfono debe contener exactamente 8 números.";
+        return;
+    }
+
+    // Si pasa validación, se envía el formulario normalmente
+});
+</script>
 
 </body>
 </html>
